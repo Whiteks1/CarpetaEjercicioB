@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Ordenando Arrays</title>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Uso del metodo <em>sort</em> para ordenar los valores de un array</h1>
+        <h2>Primer caso: Array que contiene funciones</h2>
+        <p>En este caso, si queremos ordenar el array de forma ascendente, solo tenemos que aplicar el método sobre el array sin usar ningún parámetro adicional</p>
+        <p>Ordena este array:</p>
+        <p id="orden_1"></p>
+        <button id="btn_o1">Ordena</button>
+
+        <h2>Ordenar arrays numéricos</h2>
+        <p>En este caso ya tenemos que recurrir a la función dentro del método sort para indicar si queremos ordenar de forma ascendente o descendente. Esta función incluye dos parámetros que hacen referencia al primer y segundo lugar</p>
+        <p id="orden_2"></p>
+        <button id="btn_o2">Orden Asc</button>
+        <button id="btn_o3">Orden Desc</button>
+
+        <h2>Ordenar texto Descendente</h2>
+        <p>En este caso nos tenemos que basar en la función anterior, pero en lugar del operador "-" por ">", y comprobando primero si los valores a ordenar son iguales</p>
+        <p id="orden_3"></p>
+        <button id="btn_o4">Ordena Pintores Desc</button>
+
+        <h2>Usar una sola función para ordenar texto y número de forma ascendente y descendente</h2>
+        <p id="orden_4"></p>
+        <button id="btn_o5">Ordena Pintores Asc</button>
+        <button id="btn_o6">Ordena Pintores Desc</button>
+        <button id="btn_o7">Ordena Números Asc</button>
+        <button id="btn_o8">Ordena Números Desc</button>
+        
+        <h2>Ordenar arrays de más de una dimensión</h2>
+        <p>Cuando el array a ordenar está compuesto por otros arrays y queremos usar un campo en el segundo como un criterio de ordenación usaremos la misma función que el caso anterior, pero indicando e los parametros  a y b </p>
+        <p id="orden_5"></p>
+        <button id="btn_o9">Ordena Pintores Asc</button>
+        <button id="btn_o10">Ordena Pintores Desc</button>
+    </div>
+
+    <script>
+        // Arrays base
+        let pintores = ['Picasso', 'Dali', 'Velasquez', 'Goya', 'Antonio Lopez', 'Tapies'];
+        let masCaros = [['Picasso', 9000],['Dali', 5000] , ['Velasquez', 7000], ['Goya', 6000], ['Antonio Lopez', 4000]['Tapies', 1200]];
+        let edades = ['32', '23', '48', '12', '60', '55'];
+
+        // Mostrar valores iniciales
+        document.querySelector('#orden_1').textContent = pintores;
+        document.querySelector('#orden_2').textContent = edades;
+        document.querySelector('#orden_3').textContent = pintores;
+        document.querySelector('#orden_4').textContent = edades;
+
+        // 1) Orden básico de texto (pintores) ascendente
+        document.querySelector('#btn_o1').onclick = () => {
+            pintores.sort();
+            document.querySelector('#orden_1').textContent = pintores;
+        };
+
+        // 2) Ordenar arrays numéricos
+        function numAsc(a, b) {
+            return a - b;
+        }
+
+        document.querySelector('#btn_o2').onclick = () => {
+            edades.sort(numAsc);
+            document.querySelector('#orden_2').textContent = edades;
+        };
+
+        function numDesc(a, b) { // La función es muy parecida, solo invierte b-a
+            return b - a;
+        }
+
+        document.querySelector('#btn_o3').onclick = () => {
+            edades.sort(numDesc);
+            document.querySelector('#orden_2').textContent = edades;
+        };
+
+        // 3) Ordenar texto descendente
+        function ordenaTxtDesc(a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                // Descendente: primero el "mayor"
+                return a > b ? -1 : 1;
+            }
+        }
+
+        document.querySelector('#btn_o4').onclick = () => {
+            pintores.sort(ordenaTxtDesc);
+            document.querySelector('#orden_3').textContent = pintores;
+        };
+
+        // (Opcional) Versión ascendente de texto
+        function ordenaTxtAsc(a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                // Ascendente: primero el "menor"
+                return a > b ? 1 : -1; // cambia los valores de 1 y -1
+            }
+        }
+
+        // 4) Función Ordena completo (texto y números, asc/desc)
+        function ordenaTodo(datos, orden) {
+            datos.sort((a, b) => {
+                // Convertimos a número si se puede, para que funcione con números y texto
+                const valorA = isNaN(a) ? a : Number(a);
+                const valorB = isNaN(b) ? b : Number(b);
+
+                if (valorA === valorB) {
+                    return 0;
+                } else {
+                    return (valorA > valorB ? 1 : -1) * orden;
+                }
+            });
+
+            document.querySelector('#orden_4').textContent = datos;
+        }
+
+        // Botones que usan ordenaTodo
+        document.querySelector('#btn_o5').onclick = () => { ordenaTodo(pintores, 1); };   // Pintores Asc
+        document.querySelector('#btn_o6').onclick = () => { ordenaTodo(pintores, -1); };  // Pintores Desc
+        document.querySelector('#btn_o7').onclick = () => { ordenaTodo(edades, 1); };     // Números Asc
+        document.querySelector('#btn_o8').onclick = () => { ordenaTodo(edades, -1); };    // Números Desc
+        
+        
+        //Dos Dimensiones 
+        function primerParametro(a,b) {
+            if (a[0]===b[0]) {
+                return 0
+                
+            } else {
+                return a[0]> b[0] ? 1: -1
+                
+            }
+        }
+        function segundoParametro(a,b) {
+            if (a[1]===b[1]) {
+                return 0
+                
+            } else {
+                return a[1]> b[1] ? 1: -1
+                
+            }
+            
+        }
+        function cotizaPintor() {
+            masCaros.sort(primerParametro);
+            document.querySelector('#orden_5').textContent = masCaros;
+            
+        }
+        function cotizaDos() {
+            masCaros.sort(segundoParametro);
+            document.querySelector('#orden_5').textContent = masCaros;
+            
+        }
+        document.querySelector('#btn_o9').onclick = cotizaPintor;      
+        document.querySelector('#btn_o9').onclick = cotizaDos;      
+
+    </script>
+</body>
+</html>
