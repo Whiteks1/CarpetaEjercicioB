@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ejercicios Condicionales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      counter-reset: titulos;
+      font-family: "Titillium Web", serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+
+    .pregunta {
+      border: 1px solid grey;
+      padding: 1rem;
+      margin: 2rem;
+      border-radius: 1rem;
+    }
+
+    h2::before {
+      counter-increment: titulos;
+      content: "Caso " counter(titulos) " - ";
+    }
+
+    pre {
+      font-size: 1.3rem;
+      line-height: 1.5;
+      color: lightblue;
+      background-color: darkslategray;
+    }
+
+    #panel_mensajes {
+      margin: 1rem 2rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      min-height: 1.5rem;
+      font-weight: 600;
+    }
+
+    #panel_mensajes.ok {
+      background-color: #e6ffed;
+      color: #155724;
+      border: 1px solid #155724;
+    }
+
+    #panel_mensajes.error {
+      background-color: #ffe6e6;
+      color: #8b0000;
+      border: 1px solid #8b0000;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+    <h1>Ejercicios con estructura if</h1>
+    <article class="pregunta">
+      <h2>
+        Aplica una función sobre el siguiente botón para que al pulsarlo nos
+        pida un valor en un prompt y nos informe a continuación de si es un
+        dato numérico o no lo es.
+      </h2>
+      <button onclick="esNumero()">Es número</button>
+    </article>
+    <article class="pregunta">
+      <h2>
+        Desarrolla una función sobre el siguiente botón para que nos pida un
+        número en un prompt y nos diga si el número es par o impar
+      </h2>
+      <button onclick="esPar()">Es par</button>
+    </article>
+    <article class="pregunta">
+      <h2>
+        Desarrolla una función sobre el siguiente botón para que nos pida un
+        número en un prompt y nos diga si el número es mayor o menor de 25
+      </h2>
+      <button onclick="esMayor()">Mayor 25</button>
+    </article>
+    <article class="pregunta">
+      <h2>
+        Desarrolla una función sobre el siguiente botón para que nos pida un
+        número en un prompt y nos diga si es o no número, y en caso
+        afirmativo, si es par o impar y mayor o menor de 25
+      </h2>
+      <button onclick="todoJunto()">Todo junto</button>
+    </article>
+  </div>
+  <div id="panel_mensajes"></div>
+
+  <script>
+    // CONSTANTES DEL DOM
+    const panel_mensajes = document.querySelector('#panel_mensajes');
+
+    // FUNCIONES DE UTILIDAD
+    function limpiarMensaje() {
+      panel_mensajes.textContent = '';
+      panel_mensajes.className = '';
+    }
+
+    function mostrarMensaje(texto, tipo) {
+      limpiarMensaje();
+      panel_mensajes.textContent = texto;
+      if (tipo === 'ok' || tipo === 'error') {
+        panel_mensajes.classList.add(tipo);
+      }
+    }
+
+    function validaNumero(texto) {
+      if (texto === null) {
+        return null;
+      }
+      let limpio = texto.trim();
+      if (limpio === '') {
+        return false;
+      }
+      let num = Number(limpio);
+      if (isNaN(num)) {
+        return false;
+      }
+      return num;
+    }
+
+    // EJERCICIO 1: ¿ES NÚMERO?
+    function esNumero() {
+      let dato = prompt('Introduce un valor y te diré si es numérico o no:');
+      let resultado = validaNumero(dato);
+      if (resultado === null) {
+        mostrarMensaje('Has cancelado la operación.', 'error');
+        return;
+      }
+      if (resultado === false) {
+        mostrarMensaje('El valor introducido: ' + dato + ' NO es un número.', 'error');
+        return;
+      }
+      mostrarMensaje('Has introducido: ' + resultado + ' SÍ es un número.', 'ok');
+    }
+
+    // EJERCICIO 2: ¿ES PAR O IMPAR?
+    function esPar() {
+      let dato = prompt('Introduce un número:');
+      if (dato === null) {
+        mostrarMensaje('Has cancelado la operación.', 'error');
+        return;
+      }
+
+      let num = Number(dato);
+      if (isNaN(num)) {
+        mostrarMensaje('El valor introducido "' + dato + '" no es un número.', 'error');
+        return;
+      }
+
+      if (num % 2 === 0) {
+        mostrarMensaje('El número ' + num + ' es PAR.', 'ok');
+      } else {
+        mostrarMensaje('El número ' + num + ' es IMPAR.', 'ok');
+      }
+    }
+  </script>
+</body>
+</html>

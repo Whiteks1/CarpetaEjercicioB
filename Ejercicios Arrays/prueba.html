@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Arrays</title>
+</head>
+<body>
+      
+        <label for="elemento">Introduce Contacto:</label>
+        <input type="text" id="elemento" placeholder="Ejemplo: Leticia">
+        <button id="add_contacto">Añadir Contacto</button>
+      
+        <h3>Contactos confirmados:</h3>
+        <ul id="contactos"></ul>
+      
+        <button id="crea_select">Gestionar Contactos</button>
+      
+        <div id="eliminar"></div>
+        <select id="selectContactos"></select>
+        <button onclick="editarContacto()">Editar Contacto</button>
+      
+        <button onclick="eliminarContacto()">Eliminar</button>
+        <button onclick="ocultar()">Ocultar</button>
+        <script>
+            //El array es una constante global
+            const agenda=[];
+            //Elemento del DOM con const
+        </script>
+</body>
+</html>
+
+// Agregamos evento a cada botón de eliminar
+  document.querySelectorAll('.eliminar').forEach(boton => {
+    boton.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      mostrarPopup(id);
+    });
+  });
+
+
+// 4️⃣ Función para mostrar el popup
+function mostrarPopup(id) {
+  popup.style.display = 'flex';
+  btnConf.dataset.id = id; // Guardamos el id del contacto en el botón "Confirmar"
+}
+
+// 5️⃣ Función para ocultar el popup
+function cerrarPopup() {
+  popup.style.display = 'none';
+  btnConf.dataset.id = ''; // Limpiamos el id
+}
+
+// 6️⃣ Confirmar eliminación
+btnConf.addEventListener('click', () => {
+  const id = parseInt(btnConf.dataset.id);
+  contactos = contactos.filter(contacto => contacto.id !== id);
+  cerrarPopup();
+  mostrarContactos(); // Actualizamos la lista
+});
+
+// 7️⃣ Cancelar eliminación
+btnCancel.addEventListener('click', cerrarPopup);
+
+// 8️⃣ Mostrar contactos al cargar
+mostrarContactos();

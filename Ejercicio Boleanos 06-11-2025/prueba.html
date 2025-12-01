@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listado películas</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,700;1,300;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Ubuntu', sans-serif;
+      background-color: #faf6ef;
+    }
+
+    .contenedor {
+      width: 1200px;
+      background-color: linen;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: burlywood;
+      text-align: center;
+      text-shadow: 2px 2px 0 black;
+    }
+
+    .entrada {
+      margin: 2rem auto;
+      width: 60%;
+      background-color: burlywood;
+      padding: 1rem;
+      border-radius: .5rem;
+    }
+
+    .form-entrada {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .bloque-a {
+      width: 80%;
+    }
+
+    .fila {
+      margin: 1rem 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: snow;
+    }
+
+    .fila label {
+      display: inline-block;
+      width: 40%;
+      text-align: right;
+      margin-right: 1rem;
+    }
+
+    #nombre_peli {
+      border: 0;
+      padding: 0.2rem .5rem;
+      color: darkgoldenrod;
+      font-size: 1.2rem;
+      font-style: italic;
+      font-family: Ubuntu;
+      width: 15rem;
+    }
+
+    .fila select {
+      width: 15rem;
+      border: 0;
+      font-size: 1rem;
+      color: darkgoldenrod;
+      font-family: ubuntu;
+    }
+
+    button {
+      width: 6rem;
+      border: 0;
+      padding: .3rem;
+      font-size: 1.2rem;
+      font-family: ubuntu;
+      font-style: italic;
+      font-weight: bold;
+      color: darkgoldenrod;
+      cursor: pointer;
+      background-color: #fff8e1;
+      border-radius: .3rem;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #f4e2b0;
+    }
+
+    .salida {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .salida article {
+      width: 33%;
+    }
+
+    .tit-categoria {
+      color: burlywood;
+      border-bottom: 3px solid;
+      margin: 0 1rem;
+      text-align: center;
+    }
+
+    .rojo {
+      border: 2px solid;
+      color: darkred;
+      background-color: tomato;
+    }
+
+    .amarillo {
+      border: 2px solid;
+      color: darkgoldenrod;
+      background-color: yellow;
+    }
+
+    .verde {
+      border: 2px solid;
+      color: darkgreen;
+      background-color: lime;
+    }
+
+    .salida p {
+      margin: 1rem;
+      font-size: 1.5rem;
+      padding: 0.2rem;
+      border-radius: 0.3rem;
+    }
+
+    #mensajes {
+      position: fixed;
+      top: 20px;
+      right: -400px;
+      width: 300px;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      color: white;
+      transition: all 0.5s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      opacity: 0.9;
+    }
+
+    .mostrar {
+      right: 20px !important;
+    }
+
+    .success {
+      background-color: #28a745; 
+    }
+
+    .danger {
+      background-color: #dc3545;
+    }
+
+    .info {
+      background-color: #007bff;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+    <h1>Biblioteca películas</h1>
+
+    <div class="entrada">
+      <div class="form-entrada">
+        <div class="bloque-a">
+          <div class="fila">
+            <label for="nombre_peli">Título</label>
+            <input type="text" id="nombre_peli" name="nombre_peli">
+          </div>
+
+          <div class="fila">
+            <label for="categoria_peli">Selecciona categoría</label>
+            <select name="categoria_peli" id="categoria_peli">
+              <option value="art_comedia">Comedia</option>
+              <option value="art_drama">Drama</option>
+              <option value="art_docu">Documental</option>
+            </select>
+          </div>
+
+          <div class="fila">
+            <label for="color_peli">Selecciona Código</label>
+            <select name="color_peli" id="color_peli">
+              <option value="rojo">Rojo</option>
+              <option value="amarillo">Amarillo</option>
+              <option value="verde">Verde</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bloque-b">
+          <div class="fila">
+            <button onclick="guardaPeli()">Añadir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="salida">
+      <article id="art_comedia">
+        <h2 class="tit-categoria">Comedia</h2>
+      </article>
+      <article id="art_drama">
+        <h2 class="tit-categoria">Drama</h2>
+      </article>
+      <article id="art_docu">
+        <h2 class="tit-categoria">Documental</h2>
+      </article>
+    </section>
+
+    <div id="mensajes">
+      <h4>Cuadro de Mensajes</h4>
+      <p></p>
+    </div>
+  </div>
+
+  <script>
+    // FUNCIÓN PRINCIPAL
+    function guardaPeli() {
+      const inputTitulo = document.getElementById("nombre_peli");
+      const selectCategoria = document.getElementById("categoria_peli");
+      const selectColor = document.getElementById("color_peli");
+
+      const titulo = inputTitulo.value.trim();
+      const categoria = selectCategoria.value;
+      const color = selectColor.value;
+
+      const articleDestino = document.getElementById(categoria);
+
+      // Validación
+      if (titulo === "") {
+        muestraMensaje(2, "danger");
+        inputTitulo.focus();
+        return;
+      }
+
+      // Crear e insertar párrafo
+      const nuevoParrafo = document.createElement("p");
+      nuevoParrafo.textContent = titulo;
+      nuevoParrafo.classList.add(color);
+      articleDestino.appendChild(nuevoParrafo);
+
+      // Mostrar mensaje de éxito
+      muestraMensaje(1, "success", titulo);
+
+      inputTitulo.value = "";
+      inputTitulo.focus();
+    }
+
+    // FUNCIÓN MENSAJE
+    function muestraMensaje(contenido, tipo, nombrePelicula = "") {
+      const mensaje = document.querySelector('#mensajes');
+      const titulo = mensaje.querySelector('h4');
+      const parrafo = mensaje.querySelector('p');
+
+      let tit_txt = '';
+      let par_txt = '';
+
+      switch (contenido) {
+        case 1:
+          tit_txt = 'Película Añadida';
+          par_txt = `La película "${nombrePelicula}" se ha añadido correctamente.`;
+          break;
+        case 2:
+          tit_txt = 'Dato no válido';
+          par_txt = 'Introduce un título válido.';
+          break;
+        default:
+          tit_txt = 'Cuadro de Mensajes';
+          par_txt = 'En este espacio se muestran los mensajes de la aplicación.';
+          break;
+      }
+
+      // Aplicar clases y texto
+      mensaje.className = tipo + " mostrar";
+      titulo.textContent = tit_txt;
+      parrafo.textContent = par_txt;
+
+      // Ocultar después de 3 segundos
+      setTimeout(() => {
+        mensaje.classList.remove("mostrar");
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

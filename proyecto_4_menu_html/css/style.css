@@ -1,0 +1,39 @@
+.botonera{
+    display: none;
+    
+}
+/*  Modificar un elemento directamente*/
+.mi-btn-menu:hover{
+    opacity:50%;
+
+}
+/*Modificar un elemento aninado*/
+.mi-btn-menu:hover .botonera{
+    display: block;
+}
+
+/*Selector común*/
+li{ margin: 1rem;}
+.apuntes{
+    margin: 1px;
+
+}
+
+/*Anidación Indirecta*/
+.disparador-a li{
+    color:blueviolet;
+    border: 1px solid;
+    margin: 1rem 0;
+}
+.disparador-a :hover li{
+    background-color: rgb(182, 151, 211);
+    color: aliceblue;
+    padding: left 2em;
+}
+/*Anidación Directa*/
+.disparador-b > li{
+    list-style: none;
+}
+.disparador-b :hover > li {
+    border: 1px solid rgb(226, 22, 226);
+}

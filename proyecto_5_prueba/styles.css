@@ -1,0 +1,87 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+.centrado {
+    text-align: center;
+    background-color: aquamarine;
+    border: 1px solid gray;
+    width: 250px;
+    margin: 2rem auto;
+}
+.botonera {
+    display: none;
+}
+/*modifico el elemento directamente*/
+.mi-btn-menu:hover {
+    opacity: .5;
+}
+/*modifico un elemento anidado del botón que recibe el hover*/
+.mi-btn-menu:hover .botonera {
+   display: block;
+}
+/*selector común*/
+ .apuntes li {
+    margin: 1rem 0;
+ }
+/*anidación indirecta*/
+.disparador-a li {
+    color: darkred;
+    border:1px solid;
+}
+.disparador-a:hover li {
+    background-color: darkred;
+    color: white;
+    padding-left: 2rem;
+}
+/*anidación directa*/
+
+.disparador-b > li {
+    list-style: none;
+}
+.disparador-b:hover {
+    background-color: lightcoral;
+}
+.disparador-b:hover > li {
+    border: 1px solid darkred;
+}
+/*adyacentes*/
+
+.menu-oculto li {
+    list-style: none;
+    margin: .5rem 0;
+}
+.menu-oculto, .mns-oculto {
+    display: none; 
+    position: absolute;
+    background-color: white;
+}
+.dp-adyacente:hover  + .mns-oculto {
+    display: block;
+}
+#sel-menu:checked + .menu-oculto {
+    display: block;
+}
+/*menú animado*/
+.pantalla {
+    overflow: hidden;
+    min-height: 350px;
+    position: relative;
+}
+.dpl-grupo {
+    width: 180px;
+    left: -210px;
+    position: absolute;
+    transition: all .2s;
+    background-color: white;
+}
+#btn-dpl:checked + .dpl-grupo {
+    left: 0;
+}
+.dpl-content {
+    transition: all .2s;
+    margin-top: 0;
+}
+#btn-dpl:checked + * + .dpl-content {
+    margin-top: 220px;
+}

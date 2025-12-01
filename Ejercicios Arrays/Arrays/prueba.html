@@ -1,0 +1,36 @@
+
+// Pintar el array mas_caros en la lista <ul>
+    function mostrarCotizaciones() {
+        const ul = document.querySelector('#cotizaciones');
+        ul.innerHTML = ''; // limpiar
+
+        mas_caros.forEach(pintor => {
+            const li = document.createElement('li');
+            li.textContent = `${pintor[0]} - ${pintor[1]}€`;
+            ul.appendChild(li);
+        });
+    }
+
+    // Función genérica:
+    // datos: array 2D (ej: mas_caros)
+    // columna: índice de la columna por la que ordenamos (0 = nombre, 1 = valor)
+    // orden: 1 = asc, -1 = desc
+    function ordena2D(datos, columna, orden) {
+        datos.sort((a, b) => {
+            if (a[columna] === b[columna]) {
+                return 0;
+            } else {
+                return (a[columna] > b[columna] ? 1 : -1) * orden;
+            }
+        });
+        mostrarCotizaciones();
+    }
+
+    // Botones de "Todo junto"
+    document.querySelector('#btn_pintor_asc').onclick = () => ordena2D(mas_caros, 0, 1);
+    document.querySelector('#btn_pintor_dsc').onclick = () => ordena2D(mas_caros, 0, -1);
+    document.querySelector('#btn_valor_asc').onclick = () => ordena2D(mas_caros, 1, 1);
+    document.querySelector('#btn_valor_dsc').onclick = () => ordena2D(mas_caros, 1, -1);
+
+    // Mostrar una primera vez la lista tal cual está el array
+    mostrarCotizaciones();

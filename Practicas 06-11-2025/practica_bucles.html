@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablas de multiplicar</title>
+    <style>
+        #tabla_4, #tabla_5 {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        ul  {
+            width: 20%;
+            margin: 2rem 0;
+            padding: 0;
+            border: 2px solid black;
+        }
+        li {
+            list-style: none;
+        }
+        .resultado {
+            background-color: lightgrey;
+        }
+    </style>
+</head>
+<body>
+   <h1>Tablas de multiplicar</h1> 
+   <h2>Tabla del 5</h2>
+   <p>Crea la tabla del cinco </p>
+   <button onclick="tablaCinco()">Genera</button>
+   <ul id="cinco" class="resultado"></ul>
+   <h2>Tabla definida por usuario</h2>
+   <p>Indicamos el número de tabla que debe mostrar</p>
+   <input type="number" id="ejem_2" onchange="tablaUser()"><button onclick="tablaUser()">Tabla</button>
+   <ul id="tabla_2" class="resultado"></ul>
+   <h2>Tabla personalizada</h2>
+   <p>Indicamos el número de tabla y cuantos cálculos tiene que hacer</p>
+   <p>Tabla: <input type="number" id="ejem_3"></p>
+    <p>Cálculos: <input type="number" id="ejem_3c"></p>
+    <button onclick="ejemTres()">Tabla</button>
+    <ul id="tabla_3" class="resultado"></ul>
+    <h2>10 primeras tablas</h2>
+    <button onclick="ejemCuatro()">10 tablas</button>
+    <div id="tabla_4" class="resultado"></div>
+    <h2>Tablas definidas por usuario</h2>
+    <p>Número de tablas: <input type="number" id="ejem_5" onchange="ejemCinco()"><button onclick="ejemCinco()">Tablas</button></p>
+    <div id="tabla_5" class="resultado"></div>
+    <!-- SCRIPT -->
+   <script>
+    // ============================
+    // TABLA DEL 5 (EJERCICIO 1)
+    // ============================
+    function tablaCinco() {
+      const lista = document.getElementById('cinco');
+      lista.innerHTML = '';
+
+      const base = 5;
+      for (let i = 1; i <= 10; i++) {
+        const li = document.createElement('li');
+        li.textContent = `${base} x ${i} = ${base * i}`;
+        lista.appendChild(li);
+      }
+    }
+
+    // ============================
+    // TABLA DEFINIDA POR USUARIO (EJERCICIO 2)
+    // ============================
+    function tablaUser() {
+      const input = document.getElementById('ejem_2');
+      const num = Number(input.value);
+      const lista = document.getElementById('tabla_2');
+      lista.innerHTML = '';
+
+      if (isNaN(num) || input.value.trim() === '') {
+        lista.innerHTML = `<li>Introduce un número válido.</li>`;
+        return;
+      }
+
+      for (let i = 1; i <= 10; i++) {
+        const li = document.createElement('li');
+        li.textContent = `${num} x ${i} = ${num * i}`;
+        lista.appendChild(li);
+      }
+    }
+
+    // ============================
+    // TABLA PERSONALIZADA (EJERCICIO 3)
+    // ============================
+    function ejemTres() {
+      const base = Number(document.getElementById('ejem_3').value);
+      const cantidad = Number(document.getElementById('ejem_3c').value);
+      const lista = document.getElementById('tabla_3');
+      lista.innerHTML = '';
+
+      if (isNaN(base) || isNaN(cantidad) || cantidad <= 0) {
+        lista.innerHTML = `<li>Introduce un número de tabla y una cantidad de cálculos válidos (> 0).</li>`;
+        return;
+      }
+
+      for (let i = 1; i <= cantidad; i++) {
+        const li = document.createElement('li');
+        li.textContent = `${base} x ${i} = ${base * i}`;
+        lista.appendChild(li);
+      }
+    }
+
+    // ============================
+    // 10 PRIMERAS TABLAS (EJERCICIO 4)
+    // ============================
+    function ejemCuatro() {
+      const contenedor = document.getElementById('tabla_4');
+      contenedor.innerHTML = '';
+
+      for (let tabla = 1; tabla <= 10; tabla++) {
+        const ul = document.createElement('ul');
+        const titulo = document.createElement('li');
+        titulo.innerHTML = `<strong>Tabla del ${tabla}</strong>`;
+        ul.appendChild(titulo);
+
+        for (let i = 1; i <= 10; i++) {
+          const li = document.createElement('li');
+          li.textContent = `${tabla} x ${i} = ${tabla * i}`;
+          ul.appendChild(li);
+        }
+
+        contenedor.appendChild(ul);
+      }
+    }
+
+    // ============================
+    // TABLAS DEFINIDAS POR USUARIO (EJERCICIO 5)
+    // ============================
+    function ejemCinco() {
+      const numTablas = Number(document.getElementById('ejem_5').value);
+      const contenedor = document.getElementById('tabla_5');
+      contenedor.innerHTML = '';
+
+      if (isNaN(numTablas) || numTablas <= 0) {
+        contenedor.innerHTML = `<p>Introduce un número de tablas válido (> 0).</p>`;
+        return;
+      }
+
+      for (let tabla = 1; tabla <= numTablas; tabla++) {
+        const ul = document.createElement('ul');
+        const titulo = document.createElement('li');
+        titulo.innerHTML = `<strong>Tabla del ${tabla}</strong>`;
+        ul.appendChild(titulo);
+
+        for (let i = 1; i <= 10; i++) {
+          const li = document.createElement('li');
+          li.textContent = `${tabla} x ${i} = ${tabla * i}`;
+          ul.appendChild(li);
+        }
+
+        contenedor.appendChild(ul);
+      }
+    }
+ </script>
+</body>
+</html>

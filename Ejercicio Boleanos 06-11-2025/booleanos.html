@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <title>Uso de Valores Boleanos</title>
+
+<style>
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    #contenedorExterior {
+        background-color: #dadada;
+    }
+
+    .modo-claro {
+        background-color: #f6d9a3;
+        color: #c06014;
+        padding: 50px;
+        min-height: 220px;
+    }
+
+    .modo-oscuro {
+        background-color: #000000;
+        color: #c0eaff;
+        padding: 50px;
+        min-height: 220px;
+        border: 3px solid #c0eaff;
+    }
+    
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="fs-3 fw-bold mb-4">Ejemplo de Uso de Valores Booleanos</h1>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="fs-5 fw-bold mb-3">
+                    Caso 1 - Cambiar modo pantalla
+                </h2>
+                <p class="text-muted small">
+                    Vamos a hacer una funcionalidad sencilla para un botón,
+                    que nos permita intercambiar entre modo claro y oscuro de la pantalla,
+                    aplicado sobre un contenedor.
+                </p>
+                <div id="contenedorExterior" class="mt-4 p-4 bg-light">
+                    <button id="btnModo" class="btn btn-dark mb-3">
+                        Modo Oscuro
+                    </button>
+                    <div id="pantallaModo" class="modo-claro d-flex align-items-center">
+                        <span id="textoModo" class="fs-4 fw-semibold fst-italic">
+                            Modo Claro Activado
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+        crossorigin="anonymous"></script>
+
+    <script>
+        let esModoOscuro = false;
+        //Capturar elementos del DOM                
+        const btnModo = document.getElementById('btnModo');
+        const pantallaModo = document.getElementById('pantallaModo');
+        const textoModo = document.getElementById('textoModo');
+
+        //Añadir el evento al de click al boton
+        btnModo.addEventListener("click" , ()=> {
+        //  Valor booleano
+            esModoOscuro = !esModoOscuro;
+            
+            if (esModoOscuro) {
+                pantallaModo.classList.remove("modo-claro");
+                pantallaModo.classList.add("modo-oscuro");
+                
+                textoModo.textContent = "Modo Oscuro Activado"
+
+                //cambio del style
+                btnModo.textContent = "Modo Claro";
+                btnModo.classList.remove('btn-dark');
+                btnModo.classList.add('btn-warning');
+            } else {
+                //Modo Claro
+                pantallaModo.classList.remove('modo-oscuro');
+                pantallaModo.classList.add('modo-claro');
+                
+                textoModo.textContent ="Modo Claro Activado";
+                
+                btnModo.textContent = "Modo Oscuro";
+                btnModo.classList.remove('btn-warning');
+                btnModo.classList.add('btn-dark');
+
+            }
+        });
+    </script>
+</body>
+
+</html>

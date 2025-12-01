@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+          integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+          crossorigin="anonymous">
+    <title>Gestor de contactos</title>
+    <style>
+        .input-cto {
+            max-height: 34px;
+        }
+
+        .panel-delete {
+            width: 60%;
+            position: absolute;
+            left: -55%;
+            transition: all .4s;
+        }
+
+        #mensajes {
+            position: fixed;
+            top: 0;
+            z-index: 99;
+            right: -340px;
+            width: 340px;
+            transition: all .5s;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <section class="row">
+        <header class="text-bg-info p-5 mb-2">
+            <h1 class="text-center">Otro gestor de contactos</h1>
+        </header>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <h2 class="fs-4">Gestión de datos con JavaScript</h2>
+        </div>
+        <div class="col-6">
+            <p>En este ejercicio vamos a realizar una práctica de <strong>CRUD</strong>
+                <em>(Create, Read, Update, Delete)</em> usando JavaScript
+                <em>Vanilla</em> (puro, sin librerías ni Frameworks adicionales).
+                El formato del documento lo aplicaremos con <strong>BootStrap</strong> para el <em>CSS</em>.
+            </p>
+            <h3 class="fs-5">Lógica de la Aplicación</h3>
+            <p>Los datos de la agenda se van a almacenar en un <strong>array</strong> definido en una constante.
+                La interfaz va a permitir añadir, visualizar, editar y eliminar datos a esa matriz.</p>
+            <p>Para simplificar el proceso las 4 operaciones de <em>CRUD</em> se encargan de modificar los datos en
+                el listado, y una vez realizada la operación se llama a una función que recrea el DOM a partir de
+                los datos actuales del array.</p>
+        </div>
+        <div class="col-6">
+            <h3 class="fs-5">Información al usuario</h3>
+            <p>Cada función muestra un mensaje para el usuario con el resultado de la operación. Para eso se usa una
+                función parametrizada que indica el contenido del mensaje a mostrar y su formato sobre un elemento
+                del DOM.</p>
+            <h3 class="fs-5">Uso de localStorage para hacer respaldo de datos</h3>
+            <p>Para conseguir que los datos almacenados persistan después de cerrar el navegador usamos el
+                almacenamiento de <em>localStorage</em> permitiendo al usuario guardar, recuperar y borrar los datos
+                almacenados en él.</p>
+        </div>
+    </section>
+
+    <section class="row bg-info-subtle mb-5 p-3">
+        <div class="col-12">
+            <h2 class="text-center text-info-emphasis">Interfaz de usuario</h2>
+        </div>
+
+        <!-- FORMULARIO -->
+        <div class="col-5">
+            <h3 class="fs-5 text-info-emphasis">Introduce un contacto</h3>
+            <form class="bg-primary-subtle p-2 rounded">
+                <div class="form-floating mb-3">
+                    <input type="text" id="in_cto" class="form-control" placeholder="Nombre">
+                    <label for="in_cto">Nombre del contacto</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" id="in_edad" class="form-control" placeholder="Edad" min="0" max="120">
+                    <label for="in_edad">Edad</label>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-light" id="btn_add_cto">Añadir</button>
+                </div>
+            </form>
+
+            <div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Uso de Storage
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Guardar y Borrar en el Storage</h4>
+                        <p class="card-text">
+                            El array de contactos es convertido a un <em>string</em> para ser
+                            almacenado en los datos del navegador.
+                        </p>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-success" id="btn_ls">Guardar</button>
+                            <button class="btn btn-info" id="btn_lr">Recuperar</button>
+                            <button class="btn btn-danger" id="btn_lb">Borrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTADO -->
+        <div class="col-7">
+            <h3 class="fs-5 text-info-emphasis d-flex justify-content-between align-items-center">
+                <span>Listado de Contactos</span>
+                <span class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" id="btn_sort_nombre">
+                        Ordenar por Nombre (A/Z)
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" id="btn_sort_edad">
+                        Ordenar por Edad
+                    </button>
+                </span>
+            </h3>
+            <div class="gr-contacts">
+                <ul class="list-group" id="lista_ctos"></ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-12">
+            <h2>Script de la aplicación</h2>
+            <pre class="overflow-auto h-25 border border-3">
+                <code id="copia"></code>
+            </pre>
+        </div>
+    </section>
+
+    <div class="alert alert-success" role="alert" id="mensajes">
+        <h4 class="alert-heading">Contacto Añadido</h4>
+        <p>El contacto se ha añadido a tu lista de Contactos correctamente.</p>
+        <hr>
+        <p class="mb-0">JavaScript y BootStrap alegran tu vida.</p>
+    </div>
+</div>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+    crossorigin="anonymous"></script>
+
+<script id="propio">
+    // ARRAY PRINCIPAL: ahora guarda objetos {nombre, edad}
+    const agenda = [];
+
+    // DOM
+    const in_cto = document.querySelector('#in_cto');
+    const in_edad = document.querySelector('#in_edad');
+    const btn_add_cto = document.querySelector('#btn_add_cto');
+    const btn_local_save = document.querySelector('#btn_ls');
+    const btn_local_read = document.querySelector('#btn_lr');
+    const btn_local_borra = document.querySelector('#btn_lb');
+    const lista_ctos = document.querySelector('#lista_ctos');
+    const btn_sort_nombre = document.querySelector('#btn_sort_nombre');
+    const btn_sort_edad = document.querySelector('#btn_sort_edad');
+
+    let isEditMode = false;
+
+    //  VALIDACIONES 
+
+    function validaTxt(texto) {
+        let txt_limpio = texto.trim();
+        while (txt_limpio.indexOf('  ') !== -1) {
+            txt_limpio = txt_limpio.replaceAll('  ', ' ');
+        }
+        if (txt_limpio.length < 3) {
+            return false;
+        }
+        return txt_limpio;
+    }
+
+    const validaEdad = (textoEdad) => {
+        const num = parseInt(textoEdad);
+        if (isNaN(num) || num < 0 || num > 120) {
+            return false;
+        }
+        return num;
+    };
+
+    //  LISTADO 
+
+    const creaListado = () => {
+        lista_ctos.innerHTML = '';
+
+        agenda.forEach((cto, index) => {
+            const elemento = document.createElement('li');
+            elemento.className = 'list-group-item d-flex justify-content-between align-items-center position-relative';
+
+            const spanNombre = document.createElement('span');
+            spanNombre.textContent = cto.nombre;
+            spanNombre.className = 'w-50 p-1 input-cto nombre-cto';
+
+            const spanEdad = document.createElement('span');
+            spanEdad.textContent = cto.edad;
+            spanEdad.className = 'w-25 p-1 input-cto edad-cto text-end';
+
+            const btn_edit = document.createElement('button');
+            btn_edit.innerHTML = '&#128393;';
+            btn_edit.className = 'btn btn-primary me-2';
+            btn_edit.onclick = () => editCto(btn_edit, index);
+
+            const btn_del = document.createElement('button');
+            btn_del.innerHTML = '&#10008;';
+            btn_del.className = 'btn btn-danger';
+            btn_del.onclick = () => delCto(btn_del, index);
+
+            elemento.append(spanNombre, spanEdad, btn_edit, btn_del);
+            lista_ctos.append(elemento);
+        });
+    };
+
+    //  AÑADIR CONTACTO 
+
+    const addContacto = () => {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+
+        const nom_cto = in_cto.value;
+        const edad_cto = in_edad.value;
+
+        const nombreVal = validaTxt(nom_cto);
+        const edadVal = validaEdad(edad_cto);
+
+        if (nombreVal && edadVal !== false) {
+            agenda.push({ nombre: nombreVal, edad: edadVal });
+            creaListado();
+            muestraMensaje(1, 'success');
+        } else {
+            muestraMensaje(2, 'danger');
+        }
+
+        in_cto.value = '';
+        in_edad.value = '';
+        in_cto.focus();
+    };
+
+    //  EDITAR CONTACTO 
+
+    const editCto = (boton, posicion) => {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        isEditMode = true;
+
+        const contenedor = boton.parentNode;
+        const nodo_nombre = contenedor.querySelector('.nombre-cto');
+        const nodo_edad = contenedor.querySelector('.edad-cto');
+
+        nodo_nombre.classList.add('border', 'border-1', 'border-primary');
+        nodo_nombre.setAttribute('contenteditable', 'true');
+
+        nodo_edad.classList.add('border', 'border-1', 'border-primary');
+        nodo_edad.setAttribute('contenteditable', 'true');
+
+        window.getSelection().selectAllChildren(nodo_nombre);
+        nodo_nombre.focus();
+
+        nodo_nombre.addEventListener('keydown', (evento) => {
+            controlKeys(evento, nodo_nombre, nodo_edad, posicion);
+        });
+        nodo_edad.addEventListener('keydown', (evento) => {
+            controlKeys(evento, nodo_nombre, nodo_edad, posicion);
+        });
+
+        boton.classList.add('text-bg-success');
+        boton.innerHTML = '&#10003;';
+        boton.onclick = () => actualizaCto(nodo_nombre, nodo_edad, posicion);
+    };
+
+    const actualizaCto = (nodo_nombre, nodo_edad, posicion) => {
+        const nombreVal = validaTxt(nodo_nombre.textContent);
+        const edadVal = validaEdad(nodo_edad.textContent);
+
+        if (nombreVal && edadVal !== false) {
+            agenda[posicion].nombre = nombreVal;
+            agenda[posicion].edad = edadVal;
+            creaListado();
+            muestraMensaje(3, 'success');
+            isEditMode = false;
+        } else {
+            nodo_nombre.classList.add('border', 'border-1', 'border-danger');
+            nodo_edad.classList.add('border', 'border-1', 'border-danger');
+            nodo_nombre.focus();
+        }
+    };
+
+    const controlKeys = (evento, nodo_nombre, nodo_edad, posicion) => {
+        if (evento.key === 'Enter') {
+            evento.preventDefault();
+            actualizaCto(nodo_nombre, nodo_edad, posicion);
+        }
+        if (evento.key === 'Escape') {
+            evento.preventDefault();
+            creaListado();
+            isEditMode = false;
+        }
+    };
+
+    //  ELIMINAR CONTACTO 
+
+    function delCto(nodo, quien) {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        isEditMode = true;
+        let contenedor = nodo.parentNode;
+
+        if (contenedor.childNodes[0].nodeName === 'DIV') {
+            contenedor.childNodes[0].remove();
+        }
+
+        let caja = document.createElement('div');
+        caja.className = 'panel-delete';
+        let btn_conf = document.createElement('button');
+        btn_conf.className = 'btn btn-danger me-3';
+        btn_conf.textContent = 'Confirmar';
+        btn_conf.onclick = function () {
+            agenda.splice(quien, 1);
+            creaListado();
+            muestraMensaje(4, 'danger');
+            isEditMode = false;
+        };
+        let btn_canc = document.createElement('button');
+        btn_canc.className = 'btn btn-primary';
+        btn_canc.textContent = 'Cancelar';
+        btn_canc.onclick = function () {
+            caja.style.left = '-55%';
+            isEditMode = false;
+        };
+        caja.append(btn_conf, btn_canc);
+        contenedor.prepend(caja);
+
+        setTimeout(function () {
+            caja.style.left = '1rem';
+        }, 100);
+    }
+
+    //  ORDENACIÓN 
+
+    const ordenarPorNombre = () => {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        agenda.sort((a, b) =>
+            a.nombre.toLowerCase().localeCompare(b.nombre.toLowerCase())
+        );
+        creaListado();
+    };
+
+    const ordenarPorEdad = () => {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        agenda.sort((a, b) => a.edad - b.edad);
+        creaListado();
+    };
+
+    //  MENSAJES 
+
+    function muestraMensaje(contenido, formato) {
+        const mensaje = document.querySelector('#mensajes');
+        const titulo = mensaje.querySelector('h4');
+        const parrafo = mensaje.querySelector('p');
+        let tit_txt = '';
+        let par_txt = '';
+
+        mensaje.style.right = 0;
+
+        switch (contenido) {
+            case 1:
+                tit_txt = 'Contacto Añadido';
+                par_txt = 'El contacto se ha añadido a tu lista de contactos correctamente.';
+                break;
+            case 2:
+                tit_txt = 'Dato no Válido';
+                par_txt = 'Los datos introducidos no son correctos. Debes escribir al menos 3 caracteres que no sean espacios, y una edad válida.';
+                break;
+            case 3:
+                tit_txt = 'Contacto Actualizado';
+                par_txt = 'El contacto se ha modificado en tu agenda correctamente.';
+                break;
+            case 4:
+                tit_txt = 'Contacto Eliminado';
+                par_txt = 'El contacto se ha eliminado de tu agenda correctamente.';
+                break;
+            case 5:
+                tit_txt = 'Modo Edición Activado';
+                par_txt = 'No puedes realizar otras acciones hasta que no termines la tarea actual.';
+                break;
+            case 6:
+                tit_txt = 'Datos Guardados';
+                par_txt = 'El listado se ha almacenado en el localStorage de la aplicación.';
+                break;
+            case 7:
+                tit_txt = 'Datos Eliminados';
+                par_txt = 'El listado se ha borrado correctamente del localStorage de la aplicación.';
+                break;
+            case 8:
+                tit_txt = 'Datos Recuperados';
+                par_txt = 'El listado que aparece en pantalla son los datos del Storage.';
+                break;
+            case 9:
+                tit_txt = 'No hay datos a recuperar';
+                par_txt = 'El Storage está vacío y no hay datos que mostrar en él.';
+                break;
+            default:
+                tit_txt = 'Cuadro de Mensajes';
+                par_txt = 'En este espacio se muestran los mensajes de la aplicación';
+                break;
+        }
+        mensaje.className = 'alert';
+        mensaje.classList.add('alert-' + formato);
+        titulo.textContent = tit_txt;
+        parrafo.textContent = par_txt;
+
+        setTimeout(escondeMensaje, 3000);
+    }
+
+    function escondeMensaje() {
+        document.querySelector('#mensajes').style.right = '-340px';
+    }
+
+    //  STORAGE 
+
+    function guardaLocal() {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        let respaldo = JSON.stringify(agenda);
+        localStorage.setItem('agenda', respaldo);
+        muestraMensaje(6, 'success');
+    }
+
+    function recuperaLocal() {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        let respaldo = localStorage.getItem('agenda');
+        let agenda_respaldo = JSON.parse(respaldo);
+        if (agenda_respaldo && agenda_respaldo.length > 0) {
+            agenda.splice(0);
+            agenda.push(...agenda_respaldo);
+            muestraMensaje(8, 'success');
+            creaListado();
+        } else {
+            muestraMensaje(9, 'warning');
+        }
+    }
+
+    function borraLocal() {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        localStorage.clear();
+        muestraMensaje(7, 'danger');
+    }
+
+    //  ASIGNACIONES 
+
+    btn_add_cto.onclick = addContacto;
+    btn_local_save.onclick = guardaLocal;
+    btn_local_read.onclick = recuperaLocal;
+    btn_local_borra.onclick = borraLocal;
+    btn_sort_nombre.onclick = ordenarPorNombre;
+    btn_sort_edad.onclick = ordenarPorEdad;
+
+    //INICIO 
+
+    window.onload = function () {
+        document.querySelector('#copia').textContent =
+            document.querySelector('#propio').textContent;
+
+        agenda.splice(0);
+        if (localStorage.getItem('agenda')) {
+            agenda.push(...JSON.parse(localStorage.getItem('agenda')));
+        } else {
+            agenda.push(
+                { nombre: "Luz", edad: 22 },
+                { nombre: "Luis", edad: 30 },
+                { nombre: "Pilar", edad: 26 },
+                { nombre: "Ana", edad: 24 },
+                { nombre: "Marta", edad: 19 },
+                { nombre: "Carlos", edad: 28 },
+                { nombre: "Sofía", edad: 21 },
+                { nombre: "Javier", edad: 27 },
+                { nombre: "Elena", edad: 23 }
+            );
+        }
+        creaListado();
+    };
+  
+</script>
+
+</body>
+</html>

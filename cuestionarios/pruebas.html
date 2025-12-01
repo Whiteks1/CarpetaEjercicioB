@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Cuestionario en JavaScript</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		button,
+		li {
+			cursor: pointer;
+		}
+
+		.preg {
+			font-size: 1.5rem;
+			font-family: Trebuchet Ms, sans-serif;
+			color: chocolate;
+			font-style: italic;
+		}
+
+		.resp li {
+			list-style: none;
+			font-size: 1.3rem;
+			margin: 1rem 0;
+			font-weight: bold;
+		}
+
+		.correcta {
+			background: lightgreen;
+			padding: .5rem;
+			color: white;
+		}
+
+		.error {
+			background: crimson;
+			padding: .5rem;
+			color: white;
+		}
+
+		#resultado {
+			width: 70%;
+			height: 350px;
+			background: white;
+			border: 2px solid;
+			padding: 2rem;
+			position: fixed;
+			top: 20%;
+			left: 15%;
+			opacity: 0;
+			transition: all 1s ease-in;
+			z-index: -3;
+		}
+
+		.tit-res {
+			text-align: center;
+			font-family: sans-serif;
+			border-top: 1px solid;
+			border-bottom: 1px solid;
+			margin-bottom: 5rem;
+		}
+
+		#cierra_res {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			font-size: 2rem;
+			font-family: sans-serif;
+			font-weight: bold;
+			border: 3px solid;
+			color: crimson;
+			padding: .3rem .2rem 0;
+			border-radius: .2rem;
+			cursor: pointer;
+			background: lightgreen;
+		}
+
+		#btn_rein {
+			position: absolute;
+			bottom: 5px;
+			left: 35%;
+			width: 30%;
+			padding: .3rem;
+			font-size: .9rem;
+			color: crimson;
+			border: 2px solid;
+			background: lightgreen;
+		}
+
+		#cont_inicio {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(255, 255, 255, .8);
+			border: 5px solid crimson;
+			display: flex;
+			flex-flow: column;
+			justify-content: center;
+			display: none;
+		}
+
+		#btn_inicio,
+		#btn_corregir,
+		#btn_rein2 {
+			color: crimson;
+			font-size: 1.5rem;
+			width: 40%;
+			margin-left: 30%;
+			border: 4px solid;
+			background: lightgreen;
+			padding: .5rem 0;
+			font-weight: bold;
+		}
+
+		#btn_corregir,
+		#btn_rein2 {
+			margin: 4%;
+		}
+
+		/* Panel visible*/
+		.mostrar {
+			opacity: 1;
+			z-index: 10;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="contenedor">
+		<h1>Responde al siguiente cuestionario</h1>
+		<div id="cont_inicio">
+			<button id="btn_inicio">Iniciar Test</button>
+		</div>
+		<div id="cuestionario">
+			<p class="preg">Indica cuál de los siguientes elementos tiene presentación en línea por defecto en HTML</p>
+			<ul class="resp">
+				<li class="mal">Los elementos div</li>
+				<li class="mal">Los elementos p</li>
+				<li class="bien">Los elementos em</li>
+				<li class="mal">Los elementos pre</li>
+			</ul>
+			<p class="preg">Cómo se identifica un selector id en CSS</p>
+			<ul class="resp">
+				<li class="bien">Su nombre empieza por #</li>
+				<li class="mal">Su nombre empieza por .</li>
+				<li class="mal">Termina con el sufijo _id</li>
+				<li class="mal">Ninguna de las anteriores</li>
+			</ul>
+			<p class="preg">Una mediaquery se utiliza para</p>
+			<ul class="resp">
+				<li class="mal">No tener que usar más de un archivo CSS en un proyecto</li>
+				<li class="mal">Para combinar JS y CSS en un documento</li>
+				<li class="bien">Para ofrecer CSS de forma condicionada</li>
+				<li class="mal">Para poder usar varios estilos CSS sobre un mismo elemento</li>
+			</ul>
+			<p class="preg">El método getElementById se usa en JavaScript para</p>
+			<ul class="resp">
+				<li class="mal">Modificar el id de un elemento</li>
+				<li class="mal">Añadir rápidamente más clases css a un elemento</li>
+				<li class="mal">Para modificar el DOM del documento</li>
+				<li class="bien">Para seleccionar elementos del DOM usando su id</li>
+			</ul>
+			<p class="preg">¿Con qué expresión podemos declarar una variable en JS?</p>
+			<ul class="resp">
+				<li class="mal">Con la expresión var</li>
+				<li class="mal">Con la expresión let</li>
+				<li class="bien">Con las dos anteriores</li>
+				<li class="mal">Ninguna es correcta</li>
+			</ul>
+		</div>
+		<button id="btn_corregir">Corregir</button>
+		<button id="btn_rein2">Reiniciar</button>
+		<div id="resultado">
+			<span id="cierra_res">X</span>
+			<h2 class="tit-res">Resultado</h2>
+			<h3 class="correcta">Respuestas Correctas: <span id="result_bien">0</span></h3>
+			<h3 class="error">Respuestas incorrectas: <span id="result_mal">0</span></h3>
+			<h3>Número de intentos: <span id="intentos"></span></h3>
+			<button id="btn_rein">Reiniciar Cuestionario</button>
+		</div>
+
+	</div>
+</body>
+<script>
+	//Variables globales
+	let aciertos = 0;
+	let errores = 0;
+	let intentos = 1;
+
+
+
+	function corregirPregunta() {
+		if (this.className === 'bien') {
+			this.className = 'correcta';
+			aciertos++;
+
+		} else {
+			this.className = 'error';
+			errores++;
+
+		}
+		cambiaClick(this.parentNode);
+	}
+	//Asignar función
+	let respuestas = document.querySelectorAll('.resp li');
+	for (const respuesta of respuestas) {
+		respuesta.onclick = corregirPregunta;
+	}
+
+	function cambiaClick(nodo) {
+		let grupo_li = nodo.querySelectorAll('li');//Esto en el caso que todos los elementos son tipo 'li'
+		for (const li of grupo_li) {
+			li.onclick = function () {
+				alert('Ya has respondido a la pregunta. No puedes cambiar la respuesta');
+
+			}
+
+		}
+
+
+	}
+
+	function muestraPanel() {
+		document.getElementById('resultado').style.opacity = 1;
+		document.getElementById('resultado').style.zIndex = 3;
+		document.getElementById('result_bien').textContent = aciertos;
+		document.getElementById('result_mal').textContent = errores;
+		document.getElementById('intentos').textContent = intentos;
+	}
+	document.getElementById('btn_corregir').onclick = muestraPanel;
+
+	/* --------- CÓDIGO AÑADIDO A PARTIR DE AQUÍ --------- */
+
+	// Ocultar panel de resultados
+	function ocultarPanel() {
+		const panel = document.getElementById('resultado');
+		panel.style.opacity = 0;
+		panel.style.zIndex = -3;
+	}
+
+	// Reiniciar cuestionario completo
+	function reiniciarCuestionario() {
+		aciertos = 0;
+		errores = 0;
+
+		// Restaurar las clases originales y permitir volver a responder
+		let todasLasRespuestas = document.querySelectorAll('.resp li');
+		for (const li of todasLasRespuestas) {
+			if (li.className === 'correcta') {
+				li.className = 'bien';
+			} else if (li.className === 'error') {
+				li.className = 'mal';
+			}
+			// Volver a asignar la función de corregir
+			li.onclick = corregirPregunta;
+		}
+
+		// Ocultar panel de resultados
+		ocultarPanel();
+	}
+
+	// El contador de intentos lo gestionamos nosotros (empezamos realmente en 0)
+	intentos = 0;
+
+	function manejarCorregir() {
+		intentos++;           // Cada vez que se corrige, sumamos un intento
+		muestraPanel();       // Mostramos el panel con los nuevos datos
+	}
+
+	// Sobrescribimos el click del botón corregir para usar nuestra función
+	document.getElementById('btn_corregir').onclick = manejarCorregir;
+
+	// Botones de reinicio (panel y fuera del panel)
+	document.getElementById('btn_rein').onclick = reiniciarCuestionario;
+	document.getElementById('btn_rein2').onclick = reiniciarCuestionario;
+
+	// Botón "X" para cerrar el panel de resultados sin reiniciar
+	document.getElementById('cierra_res').onclick = ocultarPanel;
+
+	// Panel de inicio: mostrar al cargar la página y ocultar el cuestionario
+	window.addEventListener('load', function () {
+		const contInicio = document.getElementById('cont_inicio');
+		const cuestionario = document.getElementById('cuestionario');
+		const btnCorregir = document.getElementById('btn_corregir');
+		const btnRein2 = document.getElementById('btn_rein2');
+
+		// Mostramos el panel de inicio y ocultamos el test y sus botones
+		contInicio.style.display = 'flex';
+		cuestionario.style.display = 'none';
+		btnCorregir.style.display = 'none';
+		btnRein2.style.display = 'none';
+
+		// Al pulsar "Iniciar Test"
+		document.getElementById('btn_inicio').onclick = function () {
+			contInicio.style.display = 'none';
+			cuestionario.style.display = 'block';
+			btnCorregir.style.display = 'inline-block';
+			btnRein2.style.display = 'inline-block';
+			reiniciarCuestionario(); // Empezamos limpio
+		};
+	});
+</script>
+
+
+</html>

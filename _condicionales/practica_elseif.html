@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 7 JS Uso de else if()</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Ubuntu", sans-serif;
+            color: #666;
+        }
+
+        .contenedor {
+            max-width: 1160px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 4px double lightgray;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin: 2rem 3rem;
+            border-left: 3px solid;
+            padding-left: 1rem;
+        }
+
+        .intro p {
+            font-weight: 500;
+        }
+
+        .intro ul {
+            margin-left: 3rem;
+            margin-top: 1rem;
+            font-weight: 300;
+        }
+
+        .intro li {
+            margin: 1rem auto;
+        }
+
+        .ejercicio {
+            margin: 2rem auto;
+            border: 2px solid;
+            color: cornflowerblue;
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            max-width: 800px;
+        }
+
+        .ejercicio h2 {
+            text-align: center;
+            margin: -1rem auto 3rem;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .numero {
+            font-size: 1.7rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .ejercicio input {
+            font-size: 1.7rem;
+            width: 100px;
+            border: 1px solid cornflowerblue;
+            color: cornflowerblue;
+        }
+
+        .ejercicio select {
+            font-size: 1.4rem;
+            color: cornflowerblue;
+            background: white;
+            border: 1px solid;
+        }
+
+        .botonera {
+            text-align: center;
+        }
+
+        .botonera button {
+            font-size: 1.7rem;
+            color: cornflowerblue;
+            width: 130px;
+            background-color: white;
+            border: 1px solid cornflowerblue;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Ejercicio 07. Uso de expresión <em>else if()</em></h1>
+        <div class="intro">
+            <p>Prepara un documento en el que introduzcamos una nota como valor númerico en un input, junto a un botón
+                para calificar esa nota.</p>
+            <ul>
+                <li>Al pulsar el botón se ejecuta una función que evalúa la nota y aplica un color de texto según la
+                    calificación en un párrafo aparte.
+                </li>
+                <li>Se debe comprobar que el valor introducido es un número del 0 al 10, en caso contrario la
+                    calificación será de "nota no válida"
+                </li>
+            </ul>
+        </div>
+        <div class="ejercicio">
+            <h2>Calificador</h2>
+            <div class="numero">
+                <label for="in_nota">Introduce tu nota:</label>
+                <input type="number" id="in_nota">
+            </div>
+            <div class="numero">
+                <p>La calificación es:</p>
+                <p id="calificacion"></p>
+            </div>
+            <div class="botonera">
+                <button id="btn_evalua">Evaluar</button>
+            </div>
+        </div>
+        <h2>Operadores Lógicos</h2>
+        <div class="intro">
+            <p>En este caso tenemos 2 desplegables, uno permite seleccionar notas del 0 al 10, y el otro los valores
+                "Apto" y "No Apto".</p>
+            <ul>
+                <li>La evaluación será "Aprobado" cuando el segundo desplegable sea igual a "Apto" y la nota mayor o
+                    igual que 5.</li>
+                <li> "Suspenso" cuando la nota sea menor a 5 y "No Apto" en el segundo
+                    desplegable.</li>
+                <li>"Recuperación" cuando cumpla con una de las dos condiciones de aprobado.</li>
+            </ul>
+        </div>
+        <div class="ejercicio">
+            <h2>Evaluar 2 items</h2>
+            <div class="numero">
+                <label for="dpl_nota">Selecciona la nota</label>
+                <select name="dpl_nota" id="dpl_nota">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <div class="numero">
+                <label for="dpl_practicas">Selecciona resultado prácticas</label>
+                <select name="dpl_practicas" id="dpl_practicas">
+                    <option value="apto">Apto</option>
+                    <option value="noapto">No Apto</option>
+                </select>
+            </div>
+            <div class="numero">
+                <p>La evaluación es <span id="practicas"></span></p>
+            </div>
+            <div class="botonera">
+                <button id="btn_practicas">Evaluar</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    //Elementos del DOM
+    const btn_evalua = document.querySelector('#btn_evalua');
+    const inputNota = document.querySelector('#in_nota');
+    const pCalificacion = document.querySelector('#calificacion');
+
+    //Añadir el evento click al botón
+    btn_evalua.addEventListener("click", function () {
+        //obtener el valor y convertilo a número
+        const valorIntroducido = inputNota.value;
+        const nota = Number(valorIntroducido);
+        
+        //si esta vacio
+        if (valorIntroducido === "") {
+            pCalificacion.textContent = 'Introduce una nota';
+            pCalificacion.style.color = "gray"
+            return;
+        }
+        //si es un numero valido entre 0 y 10
+        if (isNaN(nota) || nota < 0 || nota > 10) {
+            pCalificacion.textContent = "Nota no Valida"
+            pCalificacion.style.color = "gray";
+            return;
+        }
+        
+        //1- CALIFICADOR
+        
+        //Rangos de Calificación
+        
+        //0 - 4.99  → Insuficiente
+        if (nota < 5) {
+            pCalificacion.textContent = "Insuficiente";
+            pCalificacion.style.color = "red";
+            
+        }
+        // 5 - 6.99 -> Aprobado
+        else if (nota < 7) {
+            pCalificacion.textContent = "Aprobado";
+            pCalificacion.style.color = "blue";
+            
+        }
+        //7 - 8.99 -> Notable
+        else if (nota < 9) {
+            pCalificacion.textContent = "Notable";
+            pCalificacion.style.color = "green";
+            
+        }
+        
+        // 9 - 10 Sobresaliente
+        else {
+            pCalificacion.textContent = "Sobresaliente";
+            pCalificacion.style.color = "gold";
+            
+        }
+    });
+    
+    //2- EVALUAR 2 ITEMS (NOTA + PRÁCTICAS)
+    const btn_practicas = document.querySelector('#btn_practicas');
+    const selectNota = document.querySelector('#dpl_nota');
+    const selectPracticas = document.querySelector('#dpl_practicas');
+    const spanPracticas = document.querySelector('#practicas');
+    
+    //Evento click botón practicas
+     
+    btn_practicas.addEventListener("click", function () {
+        //obtener el valor y convertilo a número
+        const nota2 = Number(selectNota.value);
+        const practicas = selectPracticas.value;
+
+        //Aprobado: Nota >= 5, Practicas Apto
+        if (nota2 >= 5 && practicas === "apto") {
+                spanPracticas.textContent = "Aprobado";
+                spanPracticas.style.color = "green";
+            }
+        //Suspenso: Nota < 5, Practicas No Apto
+        else if (nota2 < 5 && practicas === "noapto") {
+                spanPracticas.textContent = "Suspenso";
+                spanPracticas.style.color = "red";
+            }
+        //Otro caso: Recuperación
+        else {
+                spanPracticas.textContent = "Recuperación";
+                spanPracticas.style.color = "orange";
+            }
+    
+    });
+
+</script>
+
+</html>

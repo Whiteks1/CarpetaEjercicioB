@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Acordeón</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .pregunta {
+            font-size: 2rem;
+            background-color: lightgray;
+            color: brown;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .bloque-txt {
+            font-size: 1.5rem;
+            font-family: sans-serif;
+            margin: 3rem 5%;
+            line-height: 1.5;
+        }
+
+        .respuesta {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            transition: all .5s;
+            height: 0;
+        }
+
+        pre {
+            margin: 5rem;
+            background-color: linen;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <article class="bloque-txt">
+            <h3 class="pregunta">Creando una cadena</h3>
+            <div class="respuesta">
+                <p>
+                    Para comenzar, ingresa las siguientes líneas:
+
+                    var string = 'La revolución no será televisada.';
+                    string;
+
+                    Al igual que con los números, declaramos una variable, iniciandola con el valor de una cadena, y
+                    luego
+                    retornamos dicho
+                    valor. La única diferencia es que al escribir una cadena, necesitas envolverla con comillas.
+                    Si no lo haces, u olvidas una de las comillas, obtendrás un error. Intenta ingresando las siguientes
+                    líneas:
+                </p>
+
+                <pre>
+                    var malString = Esto es una prueba;
+                    var malString = 'Esto es una prueba;
+                    var malString = Esto es una prueba';
+                </pre>
+
+                <p>
+                    Estas líneas no funcionan porque el texto sin comillas alrededor es tomado como nombre de una
+                    variable,
+                    propiedad,
+                    palabra reservada, o algo similar. Si el navegador no las encuentra, entonces se recibe un error(
+                    ej.
+                    "missing ; before
+                    statement"). Si el navegador puede ver dónde comienza una cadena, pero no dónde termine, como se
+                    indica
+                    en la segunda
+                    oración, devuelve error (con "unterminated string literal"). Si tu programa devuelve estos errores,
+                    revisa desde el
+                    inicio que todas tus cadenas posean sus comillas.
+                    Lo siguiente funcionará si previamente definiste la variable string — inténtalo:
+                </p>
+
+                <pre>
+                    var maltring = string;
+                    malString;
+                </pre>
+
+                <p> malString ahora tiene el mismo valor que string.</p>
+
+            </div>
+        </article>
+        <article class="bloque-txt">
+            <h3 class="pregunta">Uso de comillas</h3>
+            <div class="respuesta">
+                <p> En JavaScript, puedes escoger entre comillas simple y dobles para envolver tus cadenas. Ambas
+                    funcionarán correctamente:</p>
+                <pre>
+                    var simp = 'Comillas simples.';
+                    var dobl = "Comillas dobles.";
+                    simp;
+                    dobl;
+                </pre>
+
+                <p>
+                    Hay muy poca diferencia entre las dos, y la que utilices dependerá de tus preferencias personales.
+                    Sin embargo, deberías
+                    de elegir una y mantenerla; usar diferentes tipos de comillas en el código podría llegar a ser
+                    confuso, especialmente si
+                    utilizas diferentes comillas en la misma cadena. El siguiente ejemplo devolverá un error:
+                </p>
+                <code>var badQuotes = 'What on earth?";</code>
+                <p>
+                    El navegador pensará que la cadena no se ha cerrado correctamente, porque el otro tipo de cita que
+                    no estás usando,
+                    puede aparecer en la cadena. Por ejemplo, en estos dos casos su uso es correcto:
+                </p>
+                <pre>
+                    var sglDbl = 'Would you eat a "fish supper"?';
+                    var dblSgl = "I'm feeling blue.";
+                    sglDbl;
+                    dblSgl;
+                </pre>
+                <p>
+                    Sin embargo, no puedes usar el mismo tipo de comillas en el interior de una cadena que ya las tiene
+                    en los extremos. Lo
+                    siguiente devuelve error, porque confunde al navegador respecto de dónde termina la cadena:
+                </p>
+
+                <code> var bigmouth = 'I've got no right to take my place...';</code>
+            </div>
+        </article>
+        <article class="bloque-txt">
+            <h3 class="pregunta">Escapar caracteres</h3>
+            <div class="respuesta">
+                <p>
+                    Para solucionar nuestro problema anterior, necesitamos "escapar" el asunto de las comillas. Escapar
+                    caracteres significa
+                    que les hacemos algo para asegurarnos que sean reconocidos como texto, y no parte del código. En
+                    JavaScript, colocamos
+                    una barra invertida justo antes del caracter. Intenta ésto:
+                </p>
+
+                <pre>
+                    var bigmouth = 'I\'ve got no right to take my place...';
+                    bigmouth;
+                </pre>
+
+                <p> Ahora funciona correctamente. Puedes escapar otros caracteres de la misma forma, ej. \", y hay
+                    varios códigos más.</p>
+            </div>
+        </article>
+        <article class="bloque-txt">
+            <h3 class="pregunta">Concatenar cadenas</h3>
+            <div class="respuesta">
+                <p>
+                    Concatenar es una elegante palabra de la programación que significa: "unir". Para unir cadenas en
+                    JavaScript el símbolo
+                    de más (+), el mismo operador que usamos para sumar números, pero en este contexto hace algo
+                    diferente. Vamos a probar
+                    un ejemplo en nuestra consola.
+                </p>
+                <pre>
+                        var one = 'Hello, ';
+                        var two = 'how are you?';
+                        var joined = one + two;
+                        joined;
+                </pre>
+                <p>
+                    El resultado de este código es una variable llamada joined, que contiene el valor: "Hello, how are
+                    you?" ("Hola, cómo
+                    estas?").
+                    En la última instancia del código, unimos dos strings, pero lo puedes hacer con cuantas desees,
+                    mientras que incluyas el
+                    símbolo de + entre ellas. Prueba esto:
+                </p>
+                <pre>
+                    var multiple = one + one + one + one + two;
+                    multiple;
+                </pre>
+                <p> También puedes usar una combinación de variables y strings reales. Prueba esto:</p>
+                <pre>
+                    var response = one + 'I am fine — ' + two;
+                    response;
+                </pre>
+                <p>
+                    Nota: Cuando ingresas una string real en tu código, entre comillas simples o dobles, se llama string
+                    literal.
+
+                </p>
+            </div>
+        </article>
+    </div>
+    <script>
+        let preguntas = [];
+        let respuestas = [];
+        let indiceAbierto = null;
+    
+        function inicializarAcordeon() {
+            preguntas = document.querySelectorAll(".pregunta");
+            respuestas = document.querySelectorAll(".respuesta");
+    
+            for (let i = 0; i < respuestas.length; i++) {
+                cerrarPanel(i);
+            }
+            indiceAbierto = null;
+    
+            for (let i = 0; i < preguntas.length; i++) {
+                preguntas[i].addEventListener("click", function () {
+                    manejarClickPregunta(i);
+                });
+            }
+        }
+    
+        function abrirPanel(indice) {
+            let panel = respuestas[indice];
+            let altura = panel.scrollHeight;
+            panel.style.height = altura + "px";
+        }
+    
+        function cerrarPanel(indice) {
+            let panel = respuestas[indice];
+            panel.style.height = "0px";
+        }
+    
+        function cerrarPanelActual() {
+            if (indiceAbierto !== null) {
+                cerrarPanel(indiceAbierto);
+                indiceAbierto = null;
+            }
+        }
+    
+        function togglePanel(indice) {
+            if (indiceAbierto === null) {
+                abrirPanel(indice);
+                indiceAbierto = indice;
+            } else if (indiceAbierto === indice) {
+                cerrarPanelActual();
+            } else {
+                cerrarPanel(indiceAbierto);
+                abrirPanel(indice);
+                indiceAbierto = indice;
+            }
+        }
+    
+        function manejarClickPregunta(indice) {
+            togglePanel(indice);
+        }
+    
+        // 👇 Muy importante: arrancar todo
+        inicializarAcordeon();
+    </script> 
+    </html>
+    

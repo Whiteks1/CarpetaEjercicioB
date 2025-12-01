@@ -1,0 +1,111 @@
+//Función para convertir texto a minúsculas sin tildes
+function limpiaLetra(letra_bruta) {
+    let letra_a_limpiar = letra_bruta.toLowerCase();
+    let letra_limpia = '';
+    switch (letra_a_limpiar) {
+        case 'á':
+        case 'à':
+        case 'ä':
+            letra_limpia = 'a'
+            break;
+        case 'é':
+        case 'è':
+        case 'ë':
+            letra_limpia = 'e'
+            break;
+        case 'í':
+        case 'ì':
+        case 'ï':
+            letra_limpia = 'i'
+            break;
+        case 'ó':
+        case 'ò':
+        case 'ö':
+            letra_limpia = 'o'
+            break;
+        case 'ú':
+        case 'ù':
+        case 'ü':
+            letra_limpia = 'u'
+            break;
+        default:
+            letra_limpia = letra_a_limpiar;
+            break;
+    }
+
+    return letra_limpia
+}
+//validación del texto
+//elimina espacios redundantes y comprueba que la cadena tenga al menos 3 caracteres
+function validaTxt(texto) {
+    let txt_limpio = texto.trim()
+    while (txt_limpio.indexOf('  ') != -1) {
+        txt_limpio = txt_limpio.replaceAll('  ', ' ');
+    }
+    if (txt_limpio.length < 3) {
+        return false;
+    }
+    return txt_limpio;
+}
+//función para eliminar espacios redundantes
+//validación del texto
+function textoTrim(texto) {
+    let txt_limpio = texto.trim()
+    while (txt_limpio.indexOf('  ') != -1) {
+        txt_limpio = txt_limpio.replaceAll('  ', ' ');
+    }
+    return txt_limpio;
+}
+//función para crear un nodo a partir de 3 parametros: tipo de nodo, clase css, y contenido
+function creaNodo(tipo, clase, contenido) {
+    if (tipo === null || tipo === '') {
+        tipo = 'span'
+    }
+    let nodo = document.createElement(tipo);
+    nodo.className = clase;
+    nodo.textContent = contenido;
+    return nodo;
+}
+function aleatorioEntre(min, max) {
+    //no es necesario comprobar si la diferencia entre los parámetros es positiva o negativa o valor cero, siempre devuelve un valor aleatorio
+    if (isNaN(min) || isNaN(max) || max === null || min === null) {
+        return false;
+    }
+    let rango = max - min;
+    let aleatorio = Math.random() * rango;
+    let suma = aleatorio + min;
+    let redondeo = Math.cell(suma);
+    return redondeo;
+}
+//Ordena un array de 1D en ambos sentidos(1,-1 / -1,1)
+function ordenaArray(datos, orden) {
+    datos.sort((a, b) => {
+        // Convertimos a número si se puede, para que funcione con números y texto
+        const valorA = isNaN(a) ? a : Number(a);
+        const valorB = isNaN(b) ? b : Number(b);
+
+        if (valorA === valorB) {
+            return 0;
+        } else {
+            return (valorA > valorB ? 1 : -1) * orden;
+        }
+    });
+}
+
+//Ordenar arrays de mas de una dimensión
+ //completo
+        //la función recibe el array de las dimensiones par
+        function ordenaArrayMultiple(datos, campo, orden) {
+            datos.sort((a,b)=>{
+                if (a(campo)=== b(campo)) {
+                    
+                    return 0
+                } else {
+                    return(a(campo)> b[campo] ? 1:-1) * orden;
+                    
+                }
+
+            });
+            return datos;
+            
+        }

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <style>
+        #casillero {
+            min-height: 40vh;
+            border-radius: 1rem;
+        }
+
+        .casilla {
+            width: 2rem;
+            display: inline-block;
+        }
+
+        #mensajes {
+            margin-top: 3rem;
+            transition: all 1s;
+        }
+    </style>
+    <title>Juego del Ahorcado</title>
+</head>
+
+<body>
+    <div class="container">
+        <section class="row">
+            <header>
+                <h1 class="title">Juego del Ahorcado</h1>
+            </header>
+        </section>
+        <section class="row">
+            <div class="col-4">
+                <h3>Panel de juego</h3>
+                <form class="bg-success-subtle p-2 rounded">
+                    <div class="form-floating mb-3">
+                        <input type="password" id="in_oculto" class="form-control" placeholder="Escribe tu prueba">
+                        <label for="in_oculto">Palabra o frase a adivinar</label>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-light" id="btn_ocultar">Comenzar</button>
+                    </div>
+                </form>
+                <form class="bg-success p-2 rounded mt-3 d-flex w-50 align-items-center">
+                    <div class="form-floating mb-3 w-75">
+                        <input type="text" id="in_letra" class="form-control w-75 fs-1 h-auto text-center"
+                            placeholder="Introduce una letra" size="1" maxlength="1">
+                        <label for="in_letra">Letra</label>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-light" id="btn_jugar" disabled>Probar</button>
+                    </div>
+                </form>
+                <div class="card mt-4 p-2">
+                    <h3>Información del Juego</h3>
+                    <p>Letras a encontrar <span id="out_total">0</span></p>
+                    <p>Letras encontradas <span id="out_encontradas">0</span></p>
+                    <p>Numero de errores restantes <span id="out_errores">0</span></p>
+                    <div class="card m-2">
+                        <h5>Letras falladas</h5>
+                        <div id="contenedor_fallos"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <h3>Visor</h3>
+                <div class="bg-warning-subtle p-3" id="casillero"></div>
+                <div class="alert alert-success mt-4" id="mensajes">
+                    <h4 class="alert-heading">Mensaje</h4>
+                    <p class="cuerpo">Cuerpo de mensaje</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+        crossorigin="anonymous"></script>
+    <script src="biblioteca.js"></script>
+    <script>
+        //constantes del DOM
+        const input_oculto = document.querySelector('#in_oculto');
+        const input_letra = document.querySelector('#in_letra');
+        const btn_ocultar = document.querySelector('#btn_ocultar');
+        const btn_jugar = document.querySelector('#btn_jugar');
+        const casillero = document.querySelector('#casillero');
+        const out_errores = document.querySelector('#out_errores');
+        const out_total = document.querySelector('#out_total');
+        const out_encontradas = document.querySelector('#out_encontradas');
+        const out_fallos = document.querySelector('#contenedor_fallos');
+        const mensaje = document.querySelector('#mensajes');
+        const especiales = ['¡', '!', '¿', '?', ',', '.', ';', ':','-','_','`','´','¨','^','[',']','{','}','<','>'];
+        const titulo_mensaje = [
+            '¡Bienvenid@!',
+            'Texto no válido',
+            'Error en el juego',
+            'Carácter no válido',
+            'Letra ya usada',
+            'Acertaste!',
+            'Fallaste!',
+            'Juego Terminado'];
+        const texto_mensaje = [
+            'Introduce la frase que tiene que adivinar tu compañero y pulsa en Comenzar para iniciar el juego.',
+            'El texto introducido no cumple con las condiciones del juego. Asegúrate de que es correcto y vuelve a introducirlo.',
+            'Algo ha ido mal con el texto que has introducido, vuelve a intentarlo.',
+            'El juego está preparado para comenzar',
+            'Ese carácter no está permitido en el juego',
+            'Ese carácter no forma parte de los que tienes que encontrar.',
+            'Cuidado, esa letra ya la has introducido antes. No se puede volver a contabilizar.',
+            'La letra introducida sí forma parte de las letras ocultas',
+            'La letra introducida no forma parte de las letras que tienes que encontrar',
+            '¡¡Enhorabuena!! <br> Has GANADO el juego',
+            'Lo siento, has perdido. La frase oculta era:'];
+        const formato_mensajes = ['alert-danger', 'alert-warning', 'alert-info', 'alert-success']
+        //variables GLOBALES
+        let cadena_inicial = ''; //texto tecleado en el input
+        let cadena_en_bruto = []; //caracteres disponibles en la cadena después de quitar espacios
+        let cadena_limpia = []; // caracteres en minúsculas y sin tildes
+        let letras_ocultas = 0; //indica el número de letrar a descubrir para terminar el juego
+        let errores = 2; // fallos permitidos antes de perder el juego
+        let letras_encontradas = 0; //número de letras descubiertas
+        let cadena_encontradas = []; //guardar las letras que ya hemos descubierto
+        let cadena_falladas = []; //guardar las letras falladas
+
+
+
+        //FUNCIONES
+        function preparaCadena() {
+            //recibe y limpia cadena
+            cadena_inicial = textoTrim(input_oculto.value);
+            //si cadena ok prepara 2 arrays
+            if (cadena_inicial.length < 4) {
+                muestraMensaje(1, 1, 0, false);
+                resetInput(input_oculto);
+                return;
+            }
+            if (!preparaArrays(cadena_inicial)) {
+                muestraMensaje(2, 2, 0, false);
+                resetInput(input_oculto);
+                return;
+            }
+            //devuelve casillas con caracteres al tablero
+            casillero.innerHTML = ''
+            for (const caracter of cadena_limpia) {
+                let simbolo = retornaCaracter(caracter)
+                //incremento letras a descubrir 
+                if (simbolo === String.fromCharCode(8212)) {
+                    letras_ocultas++;
+                }
+                //preparo span y lo muestro
+                let nodo = creaNodo('span', 'fs-1 m-2 casilla', simbolo);
+                if (nodo) {
+                    casillero.append(nodo);
+                }
+            }
+            preparaEscenario()
+        }
+        function preparaArrays(cadena) {
+            cadena_en_bruto = [];
+            cadena_limpia = [];
+            for (let i = 0; i < cadena.length; i++) {
+                cadena_en_bruto.push(cadena[i]);
+                let letra_limpia = limpiaLetra(cadena[i]);
+                cadena_limpia.push(letra_limpia);
+            }
+            //comprobamos que las cadenas miden lo mismo y tienen contenido
+            if (cadena_en_bruto.length !== cadena_limpia.length || cadena_limpia.length === 0) {
+                return false
+            }
+            return true
+        }
+        function retornaCaracter(caracter) {
+            let simbolo = String.fromCharCode(8212);
+            if (caracter === ' ') {
+                simbolo = String.fromCharCode(8226);
+            } else if (especiales.indexOf(caracter) !== -1) {
+                simbolo = caracter;
+            }
+            return simbolo
+        }
+        function preparaEscenario() {
+            input_oculto.value = ''
+            btn_ocultar.disabled = true;
+            btn_jugar.disabled = false;
+            muestraMensaje(0, 3, 2, false);
+            actualizaMarcador();
+        }
+        function compruebaLetra(params) {
+            //leo el valor del input
+            let letra_in = textoTrim(input_letra.value);
+            //limpio el input
+            resetInput(input_letra);
+            if (letra_in.length !== 1) {
+                muestraMensaje(3, 4, 0, false);
+                return;
+            }
+            //aceptar caracteres validados
+            if (especiales.indexOf(letra_in) !== -1) {
+                muestraMensaje(3, 5, 0, false);
+                return;
+            }
+            //buscamos la versión en minúscula y sin tilde
+            let letra_in_limpia = limpiaLetra(letra_in);
+            //compruebo que la letra no esté ya en la lista de acertadas o falladas
+            if (cadena_encontradas.indexOf(letra_in_limpia) !== -1 || cadena_falladas.indexOf(letra_in_limpia) !== -1) {
+                muestraMensaje(4, 6, 1, false);
+                return;
+            }
+            //comprobar si letra está en la cadena
+            if (cadena_limpia.indexOf(letra_in_limpia) !== -1) {
+                //en ese caso guardarla en la lista de encontradas y mostrarla en el casillero
+                cadena_encontradas.push(letra_in_limpia);
+                muestraCasillas(letra_in_limpia);
+                muestraMensaje(5, 7, 3, false);
+            } else {
+                //en caso contrario pasarla a la lista de errores
+                gestionaFallo(letra_in_limpia);
+                muestraMensaje(6, 8, 0, false);
+            }
+            //en ambos casos actualizamos marcador
+            actualizaMarcador();
+            comprobarEsFinal();
+        }
+        function muestraCasillas(letra) {
+            //recogemos todos los span que pueden ser cambiados en una colección
+            let casillas = casillero.querySelectorAll('.casilla')
+            //comprobamos para cada letra de la cadena limpia si es igual a la letra proporcionada
+            for (let i = 0; i < cadena_limpia.length; i++) {
+                if (cadena_limpia[i] === letra) {
+                    //actualizamos variables
+                    letras_encontradas++;
+                    letras_ocultas--;
+                    //mostramos en su casilla la versión inicial de la letra
+                    casillas[i].textContent = cadena_en_bruto[i];
+                }
+            }
+        }
+        function resetInput(input) {
+            input.value = '';
+            input.focus();
+        }
+        function actualizaMarcador() {
+            out_errores.textContent = errores;
+            out_encontradas.textContent = letras_encontradas;
+            out_total.textContent = letras_ocultas;
+            out_fallos.textContent = cadena_falladas;
+        }
+        function gestionaFallo(caracter) {
+            //añadir el caracter a la cadena de fallos
+            cadena_falladas.push(caracter);
+            //actualizamos variable errores
+            errores--;
+        }
+        function comprobarEsFinal() {
+            if (letras_ocultas === 0) {
+                muestraMensaje(7,9,3,true);
+                configReinicio(true);
+            } else if (errores === 0) {
+                muestraMensaje(7,10,0,true);
+                configReinicio(false);
+            }
+        }
+
+        function muestraMensaje(titulo, cuerpo, formato, esFinal) {
+            let titular = mensaje.querySelector('h4');
+            let parrafo = mensaje.querySelector('.cuerpo');
+            mensaje.className = 'alert ' + formato_mensajes[formato];
+            titular.textContent = titulo_mensaje[titulo];
+            parrafo.innerHTML = texto_mensaje[cuerpo];
+            if (esFinal && errores === 0) {
+                 let resuelto = creaNodo('p','bg-danger text-white p-3', cadena_inicial);
+                mensaje.append(resuelto)
+            }
+        }
+        function configReinicio(ganador) {
+            btn_jugar.disabled = true
+        }
+
+        //ASIGNACIONES
+        btn_ocultar.onclick = preparaCadena;
+        btn_jugar.onclick = compruebaLetra;
+        btn_reiniciar.onclick = manejarReinicio;
+        toastRestartBtn.onclick = reiniciaJuego;
+        //INICIO
+        muestraMensaje(0, 0, 2, false);
+    </script>
+</body>
+
+</html>
+function muestraMensaje(titulo, cuerpo, formato, esFinal) {
+    initToast();
+    if (!toastInstance) return;
+
+    // título y cuerpo: solo índices numéricos
+    let tituloTexto = titulo_mensaje[titulo] || 'Mensaje';
+    let cuerpoHTML = texto_mensaje[cuerpo] || '';
+
+    // si pierde, añadir frase oculta
+    if (esFinal && errores === 0 && cadena_inicial) {
+        cuerpoHTML += `
+            <p class="bg-danger text-white p-2 mt-2 mb-0">
+                La frase oculta era: ${cadena_inicial}
+            </p>`;
+    }
+
+    toastTitle.textContent = tituloTexto;
+    toastBody.innerHTML = cuerpoHTML;
+
+    // quitar colores anteriores
+    toastElement.classList.remove(
+        'text-bg-info', 'text-bg-success', 
+        'text-bg-danger', 'text-bg-warning'
+    );
+
+    // formato siempre es índice → usar getToastBgClass directamente
+    const bgClass = getToastBgClass(formato);
+    toastElement.classList.add(bgClass);
+
+    // autohide según si es final
+    if (esFinal) {
+        toastActions.classList.remove('d-none');
+        toastElement.setAttribute('data-bs-autohide', 'false');
+        toastInstance._config.autohide = false;
+    } else {
+        toastActions.classList.add('d-none');
+        toastElement.setAttribute('data-bs-autohide', 'true');
+        toastInstance._config.autohide = true;
+        toastInstance._config.delay = 3000;
+    }
+
+    toastInstance.show();
+}

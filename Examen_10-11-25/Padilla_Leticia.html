@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen JavaScript</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', Verdana, sans-serif;
+            font-size: 1.2rem;
+            counter-reset: pregunta;
+        }
+
+        h1 {
+            text-align: center;
+            color: darkcyan;
+            background-color: lightcyan;
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        button,
+        input,
+        select {
+            font-size: 1.2rem;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .ejercicio {
+            background-color: lightcyan;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: .5rem;
+            border: 3px solid darkcyan;
+        }
+
+        .ejercicio h2 {
+            color: darkcyan;
+            font-weight: 500;
+        }
+
+        h2::before {
+            counter-increment: pregunta;
+            content: "Ejercicio " counter(pregunta) ": ";
+        }
+
+        .ejercicio button,
+        .ejercicio select {
+            border: 1px solid;
+            color: darkcyan;
+            border-radius: .2rem;
+            padding: .2rem .5rem;
+            font-family: 'ubuntu';
+        }
+
+        .circulo {
+            width: 100px;
+            height: 100px;
+            background-color: green;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Examen JavaScript</h1>
+    <p>Desarrolla las instrucciones necesarias para obtener la funcionalidad requerida en cada punto</p>
+    <article class="ejercicio">
+        <h2>Botón contador</h2>
+        <p>Desarrolla una función para que cada vez que pulsamos en el botón siguiente se incremente en 1 el valor del
+            contador inferior</p>
+        <button>Aumenta 1</button>
+        <p>Contador: <span>0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Botones aumenta y reduce</h2>
+        <p>Desarrolla 2 funciones, una para cada botón siguiente, para que al pulsar sobre uno de ellos aumente el valor
+            del contador y al pulsar sobre el otro disminuya</p>
+        <button>Aumenta 1</button>
+        <button>Disminuye 1</button>
+        <p>Contador: <span>0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Cuenta atrás</h2>
+        <p>Prepara una función sobre el siguiente botón para que cada vez que pulsemos en él disminuya un valor del
+            contador, empezando en 10 hasta llegar a 0. Una vez llegado a 0, cada vez que pulsemos en él aparece un
+            mensaje en el contador: "Cuenta finalizada. No puedes continuar".</p>
+        <button>Cuenta atrás</button>
+        <p>Contador: <span>10</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Cuenta atrás con reseteo</h2>
+        <p>Modifica el caso anterior, sobre el siguiente botón, para que cuando llegue a cero y pulsemos de nuevo, el
+            contador pase de nuevo a 10 y vuelva a empezar la cuenta atrás</p>
+        <button>Cuenta atrás y reset</button>
+        <p>Contador: <span>10</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Cuenta hacia adelante condicionada</h2>
+        <p>En este caso la cuenta va de 0 a 10, y cuando llegamos a 10 la aplicación preguntará mediante un prompt si
+            queremos empezar de nuevo. Si respondemos que "Si" el contador vuelve a 0 para recomenzar. Y si decimos "No"
+            aparecerá un mensaje de despedida en un alert y el propio botón del contador desaparecerá</p>
+        <button>Cuenta con mensaje</button>
+        <p>Contador: <span>0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Botón cuenta y descuenta</h2>
+        <p>En este caso el mismo botón sirve para aumentar o disminuir el contador en función de lo seleccionado en el
+            desplegable. Si seleccionamos "Cuenta" el botón aumenta el contador, y en caso contrario lo disminuye</p>
+        <label for="desp_cuenta">Selecciona acción</label>
+        <select name="desp_cuenta" id="desp_cuenta">
+            <option value="0">Cuenta</option>
+            <option value="1">Descuenta</option>
+        </select>
+        <button>Cuenta</button>
+        <p>Contador: <span>0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Modificación </h2>
+        <p>Modifica el caso anterior para que además de todo lo anterior, en este caso en el mismo momento de selecionar
+            la acción del desplegable, el texto del botón cambie, diciendo "Cuenta" o "Descuenta" en cada caso. El resto
+            de la funcionalidad es la misma</p>
+        <label for="desp_cuenta2">Selecciona acción</label>
+        <select name="desp_cuenta2" id="desp_cuenta2">
+            <option value="0">Cuenta</option>
+            <option value="1">Descuenta</option>
+        </select>
+        <button>Cuenta</button>
+        <p>Contador: <span>0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Añade círculos</h2>
+        <p>Crea una función para que al pulsar el siguiente botón se añada un círculo dentro del contenenedor siguiente.
+            Las dimensiones del cículo son de 100x100px, color verde, y deben aparecer separados uno de otro por un
+            espacio de 10px. Al añadir el primer círculo el texto contenido en el div tiene que desaparecer.</p>
+        <button>Añade Círculo</button>
+        <div>Añade aquí los círculos</div>
+    </article>
+</body>
+<script>
+
+    //VARIABLE GLOBAL
+    const ejercicios = document.querySelectorAll('.ejercicio');
+    // 1 - CONTADOR
+    //- seleccionar article 0
+    const ej1 = ejercicios[0];
+    // botón y span
+    const btn1 = ej1.querySelector('button');
+    const span1 = ej1.querySelector('span');
+    // variable contador1
+    let contador1 = 0;
+    span1.textContent = contador1;
+    //evento click → suma 1 y actualiza span
+
+    btn1.addEventListener('click', function () {
+        contador1++;
+        span1.textContent = contador1;
+    });
+
+
+
+    // 2 - AUMENTA Y REDUCE
+    // article 1
+    const ej2 = ejercicios[1];
+    // dos botones + un span
+    const btns2 = ej2.querySelectorAll('button');
+    const btn2Mas = btns2[0];
+    const btn2Menos = btns2[1];
+    const span2 = ej2.querySelector('span');
+    //variable contador2
+    let contador2 = 0;
+    span2.textContent = contador2;
+
+    //evento click en botón Aumenta -> suma
+    btn2Mas.addEventListener('click', function () {
+        contador2++;
+        span2.textContent = contador2;
+    });
+
+    //evento click en botón Disminuye -> resta
+    btn2Menos.addEventListener('click', function () {
+        contador2--;
+        span2.textContent = contador2;
+    });
+
+    // 3 - CUENTA ATRAS 
+    //article 2
+    const ej3 = ejercicios[2];
+    //  botón + span 
+    const btn3 = ej3.querySelector('button');
+    const span3 = ej3.querySelector('span');
+    //   - variable contador empieza en 10
+    let contador3 = 10;
+    span3.textContent = contador3;
+    btn3.addEventListener('click', function () {
+        // si > 0 --> restar 1
+        if (contador3 > 0) {
+            contador3--;
+            span3.textContent = contador3;
+            // si es 0 -> escribir mensaje
+        } else {
+            span3.textContent = "Cuenta finalizada. No puedes continuar";
+        }
+
+    });
+
+
+    // 4 - CUENTA ATRAS CON RESETEO
+    //article 3
+    const ej4 = ejercicios[3];
+    //  botón + span 
+    const btn4 = ej4.querySelector('button');
+    const span4 = ej4.querySelector('span');
+    //   - variable contador empieza en 10
+    let contador4 = 10;
+    span4.textContent = contador4;
+    btn4.addEventListener('click', function () {
+        // si > 0 --> restar 1
+        if (contador4 > 0) {
+            contador4--;
+            span4.textContent = contador4;
+            // si es 0 -> escribir mensaje
+        } else {
+            //al llegar a 0 -> reinicia a 10
+            contador4 = 10;
+            span4.textContent = contador4;
+        }
+
+    });
+
+
+
+    // 5 - CUENTA HACIA DELANTE CONDICIONADA
+    //  article 4
+    const ej5 = ejercicios[4];
+    // botón + span
+    const btn5 = ej5.querySelector('button');
+    const span5 = ej5.querySelector('span');
+    //   variable contador
+    let contador5 = 0;
+    span5.textContent = contador5;
+
+    // contador está en 10
+    btn5.addEventListener('click', function () {
+        if (contador5 < 10) {
+            contador5++;
+            span5.textContent = contador5;
+        } else {
+            //cuando llega a 10 aparece un prompt (si/no)
+            const respuesta = prompt('Has llegado a 10. ¿Quieres empezar de nuevo? (Si / No)');
+            //   - Si “Si” contador = 0, sigue
+            if (respuesta !== null && respuesta.toLowerCase() === 'si') {
+                contador5 = 0;
+                span5.textContent = contador5;
+                //Si “No” = alert de despedida + ocultar el botón
+            } else {
+                alert('Hasta pronto');
+                btn5.style.display = 'none';
+            }
+        }
+    });
+
+
+
+    // 6 - CUENTA Y DESCUENTA
+    //article 5
+    const ej6 = ejercicios[5];
+    //select + botón + span
+    const select6 = ej6.querySelector('#desp_cuenta');
+    const btn6 = ej6.querySelector('button');
+    const span6 = ej6.querySelector('span');
+    let contador6 = 0;
+    span6.textContent = contador6;
+
+    btn6.addEventListener('click', function () {
+        //si select = "Cuenta"
+        if (select6.value === '0') {
+            contador6++;
+        } else {
+            //si select = "Descuenta"
+            contador6--;
+        }
+        span6.textContent = contador6;
+    });
+
+
+
+
+    // 7 - MODIFICACIÓN
+
+    const ej7 = ejercicios[6];
+    const select7 = ej7.querySelector('#desp_cuenta2');
+    const btn7 = ej7.querySelector('button');
+    const span7 = ej7.querySelector('span');
+    let contador7 = 0;
+    span7.textContent = contador7;
+
+    // Cambiar el texto del botón al cambiar el desplegable
+    select7.addEventListener('change', function () {
+        if (select7.value === '0') {
+            btn7.textContent = 'Cuenta';
+        } else {
+            btn7.textContent = 'Descuenta';
+        }
+    });
+
+    // Lógica de cuenta / descuenta según lo seleccionado
+    btn7.addEventListener('click', function () {
+        if (select7.value === '0') { // Cuenta
+            contador7++;
+        } else { // Descuenta
+            contador7--;
+        }
+        span7.textContent = contador7;
+    });
+
+
+    // 8 - AÑADE CIRCULOS
+    // article 7
+    const ej8 = ejercicios[7];
+    //botón + div
+    const btn8 = ej8.querySelector('button');
+    const contenedorCirculos = ej8.querySelector('div');
+    // al hacer clic:
+    btn8.addEventListener('click', function () {
+        //en el primer clic: vaciar el texto del div
+        if (contenedorCirculos.textContent.trim() !== '') {
+            contenedorCirculos.textContent = ''
+
+        }
+        //se crea un nuevo div hijo
+        const circulo = document.createElement('div');
+        //añade style
+                circulo.classList.add('circulo');
+                contenedorCirculos.appendChild(circulo);
+
+
+    });
+</script>
+
+</html>

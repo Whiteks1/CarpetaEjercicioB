@@ -1,0 +1,339 @@
+<script id="propio">
+    const agenda = [];
+
+    // Referencias a los inputs
+    const in_nombre = document.querySelector('#in_cto');
+    const in_apellidos = document.querySelector('#in_apellidos');
+    const in_poblacion = document.querySelector('#in_poblacion');
+    const in_edad = document.querySelector('#in_edad');
+    const in_anyo = document.querySelector('#in_anyo');
+
+    // Botones
+    const btn_add_cto = document.querySelector('#btn_add_cto');
+    const btn_local_borra = document.querySelector('#btn_lb');
+    const lista_ctos = document.querySelector('#lista_ctos');
+
+    // variables del modo edición
+    let isEditMode = false;
+    let editIndex = null;
+
+    // FUNCIONES
+    function addContacto() {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+
+        // leer los valores
+        const nomb = validaTxt(in_nombre.value);
+        const apll = validaTxt(in_apellidos.value);
+        const pobl = validaTxt(in_poblacion.value);
+        const edad = validaNumero(in_edad.value);
+        const anyo = validaNumero(in_anyo.value);
+
+        // Validar
+        if (!nomb || !apll || !pobl || !edad || !anyo) {
+            muestraMensaje(2, 'danger');
+            return;
+        }
+
+        // contacto como array 2D
+        const contacto = [nomb, apll, pobl, edad, anyo];
+
+        // guardarlo en la agenda y actualizarla
+        agenda.push(contacto);
+        creaListado();
+        guardaLocal();                 // 🔁 AUTO-GUARDADO
+        muestraMensaje(1, 'success');
+
+        // Limpiar el formulario
+        limpiaFormulario();
+    }
+
+    function limpiaFormulario() {
+        in_nombre.value = '';
+        in_apellidos.value = '';
+        in_poblacion.value = '';
+        in_edad.value = '';
+        in_anyo.value = '';
+        in_nombre.focus();
+    }
+
+    function creaListado() {
+        lista_ctos.innerHTML = ''; // Vaciar el tbody
+
+        // recorrer el array
+        agenda.forEach((contacto, indice) => {
+            const fila = creaNodo('tr', '', '');
+
+            // crea 5 columnas de datos
+            for (let i = 0; i < 5; i++) {
+                const celda = creaNodo('td', '', contacto[i]);
+                fila.appendChild(celda);
+            }
+
+            // Acciones Editar
+            const celdaAcciones = creaNodo('td', '', '');
+            const btn_edit = creaNodo('button', 'btn btn-primary btn-sm', 'Editar');
+            btn_edit.onclick = () => { editCto(indice); };
+
+            // Borrar
+            const btn_del = creaNodo('button', 'btn btn-danger btn-sm', 'Eliminar');
+            btn_del.onclick = () => delCto(indice);
+
+            celdaAcciones.append(btn_edit, btn_del);
+            fila.appendChild(celdaAcciones);
+
+            lista_ctos.appendChild(fila);
+        });
+        // OJO: aquí ya NO llamamos a guardaLocal()
+        // Solo se llama cuando realmente cambiamos la agenda.
+    }
+
+    function editCto(posicion) {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        isEditMode = true;
+        editIndex = posicion;
+
+        const contacto = agenda[posicion];
+        // rellenar el formulario con los datos
+        in_nombre.value = contacto[0];
+        in_apellidos.value = contacto[1];
+        in_poblacion.value = contacto[2];
+        in_edad.value = contacto[3];
+        in_anyo.value = contacto[4];
+
+        // Botón guardar cambios
+        btn_add_cto.textContent = 'Guardar Cambios';
+        btn_add_cto.onclick = actualizaCto;
+    }
+
+    function actualizaCto() {
+        if (editIndex === null) return;
+
+        const nomb = validaTxt(in_nombre.value);
+        const apll = validaTxt(in_apellidos.value);
+        const pobl = validaTxt(in_poblacion.value);
+        const edad = validaNumero(in_edad.value);
+        const anyo = validaNumero(in_anyo.value);
+
+        if (!nomb || !apll || !pobl || !edad || !anyo) {
+            muestraMensaje(2, 'danger');
+            return;
+        }
+
+        agenda[editIndex] = [nomb, apll, pobl, edad, anyo];
+        creaListado();
+        guardaLocal();                 // 🔁 AUTO-GUARDADO
+        muestraMensaje(3, 'success');
+
+        // Reset modo edición
+        isEditMode = false;
+        editIndex = null;
+        btn_add_cto.textContent = 'Añadir';
+        btn_add_cto.onclick = addContacto;
+        limpiaFormulario();
+    }
+
+    // Eliminar un contacto
+    function delCto(posicion) {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+
+        const confirmar = confirm('¿Seguro que quieres eliminar este contacto?');
+        if (!confirmar) return;
+
+        agenda.splice(posicion, 1);
+        creaListado();
+        guardaLocal();                 // 🔁 AUTO-GUARDADO
+        muestraMensaje(4, 'danger');
+    }
+
+    // Ordenar la tabla
+    function ordenaTabla() {
+        const campo = parseInt(this.dataset.campo);
+        let orden = parseInt(this.dataset.orden);
+
+        // invertimos el orden cada vez que hacemos clic
+        orden = orden * -1;
+        this.dataset.orden = orden;
+
+        agenda.sort(function (a, b) {
+            if (a[campo] == b[campo]) {
+                return 0;
+            } else {
+                return (a[campo] < b[campo] ? -1 : 1) * orden;
+            }
+        });
+
+        creaListado();
+        guardaLocal();                 // 🔁 AUTO-GUARDADO (también se guarda el orden)
+    }
+
+    // Asignar eventos a los theads
+    const cabeceras = document.querySelectorAll('thead th[data-campo]');
+    cabeceras.forEach(th => {
+        th.onclick = ordenaTabla;
+    });
+
+    // validación del texto
+    function validaTxt(texto) {
+        let txt_limpio = texto.trim();
+        while (txt_limpio.indexOf('  ') != -1) {
+            txt_limpio = txt_limpio.replaceAll('  ', ' ');
+        }
+        if (txt_limpio.length < 3) {
+            return false;
+        }
+        return txt_limpio;
+    }
+
+    // validación de números (año, edad)
+    function validaNumero(valor) {
+        const numero = parseInt(valor);
+        if (isNaN(numero)) return false;
+        if (numero <= 0) return false;
+        return numero;
+    }
+
+    function muestraMensaje(contenido, formato) {
+        const mensaje = document.querySelector('#mensajes');
+        const titulo = mensaje.querySelector('h4');
+        const parrafo = mensaje.querySelector('p');
+        let tit_txt = '';
+        let par_txt = '';
+
+        // muestra mensaje
+        mensaje.style.right = 0;
+
+        // configuramos mensaje
+        switch (contenido) {
+            case 1:
+                tit_txt = 'Contacto Añadido';
+                par_txt = 'El contacto se ha añadido a tu lista de contactos correctamente.';
+                break;
+            case 2:
+                tit_txt = 'Dato no Válido';
+                par_txt = 'Los datos introducidos no son correctos. Debes escribir al menos 3 caracteres que no sean espacios.';
+                break;
+            case 3:
+                tit_txt = 'Contacto Actualizado';
+                par_txt = 'El contacto se ha modificado en tu agenda correctamente.';
+                break;
+            case 4:
+                tit_txt = 'Contacto Eliminado';
+                par_txt = 'El contacto se ha eliminado de tu agenda correctamente.';
+                break;
+            case 5:
+                tit_txt = 'Modo Edición Activado';
+                par_txt = 'No puedes realizar otras acciones hasta que no termines la tarea actual.';
+                break;
+            case 6:
+                tit_txt = 'Datos Guardados';
+                par_txt = 'El listado se ha almacenado en el localStorage de la aplicación.';
+                break;
+            case 7:
+                tit_txt = 'Datos Eliminados';
+                par_txt = 'El listado se ha borrado correctamente del localStorage de la aplicación.';
+                break;
+            case 8:
+                tit_txt = 'Datos Recuperados';
+                par_txt = 'El listado que aparece en pantalla son los datos del Storage.';
+                break;
+            case 9:
+                tit_txt = 'No hay datos a recuperar';
+                par_txt = 'El Storage está vacío y no hay datos que mostrar en él.';
+                break;
+            default:
+                tit_txt = 'Cuadro de Mensajes';
+                par_txt = 'En este espacio se muestran los mensajes de la aplicación';
+                break;
+        }
+        mensaje.className = 'alert';
+        mensaje.classList.add('alert-' + formato);
+        titulo.textContent = tit_txt;
+        parrafo.textContent = par_txt;
+
+        // oculta el mensaje
+        setTimeout(escondeMensaje, 3000);
+    }
+
+    function escondeMensaje() {
+        document.querySelector('#mensajes').style.right = '-340px';
+    }
+
+    // STORAGE
+    function guardaLocal() {
+        // Como solo la llamamos cuando realmente hemos cambiado la agenda,
+        // no hace falta bloquear por modo edición aquí.
+        let respaldo = JSON.stringify(agenda);
+        localStorage.setItem('agenda', respaldo);
+
+        // Si no quieres que salga un mensaje cada vez que se guarda, comenta esta línea:
+        // muestraMensaje(6, 'success');
+    }
+
+    function recuperaLocal() {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        // leo los datos del Storage
+        let respaldo = localStorage.getItem('agenda');
+        let agenda_respaldo = JSON.parse(respaldo);
+
+        if (agenda_respaldo && agenda_respaldo.length > 0) {
+            agenda.splice(0);
+            agenda.push(...agenda_respaldo);
+            muestraMensaje(8, 'success');
+            creaListado();
+        } else {
+            muestraMensaje(9, 'warning');
+        }
+    }
+
+    function borraLocal() {
+        if (isEditMode) {
+            muestraMensaje(5, 'warning');
+            return;
+        }
+        localStorage.removeItem('agenda'); // mejor que clear() si solo usamos esta clave
+        agenda.splice(0);
+        creaListado();
+        muestraMensaje(7, 'danger');
+    }
+
+    // ASIGNACIONES
+    btn_add_cto.onclick = addContacto;
+    btn_local_borra.onclick = borraLocal;
+
+    // INICIO
+    window.onload = function () {
+        // si hay datos en el Storage los uso para empezar, y si no empiezo con una muestra
+        agenda.splice(0);
+        const respaldo = localStorage.getItem('agenda');
+
+        if (respaldo) {
+            const datos = JSON.parse(respaldo);
+            if (Array.isArray(datos)) {
+                agenda.push(...datos);
+            }
+        } else {
+            // contactos de ejemplo: 5 columnas
+            agenda.push(
+                ['Leticia', 'García', 'Valencia', 30, 1995],
+                ['Luz', 'Pérez', 'Madrid', 25, 2000],
+                ['Jorge', 'López', 'Sevilla', 40, 1985],
+                ['Javier', 'Martín', 'Bilbao', 35, 1990],
+                ['Pilar', 'Sánchez', 'Barcelona', 28, 1997]
+            );
+            guardaLocal(); // opcional, para que la demo quede guardada
+        }
+        creaListado();
+    };
+</script>

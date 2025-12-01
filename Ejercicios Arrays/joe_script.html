@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #333;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input {
+            margin-right: 10px;
+        }
+        #contactosConfirmados {
+            margin-top: 20px;
+        } 
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-left: 5px;
+            padding: 5px 10px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        .contacto-item {
+            background-color: #9da39e;
+            display: flex;
+            align-items: center;
+            gap:8px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1> Ejercicio Contactos</h1>
+
+    <div> 
+ 
+        <div>
+
+            <label for="contacto">Nombre:</label>
+            <input type="text" id="contacto" name="contacto" placeholder="Introduce contacto">
+            <button onclick="agregarContacto()">Agregar Contacto</button>
+        </div>
+        <div id="contactosConfirmados">
+            <h2>Contactos Confirmados:</h2>
+            <ul id="listaContactos">
+                <!-- Los contactos confirmados aparecerán aquí -->
+            </ul> 
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <script>
+        const contactos = [];
+
+        function agregarContacto() {
+            const input = document.getElementById("contacto");
+            const nombre = input.value.trim();
+
+            if (nombre) {
+                contactos.push(nombre);
+                input.value = "";
+                mostrarContactos();
+            }
+        }
+
+        function mostrarContactos() {
+            const lista = document.getElementById("listaContactos");
+            lista.innerHTML = "";
+
+            contactos.forEach((contacto) => {
+                
+                const li = document.createElement("li");
+                li.className = "contacto-item";
+                const textNode = document.createElement("p");
+                 textNode.textContent = contacto;
+                li.appendChild(textNode);
+              
+                
+                const editarBtn = document.createElement("button");
+                editarBtn.textContent = "Editar";
+                editarBtn.onclick = () => editarContacto(contactos.indexOf(contacto));
+                li.appendChild(editarBtn);
+
+                const eliminarBtn = document.createElement("button");
+                eliminarBtn.textContent = "Eliminar";
+                
+                eliminarBtn.onclick = () => eliminarContacto(contactos.indexOf(contacto));
+                //eliminarBtn.onclick = () => eliminarContacto(contactos.indexOf(contacto));
+                li.appendChild(eliminarBtn);
+                // the text content should be another node to avoid overwriting buttons
+               
+
+                lista.appendChild(li);
+            });
+        }
+        // editar contactos
+        function editarContacto(indice) {
+            const nuevoNombre = prompt("Introduce el nuevo nombre:", contactos[indice]);
+            if (nuevoNombre) {
+                
+                contactos[indice] = nuevoNombre;
+                mostrarContactos();
+            }
+        }
+        // eliminar contactos
+        function eliminarContacto(indice) {
+            contactos.splice(indice, 1);
+            mostrarContactos();
+        }
+
+  
+        let arrayObj = [
+            {id:1, nombre:"Juan"
+            },
+            {
+                id:2, nombre:"Ana"
+            },
+            {
+                id:3, nombre:"Luis"
+            }
+        ]
+
+            let newArray = arrayObj.map( (item) => {
+
+                return { 
+                  
+                    fullName: item.nombre + " Perez"
+                }
+
+            }
+
+            )
+
+            let filteredArray = arrayObj.filter( (item) => item.id > 1);
+
+            console.log(newArray);
+            console.log(filteredArray);
+            // sumar los nombres 
+            let reducedValue = arrayObj.reduce( (acc, item, idx) => {
+
+               return {
+                   ...acc, ["id_" + item.id]: item.nombre
+                }
+
+            }, {});
+
+            console.log(reducedValue);  
+
+    </script>
+</body>
+</html>
+
+index.html
+Mostrando index.html.

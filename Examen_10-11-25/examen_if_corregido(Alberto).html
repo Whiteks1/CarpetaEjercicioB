@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen JavaScript Corregido</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', Verdana, sans-serif;
+            font-size: 1.2rem;
+            counter-reset: pregunta;
+        }
+
+        h1 {
+            text-align: center;
+            color: darkcyan;
+            background-color: lightcyan;
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        button,
+        input,
+        select {
+            font-size: 1.2rem;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .ejercicio {
+            background-color: lightcyan;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: .5rem;
+            border: 3px solid darkcyan;
+        }
+
+        .ejercicio h2 {
+            color: darkcyan;
+            font-weight: 500;
+        }
+
+        h2::before {
+            counter-increment: pregunta;
+            content: "Ejercicio " counter(pregunta) ": ";
+        }
+
+        .ejercicio button,
+        .ejercicio select {
+            border: 1px solid;
+            color: darkcyan;
+            border-radius: .2rem;
+            padding: .2rem .5rem;
+            font-family: 'ubuntu';
+        }
+
+        /*Círculos*/
+        .circulo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: limegreen;
+            margin: 5px;
+        }
+
+        #ocho {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Examen JavaScript</h1>
+    <p>Desarrolla las instrucciones necesarias para obtener la funcionalidad requerida en cada punto</p>
+    <article class="ejercicio">
+        <h2>Botón contador</h2>
+        <p>Desarrolla una función para que cada vez que pulsamos en el botón siguiente se incremente en 1 el valor del
+            contador inferior</p>
+        <button onclick="casoUno()">Aumenta 1</button>
+        <p>Contador: <span id="cont_1">0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Botones aumenta y reduce</h2>
+        <p>Desarrolla 2 funciones, una para cada botón siguiente, para que al pulsar sobre uno de ellos aumente el valor
+            del contador y al pulsar sobre el otro disminuya</p>
+        <button onclick="aumentaUno()">Aumenta 1</button>
+        <button onclick="restaUno()">Disminuye 1</button>
+        <p>Contador: <span id="marcador_2">0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Cuenta atrás</h2>
+        <p>Prepara una función sobre el siguiente botón para que cada vez que pulsemos en él disminuya un valor del
+            contador, empezando en 10 hasta llegar a 0. Una vez llegado a 0, cada vez que pulsemos en él aparece un
+            mensaje en el contador: "Cuenta finalizada. No puedes continuar".</p>
+        <button onclick="casoTres()">Cuenta atrás</button>
+        <p>Contador: <span id='tres'>10</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Cuenta atrás con reseteo</h2>
+        <p>Modifica el caso anterior, sobre el siguiente botón, para que cuando llegue a cero y pulsemos de nuevo, el
+            contador pase de nuevo a 10 y vuelva a empezar la cuenta atrás</p>
+        <button onclick="casoCuatro()">Cuenta atrás y reset</button>
+        <p>Contador: <span id="cuatro">10</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Cuenta hacia adelante condicionada</h2>
+        <p>En este caso la cuenta va de 0 a 10, y cuando llegamos a 10 la aplicación preguntará mediante un prompt si
+            queremos empezar de nuevo. Si respondemos que "Si" el contador vuelve a 0 para recomenzar. Y si decimos "No"
+            aparecerá un mensaje de despedida en un alert y el propio botón del contador desaparecerá</p>
+        <button id="btn_5" onclick="casoCinco()">Cuenta con mensaje</button>
+        <p>Contador: <span id="cinco">0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Botón cuenta y descuenta</h2>
+        <p>En este caso el mismo botón sirve para aumentar o disminuir el contador en función de lo seleccionado en el
+            desplegable. Si seleccionamos "Cuenta" el botón aumenta el contador, y en caso contrario lo disminuye</p>
+        <label for="desp_cuenta">Selecciona acción</label>
+        <select name="desp_cuenta" id="desp_cuenta">
+            <option value="0">Cuenta</option>
+            <option value="1">Descuenta</option>
+        </select>
+        <button onclick="casoSeis()">Cuenta</button>
+        <p>Contador: <span id="seis">0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Modificación </h2>
+        <p>Modifica el caso anterior para que además de todo lo anterior, en este caso en el mismo momento de selecionar
+            la acción del desplegable, el texto del botón cambie, diciendo "Cuenta" o "Descuenta" en cada caso. El resto
+            de la funcionalidad es la misma</p>
+        <label for="desp_cuenta2">Selecciona acción</label>
+        <select name="desp_cuenta2" id="desp_cuenta2" onchange="cambiaSiete()">
+            <option value="0">Cuenta</option>
+            <option value="1">Descuenta</option>
+        </select>
+        <button onclick="casoSiete()" id="btn_7">Cuenta</button>
+        <p>Contador: <span id="siete">0</span></p>
+    </article>
+    <article class="ejercicio">
+        <h2>Añade círculos</h2>
+        <p>Crea una función para que al pulsar el siguiente botón se añada un círculo dentro del contenenedor siguiente.
+            Las dimensiones del cículo son de 100x100px, color verde, y deben aparecer separados uno de otro por un
+            espacio de 10px. Al añadir el primer círculo el texto contenido en el div tiene que desaparecer.</p>
+        <button onclick="casoOcho()">Añade Círculo</button>
+        <div id="ocho">Añade aquí los círculos</div>
+    </article>
+    
+
+    <script>
+        //ejercicio 1
+        let contador_1 = 0;
+        function casoUno() {
+            contador_1++;
+            document.getElementById('cont_1').textContent = contador_1;
+            //si no queremos usar variables:
+            // document.getElementById('cont_1').textContent = parseInt(document.getElementById('cont_1').textContent) + 1;
+        }
+        //ejercicio 2
+        let contador_2 = 0;
+        let marcador_2 = document.getElementById('marcador_2');
+        function aumentaUno() {
+            contador_2++;
+            marcador_2.textContent = contador_2;
+            //sin variable:
+            //marcador_2.textContent = parseInt(marcador_2.textContent) + 1;
+        }
+        function restaUno() {
+            contador_2--;
+            marcador_2.textContent = contador_2;
+            //sin variable:
+            // marcador_2.textContent = parseInt(marcador_2.textContent) - 1;
+        }
+        //ejercicio 3
+        let contador_3 = 10;
+        function casoTres() {
+            if (contador_3 == 0) {
+                document.getElementById('tres').textContent = 'Cuenta finalizada. No puedes continuar';
+            } else {
+                contador_3--;
+                document.getElementById('tres').textContent = contador_3;
+            }
+
+        }
+        //ejercicio 4
+        let contador_4 = 10;
+        function casoCuatro() {
+            if (contador_4 == 0) {
+                contador_4 = 10;
+            } else {
+                contador_4--;
+            }
+            document.getElementById('cuatro').textContent = contador_4;
+        }
+        //ejercicio 5
+        let contador_5 = 0;
+        function casoCinco() {
+            if (contador_5 < 10) {
+                contador_5++;
+                document.getElementById('cinco').textContent = contador_5;
+            } else {
+                let mensaje = prompt('Volvemos a empezar?');
+                if (mensaje == 'Si') {
+                    contador_5 = 0;
+                    document.getElementById('cinco').textContent = contador_5;
+                } else {
+                    alert('Mensaje de despedida');
+                    document.getElementById('btn_5').style.display = 'none';
+                }
+            }
+        }
+        //ejercicio 6
+        let contador_6 = 0;
+        let control = document.getElementById('desp_cuenta');
+        function casoSeis() {
+            if (control.value == '0') {
+                contador_6++;
+            } else {
+                contador_6--;
+            }
+            document.getElementById('seis').textContent = contador_6;
+        }
+        //ejercicio 7
+        let contador_7 = 0;
+        let control2 = document.getElementById('desp_cuenta2');
+        function casoSiete() {
+            if (control2.value == '0') {
+                contador_7++;
+            } else {
+                contador_7--;
+            }
+            document.getElementById('siete').textContent = contador_7;
+        }
+        function cambiaSiete() {
+            if (control2.value == '0') {
+                document.getElementById('btn_7').textContent = 'Cuenta';
+            } else {
+                document.getElementById('btn_7').textContent = 'Descuenta';
+            }
+        }
+        //ejercicio 8
+        let primer_clic = true;
+        function casoOcho() {
+            if (primer_clic == true) {
+                document.getElementById('ocho').innerHTML = '';
+                primer_clic = false;
+            }
+            let circulo = document.createElement('div');
+            circulo.setAttribute('class', 'circulo');
+            document.getElementById('ocho').append(circulo);
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordenando Arrays</title>
+    <style>
+        .contenedor{
+            width: 1200;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Uso del método <em>sort()</em> para ordenar los valores de un array</h1>
+        <h2>Primer caso: Array que contiene texto</h2>
+        <p>En este caso, si queremos ordenar el array de forma ascendente, solo tenemos que aplicar el método sobre el
+            array sin usar ningún parámetro adicional.</p>
+        <p>Ordena este array:</p>
+        <p id="orden_1"></p>
+        <button id="btn_o1">Ordenar</button>
+        <h2>Ordenar arrays numéricos</h2>
+        <p>En este caso ya tenemos que recurrir a una función dentro del método sort para indicar si queremos ordenar de
+            forma ascendente o descendente. Esta función incluye dos parámetros que hacen referencia al primer y segundo
+            valor respectivos de la cadena de comparación que se va a ejecutar por cada par de valores del array.</p>
+        <p>Si queremos un orden ascendente la función de comparación retornará la resta del primer valor menos el
+            segundo, y si el orden es descendente lo hará al revés.</p>
+        <p id="orden_2"></p>
+        <button id="btn_o2">Orden Asc</button>
+        <button id="btn_o3">Orden Desc</button>
+        <h2>Ordenar texto Descendente</h2>
+        <p>En este caso nos tenemos que basar en la función anterior pero cambiando el operador "-" por ">", y
+            comprobando primero si los valores a ordenar son iguales:</p>
+        <p id="orden_3"></p>
+        <button id="btn_o4">Ordena Pintores Dsc</button>
+        <h2>Usar una sola función para ordenar texto y número de forma ascendente y descendente.</h2>
+        <p id="orden_4"></p>
+        <button id="btn_o5">Ordena Pintores Asc</button>
+        <button id="btn_o6">Ordena Pintores Dsc</button>
+        <button id="btn_o7">Ordena Números Asc</button>
+        <button id="btn_o8">Ordena Números Dsc</button>
+        <h2>Ordenar Arrays de más de una dimensión</h2>
+        <p>Cuando el array principal a ordenar está compuesto por otros arrays y queremos usar un campo del segundo array como criterio de ordenación usaremos la misma función que en el caso anterior, pero indicando en los parámetros a y b qué campo de a y b queremos usar como criterio de ordenación.</p>
+        <p id="orden_5"></p>
+        <button id="btn_o9">Ordena por nombre</button>
+        <button id="btn_o10">Ordena por cotización</button>
+        <h2>Todo junto</h2>
+        <p>Vamos a hacer una función única que permita ordena un array de 2 dimensiones por cualquiera de sus columnas, especificando también el tipo de orden (ascendente o descendente)</p>
+        <p>En el siguiente listado muestra los datos según el criterio de ordenación seleccionado</p>
+        <ul id="cotizaciones">
+
+        </ul>
+        <button id="btn_pintor_asc">Pintor Asc</button>
+        <button id="btn_pintor_dsc">Pintor Dsc</button>
+        <button id="btn_valor_asc">Valor Asc</button>
+        <button id="btn_valor_dsc">Valor Dsc</button>
+    </div>
+    <script>
+        let pintores = ['Picaso', 'Dalí', 'Velázquez', 'Goya', 'Antonio López', 'Tàpies'];
+        let mas_caros = [['Picaso', 9000], ['Dalí',5000], ['Velázquez',12000], ['Goya',8000], ['Antonio López',7000], ['Tàpies',6000]];
+        document.querySelector('#orden_1').textContent = pintores;
+        document.querySelector('#btn_o1').onclick = () => {
+            pintores.sort();
+            document.querySelector('#orden_1').textContent = pintores;
+        }
+        let edades = [48, 23, 22, 42, 50, 5, 10, 11, 15, 16, 16, 20, 23, 74, 67, 95, 61];
+        document.querySelector('#orden_2').textContent = edades;
+        function numAsc(a, b) {
+            return a - b;
+        }
+        function numDsc(a, b) {
+            return b - a;
+        }
+        document.querySelector('#btn_o2').onclick = () => {
+            edades.sort(numAsc);
+            document.querySelector('#orden_2').textContent = edades;
+        }
+        document.querySelector('#btn_o3').onclick = () => {
+            edades.sort(numDsc);
+            document.querySelector('#orden_2').textContent = edades;
+        }
+        function ordenaTxtDesc(a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                return a > b ? -1 : 1;
+            }
+        }
+        document.querySelector('#btn_o4').onclick = () => {
+            pintores.sort(ordenaTxtDesc);
+            document.querySelector('#orden_3').textContent = pintores;
+        }
+        //Orden Completo
+        function ordenaTodo(datos, orden) {
+            datos.sort((a, b) => {
+                if (a === b) {
+                    return 0;
+                } else {
+                    return (a > b ? 1 : -1) * orden;
+                }
+            })
+            document.querySelector('#orden_4').textContent = datos;
+        }
+        document.querySelector('#btn_o5').onclick = () => { ordenaTodo(pintores, 1) }
+        document.querySelector('#btn_o6').onclick = () => { ordenaTodo(pintores, -1) }
+        document.querySelector('#btn_o7').onclick = () => { ordenaTodo(edades, 1) }
+        document.querySelector('#btn_o8').onclick = () => { ordenaTodo(edades, -1) }
+        //Dos dimensiones
+        function primerParmetro(a,b) {
+            if (a[0] === b[0]) {
+                return 0
+            } else {
+                return a[0] > b [0] ? 1 : -1
+            }
+        }
+        function segundoParmetro(a,b) {
+            if (a[1] === b[1]) {
+                return 0
+            } else {
+                return a[1] > b [1] ? 1 : -1
+            }
+        }
+        function cotizaPintor() {
+            mas_caros.sort(primerParmetro)
+            document.querySelector('#orden_5').textContent = mas_caros
+        }
+        function cotizaDos() {
+            mas_caros.sort(segundoParmetro)
+            document.querySelector('#orden_5').textContent = mas_caros
+        }
+        document.querySelector('#btn_o9').onclick = cotizaPintor
+        document.querySelector('#btn_o10').onclick = cotizaDos
+
+        //Pintar el array
+
+        function mostrarCotizaciones() {
+            const ul = document.querySelector('#cotizaciones');
+            ul.innerHTML = '';
+
+            mas_caros.forEach(pintor => {
+                const li = document.createElement('li');
+                li.textContent = `${pintor[0]} - ${pintor[1]}€`;
+                ul.appendChild(li)
+            });
+            
+        }
+        function ordena2D(datos, columna, orden) {
+            datos.sort((a,b) =>  {
+                if (a[columna] === b[columna]) {
+                    return 0;
+                    
+                } else {
+                    return(a[columna] > b[columna] ? 1 : -1) * orden;
+                    
+                }
+
+            });
+            mostrarCotizaciones();
+            
+        }
+        document.querySelector('#btn_pintor_asc').onclick = () => ordena2D(mas_caros, 0, 1);
+        document.querySelector('#btn_pintor_dsc').onclick = () => ordena2D(mas_caros, 0, -1);
+        document.querySelector('#btn_valor_asc').onclick = () => ordena2D(mas_caros, 1, 1);
+        document.querySelector('#btn_valor_dsc').onclick = () => ordena2D(mas_caros, 1, -1);
+
+
+    </script>
+</body>
+
+</html>

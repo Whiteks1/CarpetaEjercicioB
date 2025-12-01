@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Cómo ordenar datos contenidos en un Array</h1>
+    <p>Para ordenar los datos de un array usamos la función <em>sort()</em>, como un método del propio array.</p>
+    <p>Si llamamos al método sin ninguna función como parámetro, el Array se ordena de menor a mayor, pero los datos numéricos que no sean reconidos como tales, se ordenan de menor a mayor por orden alfabético.</p>
+    <p>Si tenemos un array de este tipo: <code>let coches = ['citroen','seat', 'audi']</code>, al aplicar el método <code>coches.sort()</code> obtenemos esto: <code>['audi', 'citroen', 'seat']</code>. Si queremos aplicar otros criterios de ordenación tenemos que usar la función de comparación como argumento para el método sort().</p>
+    <h2>Ordenar datos numéricos</h2>
+    <p>La forma básica de la función para ordenar un array con datos numéricos es esta:</p>
+    <pre><code>
+        sort(function (a,b){
+            return a - b;
+        })
+    </code></pre>
+    <p>que se puede ver resumida así: <code>sort((a,b) => a - b)</code></p>
+    <h3>Ejemplo</h3>
+    <p>Dado este array <code>[215, 10, 50, 2]</code>, al aplicar la siguiente función obtenemos esto:</p>
+    <button onclick="ordenAsc()">Ordenar Asc</button>
+    <pre><code>
+function ordenAsc() {
+    serie.sort(function (a,b) {return a - b});
+    for (let i = 0 ; i< serie.length; i++) {
+        contenido +=`Elemento ${i + 1}: ${serie[i]} &lt;br>`;
+    }
+    salida.innerHTML = contenido;
+}
+    </code></pre>
+   
+    <p>Si queremos ordenar de forma descendente cambiamos la salida de la función por <code>{return b -a }</code>:</p>
+    <button onclick="ordenDesc()">Ordenar Desc</button> 
+    <pre><code>
+function ordenDesc() {
+    contenido = '';
+    serie.sort( (a, b) => b - a);
+    for (let i = 0; i < serie.length; i++) {
+        contenido +=`Elemento ${i + 1}: ${serie[i]}&lt;br>`;
+    }
+    salida.innerHTML = contenido;
+}
+    </code></pre>
+    <div id="salida"></div>
+    <h2>Ordenar datos con texto</h2>
+    <p>Si tenemos que ordenar texto de forma descendente, o usar un elemento de texto para ordenar una matriz multidimensional, tenemos que recurrir a los operadores mayor que y menor que (&gt; y &lt;). La estructura de la función es igual al caso anterior pero cambiando el operador menos (-) por uno de los dos. </p>
+    <div id="aviso">
+        <h6>Nota:</h6>
+        <p>En la función de comparación que estamos escribiendo, obviamos el caso en que los valores sean iguales, y esto provoca errores en algunos navegadores. Al comparar si es únicamente mayor o menor, no especificamos qué ocurre cuando son iguales, y para evitar ese error tenemos que incluir en la función de comparación el supuesto en que son iguales, para que devuelva un valor cero. Esto ocurre con los operadores de comparación, pero no con el de la resta, porque cuando son iguales los valores, al hacer la resta de los dos nos devuelve el valor cero. Por lo tanto nuestra función <code>function (a, b) { return a > b }</code> debe quedar así:</p>
+        <pre><code>
+        function (a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                return a > b ? 1 : -1; } 
+        }
+        </code></pre>
+    </div>
+    <h3>Ejemplo</h3>
+    <p>Vamos a ordenar un array de este tipo: <code>let coches = ['citroen','seat', 'audi']</code></p>
+    <pre><code>
+    function ordenTxtAsc() {
+        let contenido = '';
+        coches.sort(function (a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                return a > b ? 1 : -1; }
+        });
+        for (let i = 0; i < coches.length; i++) { contenido +=`Elemento ${i + 1}: ${coches[i]} &lt;br>`;
+        }
+        salida_txt.innerHTML = contenido;
+    }
+    </code></pre>
+    <button onclick="ordenTxtAsc()">Orden Asc</button>
+    <p>Para ordenar de forma descendente cambiamos el operador:</p>
+    <pre><code>
+    function ordenTxtDesc() {
+        let contenido = '';
+        coches.sort(function (a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                return a > b ? 1 : -1; }
+        });
+        for (let i=0; i < coches.length; i++) { 
+            contenido +=`Elemento ${i + 1}: ${coches[i]}&lt;br>`;
+        }
+        salida_txt.innerHTML = contenido;
+    }
+    </code></pre>
+    <button onclick="ordenTxtDesc()">Orden Desc</button>
+    <div id="salida_txt"></div>
+    <h2>Ordenar Arrays con más de una dimensión.</h2>
+    <p>En este caso el planteamiento es el mismo que en los anteriores, pero en la función de comparación tenemos que indicar qué elemento del array sirve de criterio de ordenación. Eso se hace usando los índices de los elementos en el modo:</p>
+    <h4>En el caso de que sean datos numéricos:</h4>
+    <pre><code>
+        mi_array.sort((a, b) => a[1] - b[1] )
+    </code></pre>
+    <h4>En el caso de datos no numéricos (también vale para numéricos, obviamente):</h4>
+    <pre><code>
+        mi_array.sort(function (a, b) {
+            if (a[0] === b[0]) {
+                return 0;
+            } else {
+                return a[0] > b[0] ? 1 : -1;
+            }
+        })
+    </code></pre>
+    <h3>Ordenar texto y números por números</h3>
+    <p>Dado este array: <code>let conjunto = [['Citroen',15000],['Seat', 12000],['Audi',1800],['Volvo',22000]];</code></p>
+    <p>Usamos esta función para mostrar la lista ordenada por precio de mayor a menor. Como son valores numéricos uso el operador menos (-), y eso me permite no poner el condicional igual a cero en la función de comparación. Pero hay que recordar que para datos tipo texto no valdría en todos los navegadores:</p>
+    <pre><code>
+    function ordenaCjto() {
+        let contenido = '';
+        conjunto.sort((a,b)=> b[1] - a[1]);
+        for (let i = 0; i < conjunto.length; i++){
+            contenido +=`Precio: ${conjunto[i][1]} - Marca: ${conjunto[i][0]} &lt;br>`;
+        }
+        salida_c.innerHTML = contenido;
+    }
+    </code></pre>
+    <button onclick="ordenaCjto()">Ordena</button>
+    <p>Si queremos ordenar el conjunto por los datos de texto:</p>
+    <pre><code>
+    function ordenaTxtCjto() {
+        let contenido = '';
+        conjunto.sort(function (a, b) {
+            if (a[0] == b[0]) {
+                return 0;
+            } else {
+                return (a[0] < b[0]) ? 1 : -1; 
+            }; 
+        }); 
+        for (let i=0; i < conjunto.length; i++) { 
+            contenido +=`Precio: ${conjunto[i][1]} - Marca: ${conjunto[i][0]} &lt;br>`;
+        }
+        salida_c.innerHTML = contenido;
+    }
+    </code></pre>
+    <button onclick="ordenaTxtCjto()">Ordenar Texto</button>
+    <div id="salida_cjto"></div>
+    <script>
+        let serie = [215, 10, 50, 2];
+        let contenido = '';
+        let salida = document.querySelector('#salida');
+        //Caso texto
+        let coches = ['citroen', 'seat', 'audi'];
+        let salida_txt = document.querySelector('#salida_txt');
+        //Caso bidimensional
+        let conjunto = [['Citroen',15000],['Seat', 12000],['Audi',18000],['Volvo',22000]];
+        let salida_c = document.querySelector('#salida_cjto');
+        //Funciones
+        function ordenAsc() {
+            contenido = '';
+            serie.sort(ordAsc);
+            for (let i = 0 ; i< serie.length; i++) {
+                contenido +=`Elemento ${i + 1}: ${serie[i]} <br>`;
+            }
+            salida.innerHTML = contenido;
+        }
+        function ordenDesc() {
+            contenido = '';
+            serie.sort( orDesc);
+            for (let i = 0; i < serie.length; i++) {
+                contenido += `Elemento ${i + 1}: ${serie[i]} <br>`;
+            }
+            salida.innerHTML = contenido;
+        }
+        function ordenTxtAsc() {
+            let contenido = '';
+            coches.sort(ordAsc);
+            for (let i = 0; i < coches.length; i++) {
+                contenido += `Elemento ${i + 1}: ${coches[i]} <br>`;
+            }
+            salida_txt.innerHTML = contenido;
+        }
+        function ordenTxtDesc() {
+                let contenido = '';
+                coches.sort( orDesc);
+                for (let i = 0; i < coches.length; i++) {
+                    contenido += `Elemento ${i + 1}: ${coches[i]} <br>`;
+                }
+                salida_txt.innerHTML = contenido;
+        }
+        function orDesc(a, b) {
+            if (a === b) {
+                return 0;
+            } else {
+                return a < b ? 1 : -1;
+            }
+        }
+        function ordAsc(a, b) {
+                if (a === b) {
+                    return 0;
+                } else {
+                    return a > b ? 1 : -1;
+                }
+            }
+        
+        function ordenaCjto() {
+            let contenido = '';
+            conjunto.sort((a,b)=> b[1] - a[1]);
+            for (let i = 0; i < conjunto.length; i++){
+                contenido += `Precio: ${conjunto[i][1]} - Marca: ${conjunto[i][0]} <br>`;
+            }
+            salida_c.innerHTML = contenido;
+        }
+        function ordenaTxtCjto() {
+                let contenido = '';
+                conjunto.sort(function (a, b) {
+                if (a[0] == b[0]) {
+                    return 0;
+                } else {
+                    return (a[0] < b[0]) ? 1 : -1;
+                };
+            });
+                for (let i = 0; i < conjunto.length; i++) {
+                    contenido += `Precio: ${conjunto[i][1]} - Marca: ${conjunto[i][0]} <br>`;
+                }
+                salida_c.innerHTML = contenido;
+            }
+    </script>
+</body>
+</html>

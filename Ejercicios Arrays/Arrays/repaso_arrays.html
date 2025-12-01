@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de Array</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: auto;
+            border: 1px solid lightcyan;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            padding: 5rem 0;
+            text-align: center;
+            color: darkcyan;
+            background-color: lightcyan;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: darkcyan;
+        }
+
+        section {
+            min-height: 500px;
+        }
+
+        .panel {
+            border: 3px solid darkcyan;
+            padding: 1rem;
+            border-radius: .5rem;
+            color: darkcyan;
+            font-size: 1.5rem;
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            margin: 2rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem 2rem;
+        }
+
+        .inp_txt {
+            border: 1px solid darkcyan;
+            font-size: 1.5rem;
+            padding: .2rem;
+            width: 49%;
+        }
+
+        .btn-form {
+            font-size: 1.5rem;
+            border-radius: .2rem;
+            background-color: darkcyan;
+            color: white;
+            padding: .2rem .5rem;
+            border: 0;
+        }
+
+        .botonera {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        #mensaje_1 {
+            width: 100%;
+            border: 1px dotted lightgray;
+            padding: 2rem;
+            margin: 1rem 0 3rem;
+        }
+
+        #mensaje_2 {
+            width: 80%;
+            padding: .2rem;
+            text-align: center;
+            min-height: 30px;
+        }
+
+        .correcto {
+            border: 1px solid;
+            color: darkgreen;
+            background-color: lightgreen;
+        }
+
+        .error {
+            border: 1px solid;
+            color: darkred;
+            background-color: lightcoral;
+        }
+
+        .columnas {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .col {
+            width: 48%;
+        }
+
+        .listado,
+        .editor {
+            margin: 2rem;
+        }
+
+        #btn_del,
+        #btn_cancel_edit {
+            background-color: darkred;
+        }
+
+        .listado li {
+            font-size: 1.5rem;
+            list-style: none;
+            margin: 1rem 2rem;
+            font-style: italic;
+            color: darkblue;
+            border-bottom: 1px solid;
+            padding-left: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .info {
+            margin: 1rem;
+            font-size: 1.2rem;
+            color: gray;
+            font-style: italic;
+        }
+
+        .invisible {
+            display: none;
+        }
+
+        .popup {
+            background: #0009;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100%;
+            z-index: 9;
+        }
+
+        .cuadro-edit {
+            width: 500px;
+            background-color: lightcyan;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 200px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 4px 4px 10px;
+        }
+
+        .cuadro-edit h3 {
+            width: 100%;
+            text-align: center;
+            font-size: 1.7rem;
+            font-family: sans-serif;
+            color: darkcyan;
+            position: relative;
+            top: -15px;
+        }
+
+        .cuadro-edit input {
+            width: 80%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Gestión de Contactos</h1>
+        <section>
+            <div class="columnas">
+                <div class="col">
+                    <div class="panel">
+                        <label for="txt_contacto">Nombre de Contacto</label>
+                        <input type="text" id="txt_contacto" class="inp_txt">
+                        <button id="btn_add_cto" class="btn-form">Añadir</button>
+                    </div>
+                    <div class="botonera">
+                        <p id="mensaje_1"></p>
+                        <button id="btn_editor" class="btn-form">Editar Contactos</button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="listado">
+                        <h2>Listado de Contactos</h2>
+                        <ul id="lista_contactos"></ul>
+                    </div>
+                    <div class="editor invisible">
+                        <h2>Gestión de Contactos</h2>
+                        <p class="info">Selecciona un contacto para editarlo</p>
+                        <select name="sel_cto" id="sel_cto" class="inp_txt"></select>
+                        <button id="btn_edit" class="btn-form">Editar</button>
+                        <button id="btn_del" class="btn-form">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="popup invisible">
+        <div class="cuadro-edit">
+            <h3 id="tit_popup"></h3>
+            <input type="text" id="in_edit_cto" class="inp_txt">
+            <p id="mensaje_2">Notificaciones</p>
+            <button id="btn_conf_edit" class="btn-form" data-id="">Confirmar</button>
+            <button id="btn_cancel_edit" class="btn-form">Cancelar</button>
+        </div>
+    </div>
+    <script>
+        //el array es una variable global
+        const agenda = ["ana", "pepe", "carmen", "Claudia"];
+        //elementos del DOM como constantes
+        const input_cto = document.querySelector('#txt_contacto');
+        const btn_cto = document.querySelector('#btn_add_cto');
+        const listado = document.querySelector('#lista_contactos');
+        const dpl_cto = document.querySelector('#sel_cto');
+        const btn_del = document.querySelector('#btn_del');
+        const btn_edit = document.querySelector('#btn_edit');
+        const btn_modo = document.querySelector('#btn_editor');
+        const panel_edit = document.querySelector('.editor');
+        const panel_listado = document.querySelector('.listado');
+        const popup = document.querySelector('.popup');
+        const input_edit = document.querySelector('#in_edit_cto');
+        const btn_confirm = document.querySelector('#btn_conf_edit');
+        const btn_cancel = document.querySelector('#btn_cancel_edit');
+        const tit_popup = document.querySelector('#tit_popup');
+        const mensaje_1 = document.querySelector('#mensaje_1');
+        const mensaje_2 = document.querySelector('#mensaje_2');
+        const panel_intro = document.querySelector('.panel');
+        //variables de estado
+        let isEditMode = false;
+        //función almancenar contacto en array
+        function addContacto() {
+            //leemos valor del input
+            let nom_cto = input_cto.value;
+            //validamos el valor
+            let validado = validaTxt(nom_cto);
+            //guardamos valor en array si es válido
+            if (validado) {
+                agenda.push(validado);
+                //actualizar listado
+                pasaContacto();
+                creaSelect();
+                //muestro mensaje
+                muestraMensaje(mensaje_1, validado + ' añadido a la agenda', 'correcto');
+            } else {
+                muestraMensaje(mensaje_1, 'Dato no valido', 'error');
+
+            }
+            //borro input y le pongo el foco
+            input_cto.value = '';
+            input_cto.focus();
+        }
+        //pasar datos del array al DOM
+        function pasaContacto() {
+            //borramos el posible contenido del listado
+            listado.innerHTML = '';
+            //un bucle que recorra el array y genere un elemento li para cada entrada
+            for (const contacto of agenda) {
+                let elemento = '<li>' + contacto + '</li>';
+                listado.innerHTML += elemento;
+                //equivale a:
+                //listado.innerHTML = listado.innerHTML + elemento;
+            }
+
+        }
+        //crear el listado de select
+        function creaSelect() {
+            //borramos posible listado
+            dpl_cto.innerHTML = '';
+            for (let i = 0; i < agenda.length; i++) {
+                const contacto = agenda[i];
+                //creamos nodo dinámico de tipo option
+                let opcion = document.createElement('option');
+                //le añadimos como texto el nombre del contacto
+                opcion.textContent = contacto;
+                //definimos un atributo value con el valor de i
+                opcion.setAttribute('value', i);
+                //lo paso al DOM
+                dpl_cto.append(opcion)
+            }
+        }
+        //Abrir cuadro popup
+        function cargaPopup(modo) {
+            //limpiamos cuadros
+            limpiaMensajes();
+            //identificar el elemento a modificar o eliminar
+            let id = dpl_cto.value;
+            //mostrar popup en modo correspondiente
+            muestraPopup(modo, id);
+        }
+
+        function confirmaEdit() {
+            //recojo texto del input
+            let editar = input_edit.value;
+            //recojo posición a modificar
+            let id = this.dataset.id;
+            //recojo la acción a realizar
+            let accion = this.dataset.modo;
+            //si es borrar, elimino y termina la función
+            if (accion == 'b') {
+                agenda.splice(id, 1);
+                postEdit();
+                muestraMensaje(mensaje_1, 'Contacto eliminado de la agenda', 'error');
+                return;
+            }
+            // si no es borrar valido el texto
+            let cambio = validaTxt(editar);
+            //si ok modifico en el array y cambio DOM
+            if (!cambio) {
+                muestraMensaje(mensaje_2, 'Dato no válido', 'error');
+                input_edit.value = ''
+                input_edit.focus()
+                return;
+            }
+            agenda.splice(id, 1, cambio);
+            postEdit();
+            muestraMensaje(mensaje_1, 'El contacto ' + cambio + ' se ha actualizado correctamente', 'correcto');
+        }
+        function postEdit() {
+            pasaContacto();
+            creaSelect();
+            cancelEdit();
+        }
+        function cancelEdit() {
+            //cierro popup
+            popup.classList.add('invisible');
+            //limpio input
+            input_edit.value = '';
+        }
+        function muestraPopup(modo, id) {
+            //muestro popup
+            popup.classList.remove('invisible');
+            //pongo su título
+            tit_popup.textContent = 'Editar Contacto';
+            //defino input
+            input_edit.value = agenda[id];
+            input_edit.disabled = false;
+            // guardo posición y modo en el botón
+            btn_confirm.dataset.id = id;
+            btn_confirm.dataset.modo = 'e';
+            //pongo foco en input
+            input_edit.focus();
+            //cambios cuando es modo eliminar
+            if (modo == 'eliminar') {
+                tit_popup.textContent = 'Eliminar Contacto'
+                input_edit.disabled = true;
+                btn_confirm.dataset.modo = 'b';
+                //pongo el foco en un botón para que reconozca los eventos de teclado
+                btn_confirm.focus();
+            }
+        }
+        function modoEdicion() {
+            //limpiamos cuadros mensaje
+            limpiaMensajes();
+            //alternar modo edición
+            isEditMode = !isEditMode;
+            //alternar texto botón
+            this.textContent == 'Editar Contactos' ? this.textContent = 'Ver Listado Contactos' : this.textContent = 'Editar Contactos';
+            //alternar visualización
+            panel_edit.classList.toggle('invisible');
+            panel_listado.classList.toggle('invisible');
+        }
+        //validación del texto
+        function validaTxt(texto) {
+            //limpio espacios al principio y final de la cadena
+            let txt_limpio = texto.trim()
+            //limpiar espacios redundantes entre palabras
+            while (txt_limpio.indexOf('  ') != -1) {
+                txt_limpio = txt_limpio.replaceAll('  ', ' ');
+            }
+            //comprobamos que tenga al menos 3 caracteres
+            if (txt_limpio.length < 3) {
+                //si no cumple no devuelve el texto limpio
+                return false;
+            }
+            //devuelve el texto
+            return txt_limpio;
+        }
+
+        //MENSAJES
+        function muestraMensaje(donde, mensaje, clase) {
+            //le añado el mensaje al cuadro que llega por parámetro
+            donde.textContent = mensaje;
+            //le aplico la clase
+            donde.className = clase;
+        }
+        function limpiaMensajes() {
+            mensaje_1.textContent = '';
+            mensaje_1.className = '';
+            mensaje_2.textContent = '';
+            mensaje_2.className = '';
+
+        }
+        //EVENTOS TECLADO
+        function gestionaTecla(tecla) {
+            if (tecla.key == 'Enter') {
+                addContacto();
+            }
+        }
+        function ocultaPopup(tecla) {
+            if (tecla.key == 'Escape') {
+                cancelEdit()
+            }
+        }
+        //asignaciones
+        btn_cto.onclick = addContacto;
+        btn_del.onclick = function () { cargaPopup('eliminar') };
+        btn_edit.onclick = function () { cargaPopup('editar') };
+        btn_modo.onclick = modoEdicion;
+        btn_confirm.onclick = confirmaEdit;
+        btn_cancel.onclick = cancelEdit;
+        panel_intro.addEventListener('keydown', gestionaTecla);
+        popup.addEventListener('keydown', ocultaPopup)
+        //inicio
+        pasaContacto();
+        creaSelect();
+    </script>
+</body>
+
+</html>

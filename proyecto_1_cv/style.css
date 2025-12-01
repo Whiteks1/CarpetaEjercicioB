@@ -1,0 +1,100 @@
+* {
+    margin: 0%;
+    padding: 0;
+} 
+/* Elimina márgenes y rellenos predeterminados de todos los elementos */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente */
+    background: linear-gradient(135deg, #f3f3f3, #e0e0e0); /* Fondo con degradado gris claro */
+    color: #333; /* Color del texto base */
+    margin: 0;
+    padding: 40px; /* Espaciado interno del body */
+    border: 0.1cm; /* Esta línea no tiene efecto, puedes eliminarla o especificar propiedad válida */
+}
+
+.cv-container {
+    display: flex; /* Organiza aside y main en línea (horizontal) */
+    max-width: 1000px; /* Limita el ancho del CV */
+    margin: auto; /* Centra horizontalmente */
+    background: #ffffff; /* Fondo blanco */
+    border-radius: 12px; /* Bordes redondeados */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    overflow: hidden; /* Oculta desbordamientos */
+}
+
+aside {
+    background: #371d47; /* Color morado de fondo */
+    color: white; /* Texto blanco */
+    padding: 30px; /* Espacio interior */
+    width: 200px; /* Ancho fijo del aside */
+    text-align: center; /* Centra todo el contenido del aside */
+}
+
+aside img {
+    width: 120px;
+    height: 120px;
+    border-radius: 70%; /* Imagen redonda */
+    object-fit: cover; /* Recorta imagen sin distorsión */
+    margin-bottom: 20px;
+    border: 3px solid white; /* Borde blanco alrededor de la foto */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Sombra para efecto flotante */
+}
+
+aside h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+aside h2 {
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-weight: normal;
+    letter-spacing: 1px; /* Espaciado entre letras */
+    color: #e0b3ff; /* Color morado claro */
+}
+
+aside p {
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+/* Contenido principal del CV */
+main.contenido {
+    flex: 1; /* Toma todo el espacio restante */
+    padding: 30px;
+    background: #f9f9f9;
+    display: flex; /* Flexbox para las secciones */
+    flex-wrap: wrap; /* Permite que bajen a una nueva fila */
+    justify-content: space-between; /* Espacio entre columnas */
+    gap: 20px; /* Espacio entre bloques */
+}
+
+.bloque {
+    width: calc(50% - 10px); /* 2 columnas por fila con espacio entre ellas */
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 6px solid #6a1b9a; /* Línea morada decorativa */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Sombra sutil */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+}
+
+main h2 {
+    color: #6a1b9a;
+    border-bottom: 2px solid #ccc; /* Línea debajo del título */
+    padding-bottom: 6px;
+    margin-top: 20px;
+}
+
+main p, main li {
+    font-size: 15px;
+    line-height: 1.6; /* Espaciado entre líneas para legibilidad */
+}
+
+@media (max-width: 768px) {
+    .bloque {
+        width: 100%; /* En pantallas pequeñas, los bloques se apilan */
+    }
+}

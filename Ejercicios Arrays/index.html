@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uso de Array</title>
+  <style>
+
+    .contenedor {
+      max-width: 800px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 150, 150, 0.2);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #006064;
+    }
+    h2 {
+      font-size: 2rem;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color: #006064;
+
+    }
+    .popup{
+      background: #0009;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100%;
+      z-index: 9;
+      
+    }
+
+    label {
+      font-weight: bold;
+      color: #004d40;
+
+    }
+
+    input, select, button {
+      border-radius: 6px;
+      border: 1px solid #80deea;
+      padding: 8px;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    input {
+      width: 60%;
+      font-size: medium;
+    }
+    
+    button {
+      background-color: #00acc1;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    .botonera {
+      display: flex;
+      justify-content: flex-end;
+
+    }
+    button:hover {
+      background-color: #4dd0e1;
+    }
+
+    .columnas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .col {
+      width: 48%;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #beeaf0;
+      padding: 8px;
+      border-radius: 6px;
+      margin: 5px 0;
+      box-shadow: 0 0 3px rgba(0, 150, 150, 0.1);
+    }
+
+    .listado li {
+      font-size: 1.rem;
+      list-style: none;
+      margin: 0.6rem;
+      font-style: italic;
+    }
+
+    #col_gestion {
+      display: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .visible {
+      display: block;
+
+    }
+    .invisible {
+      display: none;
+    }
+
+    .cuadro_edit {
+      width: 500px;
+      background-color: #beeaf0;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin: 200px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      z-index: 9;
+      box-shadow: 4px 4px 10px;
+    }
+    .cuadro_edit h3{
+      width: 100%;
+      text-align: center;
+      font-size: 1.7rem;
+      font-family: sans-serif;
+      position: relative;
+      top: -15px;
+    }
+
+    #btn_del, #btn_conf_cancelar {
+      background-color: red;
+
+    }
+    #btn_config {
+      display: block;
+      margin: 20px auto;
+      background-color: #00838f;
+    }
+
+    #btn_config:hover {
+      background-color: #26c6da;
+    }
+
+    #btn_edit, #btn_del {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+    <h1>Gestión de Contactos</h1>
+    
+
+    <section>
+      <div class="columnas">
+        <div class="col">
+          <div class="panel">
+            <label for="txt_contacto">Nombre de Contacto</label>
+            <input type="text" id="txt_contacto" placeholder="Ejemplo: Pepe Grillo">
+            <button id="btn_add_cto">Añadir</button>
+          </div>
+          <div class="botonera">
+            <button id="btn_editor">Editar Contacto</button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="listado">
+            <h2>Listado de Contactos</h2>
+            <ul id="lista_contactos"></ul>
+          </div>
+          <h2>Gestión de Contactos</h2>
+          <select name="sel_cto" id="sel_cto"></select>
+          <button id="btn_edit">Editar</button>
+          <button id="btn_del">Eliminar</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="popup">
+    <div class="cuadro_edit">
+      <h3>Editar Contacto</h3>
+      <input type="text" id="input_edit_cto" class="inp_txt">
+      <button id="btn_conf_edit" class="btn_form">Confirmar</button>
+      <button id="btn_conf_cancelar" class="btn_form">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    const agenda = ["Ana", "Pepe", "Carmen"];
+
+    const input_cto = document.querySelector('#txt_contacto');
+    const btn_cto = document.querySelector('#btn_add_cto');
+    const listado = document.querySelector('#lista_contactos');
+    const dpl_cto = document.querySelector('#sel_cto');
+    const btn_del = document.querySelector('#btn_del');
+    const btn_edit = document.querySelector('#btn_edit');
+    const btn_editor = document.querySelector('#btn_editor');
+    const panel = document.querySelector('#panel')
+    const popup = document.querySelector('popup')
+
+    //Variables de estado
+
+    function addContacto() {
+      let nom_cto = input_cto.value;
+      let validado = validaTxt(nom_cto);
+      if (validado) {
+        agenda.push(validado);
+        pasaContacto();
+        creaSelect();
+        input_cto.value = "";
+      }
+    }
+
+    function pasaContacto() {
+      listado.innerHTML = '';
+      for (const contacto of agenda) {
+        listado.innerHTML += `<li>${contacto}</li>`;
+      }
+    }
+
+    function creaSelect() {
+      dpl_cto.innerHTML = '';
+      agenda.forEach((contacto, i) => {
+        let opcion = document.createElement('option');
+        opcion.textContent = contacto;
+        opcion.value = i;
+        dpl_cto.append(opcion);
+      });
+    }
+
+    function deleteCto() {
+      let id = dpl_cto.value;
+      if (id === "") return;
+      let eliminar = confirm('¿Eliminar a ' + agenda[id] + '?');
+      if (!eliminar) return;
+      agenda.splice(id, 1);
+      pasaContacto();
+      creaSelect();
+    }
+    //alterna modo edición
+    function modoEdicion(){
+      isEditMode = !isEditMode;
+      this.textContent =='Editar Contacto'? this.textContent = 'Ver Listado Contacto': this.texContent = 'Editar Contacto'
+      console.log(this);
+      //Alternar visualización
+      if(isEditMode){
+        panel_edit.classList.toggle('invisible');
+        panel_listado.classList.toggle('invisble');
+      }
+
+      }
+    function editCto() {
+      let id = dpl_cto.value;
+      if (id === "") return;
+      let editar = prompt('Editar contacto', agenda[id]);
+      if (!editar) return;
+      let cambio = validaTxt(editar);
+      if (!cambio) return;
+      agenda.splice(id, 1, cambio);
+      pasaContacto();
+      creaSelect();
+    }
+
+    function validaTxt(texto) {
+      let txt_limpio = texto.trim().replace(/\s{2,}/g, ' ');
+      return txt_limpio.length >= 3 ? txt_limpio : false;
+    }
+
+    btn_cto.onclick = addContacto;
+    btn_del.onclick = deleteCto;
+    btn_edit.onclick = editCto;
+    btn_editor.onclick =btn_editor
+
+    pasaContacto();
+    creaSelect();
+    //inicio
+    pasaContacto();
+    creaSelect();
+  </script>
+</body>
+</html>

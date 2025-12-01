@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Números al azar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        body {
+            font-family: "IBM Plex Sans", sans-serif;
+            font-size: 1.2rem;
+        }
+
+        .contenedor {
+            min-width: 1400px;
+            margin-bottom: 40rem;
+        }
+
+        h1 {
+            font-size: 2.9rem;
+            color: darkslategray;
+            text-align: center;
+            border-bottom: 4px double lightslategray;
+        }
+
+        .apartado {
+            border: 1px solid gray;
+            width: 80%;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            background-color: lightgray;
+        }
+
+        .apartado h2 {
+            color: darkslategray;
+            margin-bottom: 2rem;
+        }
+
+        .apartado>p {
+            font-size: 1.2rem;
+        }
+
+        .explicacion {
+            margin: 2rem;
+            background: #fffd;
+            padding: 1rem;
+            border: 1px solid slategray;
+        }
+
+        .explicacion p {
+            font-style: italic;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .lista {
+            margin: 0 4rem;
+            font-weight: 300;
+        }
+
+        pre {
+            border: 3px solid #0006;
+            margin: 2rem;
+            color: lawngreen;
+            font-size: 1rem;
+            line-height: 1.5;
+            background-color: slategray;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+
+        .visor {
+            background-color: slategray;
+            color: white;
+            margin: 2rem;
+            padding: 2rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            font-style: italic;
+            border-radius: 0.5rem;
+        }
+
+        .visor button,
+        .visor input,
+        .visor select {
+            font-size: 1.5rem;
+            padding: 0.2rem 0.8rem;
+            font-family: "Ibm Plex Sans";
+            font-weight: 400;
+            color: honeydew;
+            background-color: darkslategrey;
+            border: 2px solid;
+            border-radius: 0.3rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .visor label {
+            color: darkgreen;
+            font-weight: 800;
+            background-color: #fff6;
+            padding: 0 0.5rem;
+        }
+
+        .visor input {
+            background-color: honeydew;
+            border: 0;
+            color: darkgreen;
+        }
+
+        .btn-codigo {
+            font-size: 1.5rem;
+            font-family: "IBM Plex Sans";
+            font-weight: 500;
+            background-color: lightgray;
+            color: slategray;
+            padding: 0.3rem 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #0006;
+            margin-top: 2rem;
+        }
+
+        /*PROPIO*/
+        .cuadro {
+            font-size: 1.5rem;
+            background-color: lightcyan;
+            border: 1px solid darkcyan;
+            padding: .1rem .5rem;
+            color: darkblue;
+            font-family: 'courier';
+            font-weight: bold;
+            margin-left: 2rem;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Números al azar</h1>
+        <section class="apartado">
+            <p class="explicacion">Ejemplo de como usar la clase <strong>Math</strong> para generar números aleatorios
+                (realmente son
+                pseudoaleatorios) y las opciones de redondeo posibles para esos valores</p>
+            <h2>Uso de Math.random() para generar un valor aleatorio</h2>
+            <p>Este método devuelve cada vez que lo invocamos un valor numérico decimal diferente. Sus valores están
+                comprendidos entre 0 y 1 (sin que sea nunca uno de estos dos) y consta de 16 decimales.</p>
+            <div class="visor">
+                <button id="btn_azar">Azar</button>
+                <span>Número aleatorio: <span class="cuadro" id="azar">0</span></span>
+            </div>
+
+            <h3>Establecer el número de valores que queremos obtener</h3>
+
+            <p>Para determinar el rango de los valores aleatorios que necesitamos solo tenemos que multiplicar el
+                número
+                devuelto por el número de valores de nuestro rango. Si queremos valores entre los 10 primeros
+                números
+                multiplicamos el valor devuelto por 10, y si queremos valores del 1 al 500 multiplicamos por 500.
+            </p>
+            <p class="visor">El número anterior reducido a un rango de 10 valores: <span class="cuadro"
+                    id="diez">0</span></p>
+
+            <h3>Formas de redondeo con los valores devueltos</h3>
+            <p>Podemos redondear los valores con 3 métodos diferentes de la clase Math: <em>round(), floor() y
+                    ceil()</em>,
+                que redondean al valor más cercano, al valor inferior o al valor superior respectivamente.</p>
+            <p>El valor anterior se muestra así según el método elegido:</p>
+            <div class="visor">
+                <ul class="lista">
+                    <li>redondeo => Math.round(numero): <span class="cuadro" id="round">0</span></li>
+                    <li>inferior => Math.floor(numero): <span class="cuadro" id="floor">0</span></li>
+                    <li>superior => Math.ceil(numero): <span class="cuadro" id="ceil">0</span></li>
+                </ul>
+            </div>
+            <div class="explicacion">
+                <p>Para este ejemplo usamos una misma función que muestra diferentes versiones del número al azar
+                    generado en 5 elementos diferentes del DOM</p>
+                <ol class="lista">
+                    <li>Primero generamos el número y lo pasamos directamente al DOM</li>
+                    <li>Luego lo multiplicamos por 10 para obtener valores decimales del 0 al 9 y lo mostramos</li>
+                    <li>En tercer lugar redondeamos el valor al entero más cercano</li>
+                    <li>A continuación lo redondeamos al entero inferior</li>
+                    <li>Por último, lo redondeamos al entero superior</li>
+                </ol>
+                <pre><code>
+                    function numeroAzar() {
+                        let aleatorio = Math.random();
+                        document.getElementById('azar').textContent = aleatorio;
+                        let rango = aleatorio * 10
+                        document.getElementById('diez').textContent = rango;
+                        document.getElementById('round').textContent = Math.round(rango);
+                        document.getElementById('floor').textContent = Math.floor(rango);
+                        document.getElementById('ceil').textContent = Math.ceil(rango);
+                    }
+                </code></pre>
+            </div>
+        </section>
+        <section class="apartado">
+            <h2>Valores aleatorios entre un rango específico de números</h2>
+            <p>Prepara 1 función con dos parámetros (número menor y número mayor) para que devuelva un número al azar
+            </p>
+            <p>Ejemplo: numeroAzar(minimo,maximo)</p>
+            
+            <div class="explicacion">
+                <p>En este caso modificamos la función para recibir 2 parámetros que determinen el rango de números a generar</p>
+                <ol class="lista">
+                    <li>Como precaución comprobamos que los valores recibidos sean válidos</li>
+                    <li>El rango a obtener números está definido por los parámetros <em>min y max</em></li>
+                    <li>En caso de que el mínimo sea mayor que el máximo el método <strong>random()</strong> devuelve un dato válido</li>
+                    <li>Para obtener valores dentro del rango al valor aleatorio devuelto le sumamos el parámetro menor</li>
+                </ol>
+                <pre><code>
+        function aleatorioEntre(min, max) {
+            if (isNaN(min) || isNaN(max) || max === null || min === null) {
+                return false;
+            }
+            let rango = max - min;
+            let aleatorio = Math.random() * rango;
+            let suma = aleatorio + min;
+            let redondeo = Math.floor(suma);
+            return redondeo;
+        }
+            </code></pre>
+            </div>
+            <div class="visor">
+                <button id="btn_azar_2">Aleatorio de 20 a 29</button>
+                <span class="cuadro" id="azar_2"></span>
+                <br>
+                <button id="btn_azar_3">Aleatorio de 1000 a 2000</button>
+                <span class="cuadro" id="azar_3"></span>
+            </div>
+        </section>
+        <section class="apartado">
+            <h2>Generar un número determinado de valores aleatorios no repetidos en un rango</h2>
+            <p>Prepara una función basada en la anterior, añadiendo un tercer parámetro que indique el número total del
+                números
+                aleatorios (diferentes) que queremos generar, y los devuelva en un array</p>
+            <p>Ejemplo: numeroAzar(minimo,maximo, total)</p>
+           
+            <div class="explicacion">
+                <p>En este caso los datos son almacenados en un array, comprobando que no hay ningún número repetido en él</p>
+                <ol class="lista">
+                    <li>Añdimos un parámetro que indique el número de elementos a devolver</li>
+                    <li>En este caso debemos comprobar que el número solicitado es menor que el rango de valores, para evitar un bucle infinito</li>
+                    <li>Preparamos un bucle que añada valores al array mientras que no esté lleno</li>
+                    <li>Dentro del bucle condicionamos la inclusión del valor en el array a que el dato no exista en el array</li>
+                </ol>
+                <pre><code>
+        function rangoAleatorio(min, max, total) {
+            if ((max - min) < total) {
+                return false;
+            }
+            let valores = [];
+            while (valores.length < total) {
+                let azar = Math.floor(Math.random() * (max - min) + min);
+                if (valores.indexOf(azar) === -1) {
+                    valores.push(azar);
+                }
+            }
+            return valores;
+        }
+                </code></pre>
+            </div>
+             <div class="visor">
+                <button id="btn_azar_4">20 aleatorios de 1000 a 1100</button>
+                <span class="cuadro" id="azar_4"></span>
+                <hr>
+                <button id="btn_azar_5">200 aleatorios de 100 a 900</button>
+                <span class="cuadro" id="azar_5"></span>
+            </div>
+        </section>
+    </div>
+    <script>
+        function numeroAzar() {
+            //genera número decimal al azar
+            let aleatorio = Math.random();
+            document.getElementById('azar').textContent = aleatorio;
+            //reducir a un rango de los 10 primeros números
+            let rango = aleatorio * 10
+            document.getElementById('diez').textContent = rango;
+            //redondear al valor más cercano
+            document.getElementById('round').textContent = Math.round(rango);
+            //redondear al valor inferior
+            document.getElementById('floor').textContent = Math.floor(rango);
+            //redondear al valor superior
+            document.getElementById('ceil').textContent = Math.ceil(rango);
+        }
+
+        function aleatorioEntre(min, max) {
+            //no es necesario comprobar si la diferencia entre los parámetros es positiva o negativa o valor cero, siempre devuelve un valor aleatorio
+            if (isNaN(min) || isNaN(max) || max === null || min === null) {
+                return false;
+            }
+            let rango = max - min;
+            let aleatorio = Math.random() * rango;
+            let suma = aleatorio + min;
+            let redondeo = Math.floor(suma);
+            return redondeo;
+        }
+        function rangoAleatorio(min, max, total) {
+            //para evitar bucle infinito
+            if ((max - min) < total) {
+                return false;
+            }
+            let valores = [];
+            while (valores.length < total) {
+                let azar = Math.floor(Math.random() * (max - min) + min);
+                if (valores.indexOf(azar) === -1) {
+                    valores.push(azar);
+                }
+            }
+            return valores;
+        }
+        function azarDos() {
+            let azar = aleatorioEntre(20, 30);
+            if (!azar) {
+                azar = 'Dato no válido'
+            }
+            document.querySelector('#azar_2').textContent = azar;
+        }
+        function azarTres() {
+            let azar = aleatorioEntre(1000, 2000);
+            document.querySelector('#azar_3').textContent = azar;
+        }
+        function azarCuatro() {
+            let azar = rangoAleatorio(1000, 1100, 20);
+            if (!azar) {
+                azar = 'operación no válida';
+            }
+            document.querySelector('#azar_4').textContent = azar;
+        }
+        function azarCinco() {
+            let azar = rangoAleatorio(100, 900, 200);
+            if (!azar) {
+                azar = 'operación no válida';
+            }
+            document.querySelector('#azar_5').textContent = azar;
+        }
+        document.getElementById('btn_azar').onclick = numeroAzar;
+        document.getElementById('btn_azar_2').onclick = azarDos;
+        document.getElementById('btn_azar_3').onclick = azarTres;
+        document.getElementById('btn_azar_4').onclick = azarCuatro;
+        document.getElementById('btn_azar_5').onclick = azarCinco;
+
+        //bloque código
+        let detalles_codigo = document.querySelectorAll("pre:has(code)");
+        for (const bloque of detalles_codigo) {
+            let btn_code = document.createElement("button");
+            btn_code.className = "btn-codigo";
+            btn_code.textContent = "Ocultar Código";
+            btn_code.onclick = conmutaCodigo;
+            bloque.before(btn_code);
+        }
+        function conmutaCodigo() {
+            if (this.nextElementSibling.style.display != "none") {
+                this.nextElementSibling.style.display = "none";
+                this.textContent = "Mostrar Código";
+            } else {
+                this.nextElementSibling.style.display = "block";
+                this.textContent = "Ocultar Código";
+            }
+        }
+    </script>
+</body>
+
+</html>

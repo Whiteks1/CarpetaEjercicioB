@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coroa Silence Apartments - Valencia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blanco: #FFFFFF;
+            --arena: #F5F1E8;
+            --beige: #E8DFD1;
+            --naranja-valencia: #E67E22;
+            --azul-mar: #3498DB;
+            --gris-oscuro: #2C3E50;
+            --sombra: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--blanco);
+            color: var(--gris-oscuro);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--blanco);
+            box-shadow: var(--sombra);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--naranja-valencia);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--gris-oscuro);
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--naranja-valencia);
+        }
+        
+        .language-selector {
+            display: flex;
+            margin-left: 20px;
+        }
+        
+        .language-selector button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 400;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .language-selector button.active {
+            background-color: var(--arena);
+            color: var(--naranja-valencia);
+        }
+        
+        .btn-reserva {
+            background-color: var(--naranja-valencia);
+            color: var(--blanco);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-reserva:hover {
+            background-color: #d35400;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.5)), url('https://images.unsplash.com/photo-1587334894196-97df5a0d42a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: var(--blanco);
+            text-align: center;
+            margin-top: 70px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            animation: fadeUp 1s ease-out;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            animation: fadeUp 1.2s ease-out;
+        }
+        
+        .btn-hero {
+            background-color: var(--naranja-valencia);
+            color: var(--blanco);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: fadeUp 1.4s ease-out;
+        }
+        
+        .btn-hero:hover {
+            background-color: #d35400;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Secciones */
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.2rem;
+            color: var(--gris-oscuro);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: var(--naranja-valencia);
+            margin: 15px auto;
+        }
+        
+        /* Filosofía */
+        .filosofia {
+            background-color: var(--arena);
+            text-align: center;
+        }
+        
+        .filosofia-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .video-container {
+            margin: 40px auto;
+            max-width: 800px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+        }
+        
+        .video-placeholder {
+            background-color: var(--beige);
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gris-oscuro);
+            font-size: 1.2rem;
+        }
+        
+        /* Apartamentos */
+        .apartamentos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .apartamento-card {
+            background-color: var(--blanco);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+            transition: transform 0.3s;
+        }
+        
+        .apartamento-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .apartamento-img {
+            height: 220px;
+            background-color: var(--beige);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gris-oscuro);
+        }
+        
+        .apartamento-content {
+            padding: 20px;
+        }
+        
+        .apartamento-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--gris-oscuro);
+        }
+        
+        .apartamento-desc {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amenity {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .amenity i {
+            margin-right: 5px;
+            color: var(--naranja-valencia);
+        }
+        
+        .btn-detalles {
+            background-color: transparent;
+            color: var(--naranja-valencia);
+            border: 1px solid var(--naranja-valencia);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-detalles:hover {
+            background-color: var(--naranja-valencia);
+            color: var(--blanco);
+        }
+        
+        /* Experiencia */
+        .experiencia {
+            background-color: var(--arena);
+        }
+        
+        .experiencia-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .experiencia-text {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 30px;
+        }
+        
+        .experiencia-icons {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        
+        .icon-box {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .icon-box i {
+            font-size: 2.5rem;
+            color: var(--naranja-valencia);
+            margin-bottom: 15px;
+        }
+        
+        .reserva-segura {
+            background-color: var(--blanco);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: var(--sombra);
+        }
+        
+        /* Valencia */
+        .valencia-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .valencia-card {
+            background-color: var(--blanco);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+            transition: transform 0.3s;
+        }
+        
+        .valencia-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .valencia-img {
+            height: 160px;
+            background-color: var(--beige);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gris-oscuro);
+        }
+        
+        .valencia-content {
+            padding: 20px;
+        }
+        
+        .valencia-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--gris-oscuro);
+        }
+        
+        /* Contacto */
+        .contacto {
+            background-color: var(--arena);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--blanco);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .btn-contacto {
+            background-color: var(--naranja-valencia);
+            color: var(--blanco);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-contacto:hover {
+            background-color: #d35400;
+        }
+        
+        .aviso-legal {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--gris-oscuro);
+            color: var(--blanco);
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--blanco);
+            margin-bottom: 15px;
+        }
+        
+        .footer-contacto {
+            margin-bottom: 20px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            color: var(--blanco);
+            font-size: 1.3rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--naranja-valencia);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Botón WhatsApp */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: var(--blanco);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+        
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Chatbot */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 25px;
+            background-color: var(--azul-mar);
+            color: var(--blanco);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+        
+        .chatbot-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Animaciones */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 5px 15px 5px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .apartamentos-grid, .valencia-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .experiencia-content {
+                flex-direction: column;
+            }
+            
+            .experiencia-text {
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">Coroa Silence</div>
+            <nav>
+                <ul>
+                    <li><a href="#apartamentos">Apartamentos</a></li>
+                    <li><a href="#experiencias">Experiencias</a></li>
+                    <li><a href="#reservas">Reservas</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="language-selector">
+                <button class="active">ES</button>
+                <button>EN</button>
+            </div>
+            <button class="btn-reserva">Reserva directa</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Tu refugio de calma en el corazón de Valencia.</h1>
+            <p>Diseño, confort y tecnología inteligente para una estancia inolvidable.</p>
+            <button class="btn-hero">Ver apartamentos</button>
+        </div>
+    </section>
+
+    <!-- Filosofía -->
+    <section class="filosofia">
+        <div class="container">
+            <h2 class="section-title">Nuestra Filosofía</h2>
+            <div class="filosofia-content">
+                <p>Coroa Silence Apartments es una colección de alojamientos de media estancia diseñados para quienes buscan confort, conexión y autenticidad. Cada detalle refleja el equilibrio entre el diseño mediterráneo y la innovación digital.</p>
+                
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <i class="fas fa-play-circle" style="font-size: 3rem; margin-right: 15px;"></i>
+                        Video de presentación
+                    </div>
+                </div>
+                
+                <button class="btn-hero">Conócenos</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apartamentos -->
+    <section id="apartamentos" class="apartamentos">
+        <div class="container">
+            <h2 class="section-title">Nuestros Apartamentos</h2>
+            <div class="apartamentos-grid">
+                <!-- Apartamento 1 -->
+                <div class="apartamento-card fade-in">
+                    <div class="apartamento-img">Mercat</div>
+                    <div class="apartamento-content">
+                        <h3 class="apartamento-title">Mercat</h3>
+                        <p class="apartamento-desc">Un espacio luminoso junto al Mercado Central, con vistas a la vida valenciana.</p>
+                        <div class="amenities">
+                            <div class="amenity"><i class="fas fa-wifi"></i> WiFi</div>
+                            <div class="amenity"><i class="fas fa-snowflake"></i> Aire Acondicionado</div>
+                            <div class="amenity"><i class="fas fa-tv"></i> Smart TV</div>
+                            <div class="amenity"><i class="fas fa-utensils"></i> Cocina</div>
+                            <div class="amenity"><i class="fas fa-elevator"></i> Ascensor</div>
+                        </div>
+                        <button class="btn-detalles">Ver detalles</button>
+                    </div>
+                </div>
+                
+                <!-- Apartamento 2 -->
+                <div class="apartamento-card fade-in">
+                    <div class="apartamento-img">Nest</div>
+                    <div class="apartamento-content">
+                        <h3 class="apartamento-title">Nest</h3>
+                        <p class="apartamento-desc">Un acogedor nido en el barrio del Carmen, perfecto para parejas.</p>
+                        <div class="amenities">
+                            <div class="amenity"><i class="fas fa-wifi"></i> WiFi</div>
+                            <div class="amenity"><i class="fas fa-snowflake"></i> Aire Acondicionado</div>
+                            <div class="amenity"><i class="fas fa-tv"></i> Smart TV</div>
+                            <div class="amenity"><i class="fas fa-utensils"></i> Cocina</div>
+                            <div class="amenity"><i class="fas fa-elevator"></i> Ascensor</div>
+                        </div>
+                        <button class="btn-detalles">Ver detalles</button>
+                    </div>
+                </div>
+                
+                <!-- Apartamento 3 -->
+                <div class="apartamento-card fade-in">
+                    <div class="apartamento-img">Furio</div>
+                    <div class="apartamento-content">
+                        <h3 class="apartamento-title">Furio</h3>
+                        <p class="apartamento-desc">Diseño minimalista en el corazón de Ruzafa, el barrio más trendy.</p>
+                        <div class="amenities">
+                            <div class="amenity"><i class="fas fa-wifi"></i> WiFi</div>
+                            <div class="amenity"><i class="fas fa-snowflake"></i> Aire Acondicionado</div>
+                            <div class="amenity"><i class="fas fa-tv"></i> Smart TV</div>
+                            <div class="amenity"><i class="fas fa-utensils"></i> Cocina</div>
+                            <div class="amenity"><i class="fas fa-elevator"></i> Ascensor</div>
+                        </div>
+                        <button class="btn-detalles">Ver detalles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiencia -->
+    <section id="experiencias" class="experiencia">
+        <div class="container">
+            <h2 class="section-title">Experiencia Automatizada</h2>
+            <div class="experiencia-content">
+                <div class="experiencia-text">
+                    <p>Nuestra web integra un motor de reservas inteligente, comunicación automatizada por email y WhatsApp, y un panel de métricas que simplifica la gestión y mejora tu experiencia.</p>
+                    
+                    <div class="reserva-segura">
+                        <h3>Reservas seguras y sin comisiones</h3>
+                        <p>Reserva directamente con nosotros y ahorra en comisiones de intermediarios.</p>
+                    </div>
+                </div>
+                
+                <div class="experiencia-icons">
+                    <div class="icon-box">
+                        <i class="far fa-calendar-alt"></i>
+                        <p>Reservas Inteligentes</p>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fas fa-robot"></i>
+                        <p>Chatbot Asistente</p>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fas fa-chart-line"></i>
+                        <p>Métricas en Tiempo Real</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valencia -->
+    <section class="valencia">
+        <div class="container">
+            <h2 class="section-title">Vive Valencia</h2>
+            <div class="valencia-grid">
+                <!-- Lugar 1 -->
+                <div class="valencia-card fade-in">
+                    <div class="valencia-img">Ciudad de las Artes y las Ciencias</div>
+                    <div class="valencia-content">
+                        <h3 class="valencia-title">Ciudad de las Artes y las Ciencias</h3>
+                        <p>El complejo arquitectónico más emblemático de Valencia.</p>
+                    </div>
+                </div>
+                
+                <!-- Lugar 2 -->
+                <div class="valencia-card fade-in">
+                    <div class="valencia-img">Mercado Central</div>
+                    <div class="valencia-content">
+                        <h3 class="valencia-title">Mercado Central</h3>
+                        <p>Uno de los mercados más grandes de Europa con productos frescos locales.</p>
+                    </div>
+                </div>
+                
+                <!-- Lugar 3 -->
+                <div class="valencia-card fade-in">
+                    <div class="valencia-img">Playa de la Malvarrosa</div>
+                    <div class="valencia-content">
+                        <h3 class="valencia-title">Playa de la Malvarrosa</h3>
+                        <p>Disfruta del Mediterráneo en esta emblemática playa urbana.</p>
+                    </div>
+                </div>
+                
+                <!-- Lugar 4 -->
+                <div class="valencia-card fade-in">
+                    <div class="valencia-img">Jardín del Turia</div>
+                    <div class="valencia-content">
+                        <h3 class="valencia-title">Jardín del Turia</h3>
+                        <p>Recorre en bici el antiguo cauce del río convertido en jardín.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn-hero">Explorar experiencias</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="contacto">
+        <div class="container">
+            <h2 class="section-title">Contacto y Reserva Rápida</h2>
+            <div class="form-container">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechas">Fechas de estancia</label>
+                        <input type="text" id="fechas" name="fechas" placeholder="Selecciona fechas" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="personas">Número de personas</label>
+                        <select id="personas" name="personas" required>
+                            <option value="">Selecciona</option>
+                            <option value="1">1 persona</option>
+                            <option value="2">2 personas</option>
+                            <option value="3">3 personas</option>
+                            <option value="4">4 personas</option>
+                            <option value="5+">5+ personas</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-contacto">Solicitar disponibilidad</button>
+                </form>
+                
+                <p class="aviso-legal">Al enviar este formulario aceptas nuestra política de privacidad. Te contactaremos en un plazo máximo de 24 horas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">Coroa Silence</div>
+                    <div class="footer-contacto">
+                        <p><i class="fas fa-envelope"></i> iaavantis@gmail.com</p>
+                        <p><i class="fas fa-phone"></i> +34 600 500 400</p>
+                    </div>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-booking"></i></a>
+                        <a href="#"><i class="fab fa-airbnb"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>Desarrollado por Avantis IA – Valencia, 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botones flotantes -->
+    <a href="https://wa.me/34600500400" class="whatsapp-btn" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    
+    <div class="chatbot-btn">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <script>
+        // Animación de aparición al hacer scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('visible');
+                    }
+                });
+            };
+            
+            // Ejecutar al cargar la página
+            fadeInOnScroll();
+            
+            // Ejecutar al hacer scroll
+            window.addEventListener('scroll', fadeInOnScroll);
+            
+            // Cambio de idioma (simulado)
+            const languageButtons = document.querySelectorAll('.language-selector button');
+            languageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    languageButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Aquí iría la lógica para cambiar el idioma de la página
+                    alert('Idioma cambiado a: ' + this.textContent);
+                });
+            });
+            
+            // Envío del formulario
+            const contactForm = document.getElementById('contact-form');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('¡Gracias por tu solicitud! Te contactaremos en breve.');
+                contactForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>

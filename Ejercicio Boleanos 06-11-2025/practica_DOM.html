@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado películas</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,700;1,300;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .contenedor {
+            width: 1200px;
+            background-color: linen;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: burlywood;
+            text-align: center;
+            text-shadow: 2px 2px 0 black;
+        }
+
+        .entrada {
+            margin: 2rem auto;
+            width: 60%;
+            background-color: burlywood;
+            padding: 1rem;
+            border-radius: .5rem;
+        }
+
+        .form-entrada {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .bloque-a {
+            width: 80%;
+        }
+
+        .fila {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: snow;
+        }
+
+        .fila label {
+            display: inline-block;
+            width: 40%;
+            text-align: right;
+            margin-right: 1rem;
+        }
+
+        #nombre_peli {
+            border: 0;
+            padding: 0.2rem .5rem;
+            color: darkgoldenrod;
+            font-size: 1.2rem;
+            font-style: italic;
+            font-family: Ubuntu;
+            width: 15rem;
+        }
+
+        .fila select {
+            width: 15rem;
+            border: 0;
+            font-size: 1rem;
+            color: darkgoldenrod;
+            font-family: ubuntu;
+        }
+
+        button {
+            width: 6rem;
+            border: 0;
+            padding: .3rem;
+            font-size: 1.2rem;
+            font-family: ubuntu;
+            font-style: italic;
+            font-weight: bold;
+            color: darkgoldenrod;
+        }
+
+        .salida {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .salida article {
+            width: 33%;
+        }
+
+        .tit-categoria {
+            color: burlywood;
+            border-bottom: 3px solid;
+            margin: 0 1rem;
+            text-align: center;
+        }
+
+        .rojo {
+            border: 2px solid;
+            color: darkred;
+            background-color: tomato;
+        }
+
+        .amarillo {
+            border: 2px solid;
+            color: darkgoldenrod;
+            background-color: yellow;
+        }
+
+        .verde {
+            border: 2px solid;
+            color: darkgreen;
+            background-color: lime;
+        }
+
+        .salida p {
+            margin: 1rem;
+            font-size: 1.5rem;
+            padding: 0.2rem;
+            border-radius: 0.3rem;
+        }
+
+        #mensajes {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            width: 300px;
+            transition: all 0.5s;
+        }
+        .mostrar {
+                right: 20px !important;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Biblioteca películas</h1>
+        <div class="entrada">
+            <div class="form-entrada">
+                <div class="bloque-a">
+                    <div class="fila">
+                        <label for="nombre_peli">Título</label>
+                        <input type="text" id="nombre_peli" name="nombre_peli">
+                    </div>
+                    <div class="fila">
+                        <label for="categoria_peli">Selecciona categoría</label>
+                        <select name="categoria_peli" id="categoria_peli">
+                            <option value="art_comedia">Comedia</option>
+                            <option value="art_drama">Drama</option>
+                            <option value="art_docu">Documental</option>
+                        </select>
+                    </div>
+                    <div class="fila">
+                        <label for="color_peli">Selecciona Código</label>
+                        <select name="color_peli" id="color_peli">
+                            <option value="rojo">Rojo</option>
+                            <option value="amarillo">Amarillo</option>
+                            <option value="verde">Verde</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bloque-b">
+                    <div class="fila">
+                        <button onclick="guardaPeli()">Añadir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="salida">
+            <article id="art_comedia">
+                <h2 class="tit-categoria">Comedia</h2>
+            </article>
+            <article id="art_drama">
+                <h2 class="tit-categoria">Drama</h2>
+            </article>
+            <article id="art_docu">
+                <h2 class="tit-categoria">Documental</h2>
+            </article>
+        </section>
+        <div class="success" id="mensajes">
+            <h4 class="alert-heading">Cuadro de Mensajes</h4>
+            <p> </p>
+        </div>
+    </div>
+    <script>
+        // FUNCIÓN PRINCIPAL
+        function guardaPeli() {
+            // Capturar elementos del DOM    
+            const inputTitulo = document.getElementById("nombre_peli");
+            const selectCategoria = document.getElementById("categoria_peli");
+            const selectColor = document.getElementById("color_peli");
+    
+            // Valores introducidos
+            const titulo = inputTitulo.value.trim();
+            const categoria = selectCategoria.value;
+            const color = selectColor.value;
+    
+            // Seleccionar contenedor de destino
+            const articleDestino = document.getElementById(categoria);
+    
+            // Validación
+            if (titulo === "") {
+                muestraMensaje(2, "danger", inputTitulo);
+                inputTitulo.focus();
+                return;
+            }
+    
+            // Crear el elemento <p>
+            const nuevoParrafo = document.createElement("p");
+            const textoNodo = document.createTextNode(titulo);
+    
+            // Insertar el texto dentro de <p>
+            nuevoParrafo.appendChild(textoNodo);
+    
+            // Agrega un color seleccionado
+            nuevoParrafo.classList.add(color);
+    
+            // Inserta <p> dentro del <article> elegido
+            articleDestino.appendChild(nuevoParrafo);
+    
+            // Muestra mensaje de éxito con el título
+            muestraMensaje(1, "success", titulo,inputTitulo);
+    
+            // Limpia y devuelve el foco
+            inputTitulo.value = "";
+            inputTitulo.focus();
+        }
+    
+        // FUNCIÓN MENSAJE
+        function muestraMensaje(contenido, formato, nombre_peli) {
+            const mensaje = document.querySelector('#mensajes');
+            const titulo = mensaje.querySelector('h4');
+            const parrafo = mensaje.querySelector('p');
+    
+            let tit_txt = '';
+            let par_txt = '';
+    
+    
+            switch (contenido) {
+                case 1:
+                    tit_txt = 'Película Añadida';
+                    par_txt = `La película "${nombre_peli}" se ha añadido correctamente.`;
+                    break;
+                case 2:
+                    tit_txt = 'Dato no válido';
+                    par_txt = 'Introduce un título válido.';
+                    break;
+                default:
+                    tit_txt = 'Cuadro de Mensajes';
+                    par_txt = 'En este espacio se muestran los mensajes de la aplicación.';
+                    break;
+            }
+    
+            // Mostrar mensaje en pantalla
+            mensaje.className = 'mostrar';
+            mensaje.classList.add( formato);
+            titulo.textContent = tit_txt;
+            parrafo.textContent = par_txt;
+    
+            // Ocultar mensaje después de 3 segundos
+            setTimeout(() => {
+                mensaje.classList.remove("mostrar");
+            }, 3000);
+        }
+    </script>    
+
+</body>
+
+</html>

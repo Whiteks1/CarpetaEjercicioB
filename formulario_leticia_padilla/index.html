@@ -1,0 +1,54 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario 1</title>
+</head>
+
+<body>
+    <div class="fila-form">
+        <form>
+            <label for="nombre">Nombre:</label><br>
+            <input type="text" id="nombre" name="name_user"><br>
+            <label for="telefono">Teléfono:</label><br>
+            <input type="tel" id="telefono" name="ftelf"><br>
+            <label for="horasdeestudio">Horas Semanales de Estudio:</label><br>
+            <input type="range" id="horas" name="fhoras">
+        </form>
+    </div>
+
+    <div class="fila-form">
+        <form>
+            <label for="email"> E-mail:</label><br>
+            <input type="email" id="email" name="femail"><br>
+            <label for="nacimiento">Fecha de Nacimiento:</label><br>
+            <input type="date" id="fechaNacimiento" name="lfecha"><br>
+            <label for="contraseña">Escribe tu Contraseña</label>
+            <input type="password" name="contraseña" id="fcontraseña">
+        </form>
+    </div>
+    <div class="file-form">
+        <form>
+            <label for="opciones">Selecciona Rango de Edad:</label>
+            <select id="rangos-edad" name="opciones">
+                <option value="opcion1">Menos de 20 Años</option>
+                <option value="opcion2">Entre 20 y 40 Años</option>
+                <option value="opcion3">Más de 40 Años</option>
+            </select>
+    </div>
+    <div class="fila-form">
+        <label for="lista-multiple">Indica el Nivel de Estudios Terminados</label>
+        <select name="lista-multiple" id="lista">
+                <option value="select">-Seleciona-</option>
+                <option value="1">Primaria</option>
+                <option value="2">Secundaria</option>
+                <option value="3">Bachillerato</option>
+                <option value="4">Grado Medio</option>
+                <option value="5">Ciclo Formativo</option>
+                <option value="6">Ingeniería Técnica</option>
+        </select>
+    </div>
+</body>
+
+</html>

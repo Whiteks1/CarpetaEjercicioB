@@ -1,0 +1,11 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+.centrado{
+    text-align: center;
+    background-color: aquamarine;
+    border: 1px solid black;
+    width: 250px;
+    margin: 2rem auto;
+}
