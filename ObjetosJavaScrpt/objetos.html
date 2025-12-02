@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Uso de Objetos</title>
+    </head>
+
+    <body>
+        <h1>Uso de objetos</h1>
+        <h2>Iterar un objeto con el bucle <em>for ... in</em></h2>
+        <p>Dado este objeto:</p>
+        <pre><code>
+        let aula = {
+            nombre: "Aula 1",
+            ancho: 8,
+            largo: 12,
+            puestos: 15,
+            tieneProyector: true,
+            tienePortero: false
+        } 
+    </code></pre>
+        <p>Iteramos todas sus propiedades para generar un listado con este
+            bucle:</p>
+        <pre><code>
+        for (const key in aula) {
+            if (!Object.hasOwn(aula, key)) continue;
+            const element = aula[key];
+            let parrafo = document.createElement('p')
+            parrafo.innerHTML ='La propiedad &lt;strong>' + key + '&lt;/strong> es ' + element
+            document.getElementById('aula').append(parrafo)
+        }
+    </code></pre>
+
+        <h4 id="titulo"></h4>
+        <div id="aula"></div>
+
+        <script>
+        let miArray = new Array();
+        miArray[0] = 'Javi';
+        miArray.push('Jorge');
+        let array2 = [1, 2, 3];
+        console.log(miArray);
+
+        let miObjeto = new Object();
+        miObjeto["alumno1"] = "Pilar";
+        miObjeto.alumno2 = "Leticia";
+        miObjeto.miembros = 2;
+
+        let aula = {
+            nombre: "Aula 1",
+            ancho: 8,
+            largo: 12,
+            puestos: 15,
+            tieneProyector: true,
+            tienePortero: false,
+            alumnos: ['Leticia', 'Pilar', 'Jorge', 'Javier'],
+            resumen: function () {
+                return `El ${this.nombre} tiene ${this.puestos} puestos`;
+            },
+            superficie: function () {
+                return `La superficie del ${this.nombre} es ${this.ancho * this.largo} m2`;
+            }
+        };
+
+        console.log(miObjeto);
+        console.log(miObjeto.miembros * 4);
+        console.log(aula);
+        console.log(aula.resumen());
+
+        for (const key in aula) {
+            if (!Object.hasOwn(aula, key)) continue;
+            const element = aula[key];
+            if (typeof element === 'function') continue; // Nos saltamos las funciones
+            let parrafo = document.createElement('p');
+            parrafo.innerHTML = 'La propiedad <strong>' + key + '</strong> es ' + element;
+            document.getElementById('aula').append(parrafo);
+        }
+
+        // Usamos innerHTML para que el <br> se interprete como salto de línea
+        document.getElementById('titulo').innerHTML = aula.resumen() + '<br>' + aula.superficie();
+        //Uso de un constructor de objetos
+        function Repartidor(nombre, vehiculo, experiencia){
+            this.nombre = nombre;
+            this.vehiculo = vehiculo;
+            this.experiencia = experiencia; //en años}
+        }
+        function caja(color,largo, ancho, destino, repartidor){
+            this.color = color;
+            this.largo = largo;
+            this.ancho = ancho;
+            this.destino = destino;
+            this.repartidor = repartidor;
+            this.superficie = function(){
+                return this.ancho * this.largo;
+            }
+            this.volumen = function(alto){
+                return this.superficie() * alto;
+            }
+                
+        }
+        let repartidor1 = new Repartidor('Alberto', '1234ABC', 15);
+        let repartidor2 = new Repartidor('Jorge', '9876ZXY', 5);
+        let caja1 = new caja( 50, 90, 'green', 'Nacional' ,' repartidor2);');
+        let caja2 = new caja( 60, 30, 'crimson', 'Internacional' , 'repartidor1);');
+        console.log(caja1, caja2);
+        console.log(caja2.volumen(30));
+        console.log(caja1.repartidor.nombre);
+    </script>
+    </body>
+
+</html>
