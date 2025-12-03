@@ -1,104 +1,195 @@
 <!DOCTYPE html>
 <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestor de Paquetería</title>
+        <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Paquetería</title>
-</head>
+    .contenedor {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
 
-<body>
-    <h1>Gestor de Paquetería</h1>
-    <p>Aplicación que gestiona repartidores y paquetes usando objetos.</p>
+    h1, h2 {
+        text-align: center;
+    }
 
-    <ul>
-        <li>Objeto <strong>Repartidor</strong></li>
-        <li>Objeto <strong>Paquete</strong></li>
-        <li>Interfaz para crear repartidores</li>
-        <li>Los repartidores se almacenan en un <code>Array</code></li>
-        <li>Interfaz para crear paquetes</li>
-        <li>El repartidor de cada paquete se selecciona desde un <code>&lt;select&gt;</code></li>
-        <li>Cada objeto <code>Paquete</code> se guarda en un objeto principal <code>Reparto</code></li>
-        <li>Representación visual de cada paquete con su información</li>
-    </ul>
+    form {
+        background: #fafafa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
 
-    <!-- FORMULARIO REPARTIDOR -->
-    <form id="formRepartidor">
-        <h2>Crear Repartidor</h2>
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
 
-        <label for="nombreRepartidor">Nombre:</label>
-        <input type="text" id="nombreRepartidor" required>
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
 
-        <label for="vehiculoRepartidor">Vehículo (matrícula):</label>
-        <input type="text" id="vehiculoRepartidor" required>
+    button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 10px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
 
-        <label for="experienciaRepartidor">Experiencia (años):</label>
-        <input type="number" id="experienciaRepartidor" min="0" value="0" required>
+    button:hover {
+        background-color: #2980b9;
+    }
+    #listadoPaquetes {
+        margin-top: 20px;
+    }   
+    .paquete-card {
+        background: #fff;
+        padding: 15px;
+        border-left: 6px solid #3498db;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row;
+        gap: 20px;
+    }
 
-        <button type="submit">Crear Repartidor</button>
-    </form>
+    .paquete-card p {
+        margin: 5px 0;
+    }
 
-    <!-- FORMULARIO PAQUETE -->
-    <form id="formPaquete">
-        <h2>Crear Paquete</h2>
+    .paquete-dibujo {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #ccc;
+        border-radius: 10px;    
+    }
+</style>
 
-        <label for="descripcionPaquete">Descripción:</label>
-        <input type="text" id="descripcionPaquete" required>
+    </head>
+    <body>
+        <div class="contenedor">
+            <h1>Gestión de Datos Usando Objetos</h1>
+            <p>El ejercicio consiste en una aplicación que gestione un sistema
+                de reparto de paquetes con las siguientes caracteristícas</p>
+            <ul>
+                <li>Un objeto repartidor</li>
+                <li>Un objeto paquete</li>
+                <li>Interfaz para crear repartidores</li>
+                <li>Los repartidores se almacenan en un Array</li>
+                <li>Interfaz para crear paquetes</li>
+                <li>Repartidor de cada paquete creado se selecciona desde un
+                    elemento select</li>
+                <li>Cada objeto <code>paquete</code> se guarda en un objeto
+                    principal,
+                    llamado <code>Reparto</code></li>
+                <li>Representación visual de cada paquete creado con su
+                    información</li>
+            </ul>
 
-        <label for="pesoPaquete">Peso (kg):</label>
-        <input type="number" id="pesoPaquete" min="0.1" step="0.1" required>
+            <div id="repartidor">
+                <form id="formRepartidor">
+                    <h2>Crear Repartidor</h2>
+                    <label for="nombreRepartidor">Nombre:</label>
+                    <input type="text" id="nombreRepartidor" required>
 
-        <label for="largoPaquete">Largo (cm):</label>
-        <input type="number" id="largoPaquete" min="1" required>
+                    <label for="vehiculoRepartidor">Vehículo: Matrícula</label>
+                    <input type="text" id="vehiculoRepartidor" required>
 
-        <label for="anchoPaquete">Ancho (cm):</label>
-        <input type="number" id="anchoPaquete" min="1" required>
+                    <label for="experienciaRepartidor">Experiencia
+                        (años):</label>
+                    <input type="number" id="experienciaRepartidor" min="0"
+                        value="0" required>
 
-        <label for="destinoPaquete">Destino:</label>
-        <input type="text" id="destinoPaquete" required>
+                    <button type="submit">Crear Repartidor</button>
+                </form>
 
-        <label for="colorPaquete">Color:</label>
-        <input type="text" id="colorPaquete" required>
+                <form id="formPaquete">
+                    <h2>Crear Paquete</h2>
 
-        <label for="repartidorPaquete">Repartidor:</label>
-        <select id="repartidorPaquete" required>
-            <option value="" disabled selected>Seleccione un repartidor</option>
-        </select>
+                    <label for="pesoPaquete">Peso (kg)</label>
+                    <input type="number" id="pesoPaquete" min="0.1" step="0.1"
+                        required>
 
-        <button type="submit">Crear Paquete</button>
-    </form>
+                    <label for="largoPaquete">Largo (cm)</label>
+                    <input type="number" id="largoPaquete" min="1" required>
+            
+                    <label for="anchoPaquete">Ancho (cm)</label>
+                    <input type="number" id="anchoPaquete" min="1" required>
 
-    <h2>Paquetes creados</h2>
-    <div id="listadoPaquetes"></div>
+                    <label for="altoPaquete">Alto (cm)</label>
+                    <input type="number" id="altoPaquete" min="1" required>
 
-    <script>
-        /********* CONSTRUCTORES (MISMA LÓGICA QUE TU CÓDIGO) *********/
 
-        function Repartidor(nombre, vehiculo, experiencia) {
-            this.nombre = nombre;
-            this.vehiculo = vehiculo;
-            this.experiencia = experiencia; // en años
-        }
+                    <label for="destinoPaquete">Destino</label>
+                    <input type="text" id="destinoPaquete" required>
 
-        function Paquete(id, descripcion, peso, largo, ancho, destino, color, repartidor) {
-            this.id = id;
-            this.descripcion = descripcion;
-            this.peso = peso;
-            this.largo = largo;
-            this.ancho = ancho;
-            this.destino = destino;
-            this.color = color;
-            this.repartidor = repartidor;
-            this.superficie = function () {
-                return this.ancho * this.largo;
-            };
-            this.volumen = function (alto) {
-                return this.superficie() * alto;
-            };
-        }
+                    <label for="colorPaquete">Color</label>
+                    <select id="colorPaquete" required>
+                        <option value = "" disabled selected>Seleccione un
+                            color</option>
+                        <option value="red">Rojo</option>
+                        <option value="yellow">Amarillo</option>
+                        <option value="green">Verde</option>
+                        <option value="white">Blanco</option>
+                        <option value="black">Negro</option>
+                    </select>
 
-        /********* OBJETO PRINCIPAL REPARTO *********/
+                    <label for="repartidorPaquete">Repartidor</label>
+                    <select id="repartidorPaquete" required>
+                        <option value disabled selected>Seleccione un
+                            repartidor</option>
+                    </select>
 
+                    <button type="submit">Crear Paquete</button>
+                </form>
+            </div>
+
+            <h2>Paquetes Creados</h2>
+            <div id="listadoPaquetes"></div>
+            <div id="dibujo"></div>
+        </div>
+
+        <script>
+        // Referencias al DOM
+        const formRepartidor   = document.getElementById('formRepartidor');
+        const formPaquete      = document.getElementById('formPaquete'); 
+        const selectRepartidor = document.getElementById('repartidorPaquete');
+        const listadoPaquetes = document.getElementById('listadoPaquetes');
+    
+        // Array para almacenar los repartidores
+        let repartidores = [];
+
+        //Cada objeto paquete se guarda en un objeto principal Reparto
         let Reparto = {
             paquetes: [],
             agregarPaquete: function (paquete) {
@@ -106,22 +197,35 @@
             }
         };
 
-        /********* ESTRUCTURAS DE DATOS *********/
+        // Constructor Repartidor
+        function Repartidor(nombre, vehiculo, experiencia) {
+            this.nombre = nombre;
+            this.vehiculo = vehiculo;
+            this.experiencia = experiencia;
+        }
 
-        let listaRepartidores = []; // Array de repartidores
+        // Constructor Paquete
+        function Paquete(id, peso, largo, ancho, alto, destino, color, repartidor) {
+            this.id = id;
+            this.peso = peso;
+            this.largo = largo;
+            this.ancho = ancho;
+            this.alto = alto;
+            this.destino = destino;
+            this.color = color;
+            this.repartidor = repartidor;
+            // Métodos del paquete
+            this.superficie = function () {
+                return this.ancho * this.largo;
+            };
+            this.volumen = function () {
+                return this.superficie() * this.alto;
+            };
+        }
 
-        /********* REFERENCIAS AL DOM *********/
-
-        const formRepartidor = document.getElementById('formRepartidor');
-        const formPaquete = document.getElementById('formPaquete');
-        const selectRepartidor = document.getElementById('repartidorPaquete');
-        const listadoPaquetes = document.getElementById('listadoPaquetes');
-
-        /********* FUNCIONES AUXILIARES *********/
-
+        // Recorre el array de repartidores y actualiza el select
         function actualizarSelectRepartidores() {
             selectRepartidor.innerHTML = '';
-
             const opcionInicial = document.createElement('option');
             opcionInicial.value = '';
             opcionInicial.disabled = true;
@@ -129,62 +233,86 @@
             opcionInicial.textContent = 'Seleccione un repartidor';
             selectRepartidor.append(opcionInicial);
 
-            listaRepartidores.forEach(function (rep, index) {
-                const opt = document.createElement('option');
-                opt.value = index; // índice en el array
-                opt.textContent = rep.nombre + ' (' + rep.vehiculo + ')';
-                selectRepartidor.append(opt);
+            //rellenar con los repartidores del array
+            repartidores.forEach((repartidor, index) => {
+                const option = document.createElement('option');
+                option.value = index; // índice del repartidor en el array
+                option.textContent = repartidor.nombre + ' (' + repartidor.vehiculo + ')';
+                selectRepartidor.append(option);
             });
         }
 
+
+       //pinta los paquetes en el listado
         function pintarPaquetes() {
-            listadoPaquetes.innerHTML = '';
+        listadoPaquetes.innerHTML = ''; 
 
-            if (Reparto.paquetes.length === 0) {
-                listadoPaquetes.innerHTML = '<p>No hay paquetes creados.</p>';
-                return;
-            }
-
-            Reparto.paquetes.forEach(function (paquete) {
-                const card = document.createElement('div');
-                card.style.border = '1px solid #ccc';
-                card.style.margin = '10px 0';
-                card.style.padding = '10px';
-
-                // Recorremos las propiedades del paquete con for...in
-                for (const key in paquete) {
-                    if (!Object.hasOwn(paquete, key)) continue;
-                    const valor = paquete[key];
-                    if (typeof valor === 'function') continue; // saltamos métodos
-
-                    const p = document.createElement('p');
-
-                    // Caso especial: repartidor es un objeto, mostramos nombre y vehículo
-                    if (key === 'repartidor') {
-                        p.innerHTML = '<strong>' + key +
-                            '</strong> ' + valor.nombre + ' (' + valor.vehiculo + ')';
-                    } else {
-                        p.innerHTML = ' <strong>' + key +
-                            '</strong> ' + valor;
-                    }
-
-                    card.appendChild(p);
-                }
-
-                // Línea extra con superficie y volumen (usa los métodos del objeto)
-                const extra = document.createElement('p');
-                extra.innerHTML =
-                    'Superficie: <strong>' + paquete.superficie() +
-                    ' cm²</strong> — Volumen (alto = 30): <strong>' +
-                    paquete.volumen(30) + ' cm³</strong>';
-                card.appendChild(extra);
-
-                listadoPaquetes.appendChild(card);
-            });
+        if (Reparto.paquetes.length === 0) {
+            listadoPaquetes.innerHTML = '<p>No hay paquetes creados.</p>';
+            return;
         }
 
-        /********* EVENTO: CREAR REPARTIDOR *********/
+         // Recorre los paquetes y crea una tarjeta para cada uno    
+            Reparto.paquetes.forEach(function (paquete) {
+            // Crear tarjeta del paquete
+            const card = document.createElement('div');
+            card.className = 'paquete-card';
 
+            // Columna con información del paquete
+            const info = document.createElement('div');
+
+            const titulo = document.createElement('h3');
+            titulo.textContent = `Paquete #${paquete.id}`;
+
+            const peso = document.createElement('p');   
+            peso.textContent = `Peso: ${paquete.peso} kg`;
+
+            const dimensiones = document.createElement('p');
+            dimensiones.textContent =
+                `Dimensiones: ${paquete.largo} x ${paquete.ancho} x ${paquete.alto} cm (Sup: ${paquete.superficie()} cm²)`;
+
+            const color = document.createElement('p');
+            color.textContent = `Color: ${paquete.color}`;
+
+            const destino = document.createElement('p');
+            destino.textContent = `Destino: ${paquete.destino}`;    
+
+        // Información del repartidor
+            const repartidorInfo = document.createElement('p');
+            repartidorInfo.textContent =
+                `Repartidor: ${paquete.repartidor.nombre} (${paquete.repartidor.vehiculo})`;
+
+            // Añadir todos los elementos al contenedor info
+            info.appendChild(titulo);
+            info.appendChild(peso);
+            info.appendChild(dimensiones);
+            info.appendChild(color);
+            info.appendChild(destino);
+            info.appendChild(repartidorInfo);
+
+            // Columna con dibujo del paquete
+            const dibujo = document.createElement('div');
+            dibujo.id = 'dibujo' + paquete.id;
+            dibujo.className = 'paquete-dibujo';
+
+            // Añadir columnas a la card
+            card.appendChild(info);
+            card.appendChild(dibujo);
+
+            // Dibujar la caja en el div correspondiente
+            const canvas = draw(paquete.largo, paquete.ancho, paquete.alto, paquete.color);
+            dibujo.append(canvas);
+
+            // Añadir la tarjeta al listado 
+            listadoPaquetes.appendChild(card);
+        
+        
+
+    });
+}
+
+
+        // Manejo del formulario de repartidor
         formRepartidor.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -192,59 +320,115 @@
             const vehiculo = document.getElementById('vehiculoRepartidor').value.trim();
             const experiencia = parseInt(document.getElementById('experienciaRepartidor').value);
 
-            if (!nombre || !vehiculo || isNaN(experiencia)) {
+            if (!nombre || !vehiculo ||experiencia < 0) {
                 alert('Por favor, complete todos los campos del repartidor.');
                 return;
             }
-
+            // Crear nuevo repartidor y añadirlo al array
             const nuevoRepartidor = new Repartidor(nombre, vehiculo, experiencia);
-            listaRepartidores.push(nuevoRepartidor);
+            repartidores.push(nuevoRepartidor);
 
             actualizarSelectRepartidores();
             formRepartidor.reset();
+            
         });
 
-        /********* EVENTO: CREAR PAQUETE *********/
-
+        // Manejo del formulario de paquete
         formPaquete.addEventListener('submit', function (event) {
-            event.preventDefault();
+        event.preventDefault();
+            // Obtener valores del formulario
+        const peso = parseFloat(document.getElementById('pesoPaquete').value);
+        const largo = parseInt(document.getElementById('largoPaquete').value);
+        const ancho = parseInt(document.getElementById('anchoPaquete').value);
+        const alto   = parseInt(document.getElementById('altoPaquete').value);
+        const destino = document.getElementById('destinoPaquete').value;
+        const color = document.getElementById('colorPaquete').value;
+        // Obtener el índice del repartidor seleccionado
+        const indiceRepartidor = selectRepartidor.value;
 
-            const descripcion = document.getElementById('descripcionPaquete').value.trim();
-            const peso = parseFloat(document.getElementById('pesoPaquete').value);
-            const largo = parseFloat(document.getElementById('largoPaquete').value);
-            const ancho = parseFloat(document.getElementById('anchoPaquete').value);
-            const destino = document.getElementById('destinoPaquete').value.trim();
-            const color = document.getElementById('colorPaquete').value.trim();
-            const indiceRepartidor = selectRepartidor.value;
+        // Validación de campos
+        if (!peso || !largo || !ancho ||!alto || !destino || !color || indiceRepartidor === "") {
+            alert("Por favor, complete todos los campos del paquete.");
+            return;
+        }
+        // Crear nuevo paquete
+        const repartidorSeleccionado = repartidores[indiceRepartidor];
+        const nuevoIdPaquete = Reparto.paquetes.length + 1;
 
-            if (!descripcion || !peso || !largo || !ancho || !destino || !color || indiceRepartidor === '') {
-                alert('Por favor, complete todos los campos del paquete y seleccione un repartidor.');
-                return;
-            }
-
-            const repartidorAsignado = listaRepartidores[indiceRepartidor];
-            const nuevoId = Reparto.paquetes.length + 1;
-
-            const nuevoPaquete = new Paquete(
-                nuevoId,
-                descripcion,
-                peso,
-                largo,
-                ancho,
-                destino,
-                color,
-                repartidorAsignado
-            );
-
-            Reparto.agregarPaquete(nuevoPaquete);
-            pintarPaquetes();
-            formPaquete.reset();
-        });
-
-        // Estado inicial
-        actualizarSelectRepartidores();
+        const nuevoPaquete = new Paquete(
+            nuevoIdPaquete,
+            peso,
+            largo,
+            ancho,
+            alto,
+            destino,
+            color,
+            repartidorSeleccionado
+        );
+        // Agregar paquete al objeto Reparto
+        Reparto.agregarPaquete(nuevoPaquete);
+        // Actualizar la visualización de paquetes
         pintarPaquetes();
-    </script>
-</body>
+        formPaquete.reset();
+        // Reiniciar el select de repartidores
+        selectRepartidor.selectedIndex = 0;
+        
+    });
+    // Función para dibujar la caja del paquete
+    function draw(largo, ancho, alto, color) {
+        //Crear Canvas
+        const canvas = document.createElement("canvas");
+        canvas.width = 200;
+        canvas.height = 200;
+        const ctx = canvas.getContext("2d");
 
+        // Ajustar escala profundidad
+        largo = largo / 3;
+
+        // Limpia
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujo
+        // color y opacidad
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.6;
+
+        // líneas de contorno (mismo esquema que en el código A)
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(largo, largo);
+        ctx.lineTo(ancho + largo, largo);
+        ctx.lineTo(ancho, 0);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(0, alto);
+        ctx.lineTo(largo, largo + alto);
+        ctx.lineTo(ancho + largo, largo + alto);
+        ctx.lineTo(ancho + largo, largo);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // relleno de contorno
+        ctx.fill();
+
+        // rectángulo trasero (cara frontal)
+        ctx.fillRect(0, 0, ancho, alto);
+
+        // desplazar el rectángulo
+        ctx.translate(largo, largo);
+
+        // rectángulo desplazado (cara lateral)
+        ctx.fillRect(0, 0, ancho, alto);
+
+        // Añadir el canvas al elemento destino
+        return canvas;
+    }
+
+
+    
+    // Inicio
+    actualizarSelectRepartidores();
+    pintarPaquetes();
+    
+    </script>
+    </body>
 </html>
