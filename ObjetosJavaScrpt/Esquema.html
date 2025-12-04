@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Esquema - Gestor de Paquetería</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+        .contenedor {
+            max-width: 900px;
+            margin: auto;
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            text-align: left;
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        ul {
+            margin-top: 5px;
+        }
+        code {
+            background: #ecf0f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        pre {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        .bloque {
+            margin-bottom: 20px;
+        }
+        .subtitulo {
+            font-weight: bold;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Esquema — Gestor de Paquetería</h1>
+
+        <!-- 1. Objetivo -->
+        <div class="bloque">
+            <h2>1. Objetivo de la Aplicación</h2>
+            <ul>
+                <li>Gestionar <strong>repartidores</strong> y <strong>paquetes</strong> usando objetos.</li>
+                <li>Almacenar los repartidores en un <strong>array</strong>.</li>
+                <li>Almacenar los paquetes en el objeto principal <code>Reparto</code>.</li>
+                <li>Mostrar los paquetes visualmente con sus datos y un dibujo en <strong>canvas</strong>.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <!-- 2. Modelo de datos -->
+        <div class="bloque">
+            <h2>2. Modelo de Datos</h2>
+
+            <h3>2.1. Objeto <code>Repartidor</code></h3>
+            <p class="subtitulo">Atributos:</p>
+            <ul>
+                <li><code>nombre</code></li>
+                <li><code>vehiculo</code></li>
+                <li><code>experiencia</code></li>
+            </ul>
+            <p class="subtitulo">Constructor:</p>
+            <pre><code>function Repartidor(nombre, vehiculo, experiencia) {
+    this.nombre = nombre;
+    this.vehiculo = vehiculo;
+    this.experiencia = experiencia;
+}</code></pre>
+
+            <h3>2.2. Objeto <code>Paquete</code></h3>
+            <p class="subtitulo">Atributos:</p>
+            <ul>
+                <li><code>id</code></li>
+                <li><code>peso</code></li>
+                <li><code>largo</code>, <code>ancho</code>, <code>alto</code></li>
+                <li><code>destino</code></li>
+                <li><code>color</code></li>
+                <li><code>repartidor</code> (referencia a un objeto <code>Repartidor</code>)</li>
+            </ul>
+            <p class="subtitulo">Métodos:</p>
+            <ul>
+                <li><code>superficie()</code> → ancho × largo</li>
+                <li><code>volumen()</code> → superficie × alto</li>
+            </ul>
+            <p class="subtitulo">Constructor:</p>
+            <pre><code>function Paquete(id, peso, largo, ancho, alto, destino, color, repartidor) {
+    this.id = id;
+    this.peso = peso;
+    this.largo = largo;
+    this.ancho = ancho;
+    this.alto = alto;
+    this.destino = destino;
+    this.color = color;
+    this.repartidor = repartidor;
+
+    this.superficie = function () {
+        return this.ancho * this.largo;
+    };
+    this.volumen = function () {
+        return this.superficie() * this.alto;
+    };
+}</code></pre>
+
+            <h3>2.3. Objeto Principal <code>Reparto</code></h3>
+            <p class="subtitulo">Estructura:</p>
+            <pre><code>let Reparto = {
+    paquetes: [],
+    agregarPaquete: function (paquete) {
+        this.paquetes.push(paquete);
+    }
+};</code></pre>
+
+            <h3>2.4. Estructuras de Datos</h3>
+            <ul>
+                <li><code>repartidores</code>: array de objetos <code>Repartidor</code>.</li>
+                <li><code>Reparto.paquetes</code>: array de objetos <code>Paquete</code> dentro del objeto <code>Reparto</code>.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <!-- 3. Funciones principales -->
+        <div class="bloque">
+            <h2>3. Funciones Principales</h2>
+
+            <h3>3.1. <code>actualizarSelectRepartidores()</code></h3>
+            <ul>
+                <li>Limpia el elemento <code>&lt;select&gt;</code> de repartidores.</li>
+                <li>Añade la opción inicial “Seleccione un repartidor”.</li>
+                <li>Rellena el <code>&lt;select&gt;</code> recorriendo el array <code>repartidores</code>.</li>
+            </ul>
+
+            <h3>3.2. <code>pintarPaquetes()</code></h3>
+            <ul>
+                <li>Limpia el contenedor de la lista de paquetes.</li>
+                <li>Si no hay paquetes, muestra el mensaje “No hay paquetes creados.”</li>
+                <li>Recorre <code>Reparto.paquetes</code> y para cada paquete:
+                    <ul>
+                        <li>Crea una tarjeta con los datos del paquete.</li>
+                        <li>Crea un contenedor para el dibujo.</li>
+                        <li>Llama a <code>draw()</code> para generar el <code>canvas</code>.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>3.3. Manejador del Formulario de Repartidor</h3>
+            <ul>
+                <li>Valida los campos del formulario (nombre, vehículo, experiencia).</li>
+                <li>Crea un nuevo objeto <code>Repartidor</code>.</li>
+                <li>Lo añade al array <code>repartidores</code>.</li>
+                <li>Llama a <code>actualizarSelectRepartidores()</code>.</li>
+            </ul>
+
+            <h3>3.4. Manejador del Formulario de Paquete</h3>
+            <ul>
+                <li>Valida los campos del formulario (peso, dimensiones, destino, color, repartidor).</li>
+                <li>Obtiene el repartidor seleccionado a partir del índice en el array.</li>
+                <li>Genera un nuevo <code>id</code> para el paquete.</li>
+                <li>Crea un objeto <code>Paquete</code> y lo añade con <code>Reparto.agregarPaquete()</code>.</li>
+                <li>Actualiza la vista llamando a <code>pintarPaquetes()</code>.</li>
+            </ul>
+
+            <h3>3.5. Función <code>draw()</code></h3>
+            <ul>
+                <li>Crea un elemento <code>&lt;canvas&gt;</code>.</li>
+                <li>Escala las medidas si son demasiado grandes.</li>
+                <li>Dibuja una caja en “3D” simplificado usando el contexto 2D.</li>
+                <li>Devuelve el <code>canvas</code> para añadirlo a la tarjeta.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <!-- 4. Flujo paso a paso -->
+        <div class="bloque">
+            <h2>4. Flujo Paso a Paso</h2>
+
+            <h3>4.1. Al Cargar la Página</h3>
+            <ul>
+                <li>Se crean los repartidores iniciales (por defecto).</li>
+                <li>Se inicializa el objeto <code>Reparto</code>.</li>
+                <li>Se llama a <code>actualizarSelectRepartidores()</code>.</li>
+                <li>Se llama a <code>pintarPaquetes()</code> (no hay paquetes al inicio).</li>
+            </ul>
+
+            <h3>4.2. Crear un Repartidor</h3>
+            <ul>
+                <li>El usuario completa el formulario “Crear Repartidor”.</li>
+                <li>Al enviar, se valida la información.</li>
+                <li>Se crea un nuevo <code>Repartidor</code> y se añade al array <code>repartidores</code>.</li>
+                <li>Se actualiza el <code>&lt;select&gt;</code> del formulario de paquetes.</li>
+            </ul>
+
+            <h3>4.3. Crear un Paquete</h3>
+            <ul>
+                <li>El usuario rellena el formulario “Crear Paquete”.</li>
+                <li>Se valida que todos los campos estén completos.</li>
+                <li>Se obtiene el repartidor seleccionado desde el <code>&lt;select&gt;</code>.</li>
+                <li>Se genera <code>id = Reparto.paquetes.length + 1</code>.</li>
+                <li>Se crea un nuevo <code>Paquete</code> y se añade con <code>Reparto.agregarPaquete()</code>.</li>
+                <li>Se actualiza la vista llamando a <code>pintarPaquetes()</code>.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <!-- 5. Diagrama simple -->
+        <div class="bloque">
+            <h2>5. Diagrama Simple</h2>
+
+            <h3>5.1. Relación entre Objetos</h3>
+            <pre><code>           ┌──────────────────────┐
+           │       Reparto        │
+           │  - paquetes: []      │
+           │  + agregarPaquete()  │
+           └─────────┬────────────┘
+                     │ 1..*
+                     │
+           ┌─────────▼───────────┐
+           │       Paquete       │
+           │ id, peso, medidas   │
+           │ destino, color      │
+           │ repartidor          │
+           │ + superficie()      │
+           │ + volumen()         │
+           └─────────┬───────────┘
+                     │ 1
+                     │
+           ┌─────────▼───────────┐
+           │     Repartidor      │
+           │ nombre, vehiculo    │
+           │ experiencia         │
+           └─────────────────────┘</code></pre>
+
+            <h3>5.2. Flujo Usuario–Aplicación</h3>
+            <pre><code>Usuario → Form Repartidor → array repartidores → actualizarSelectRepartidores()
+Usuario → Form Paquete    → Reparto.paquetes → pintarPaquetes() + draw()</code></pre>
+        </div>
+    </div>
+</body>
+</html>

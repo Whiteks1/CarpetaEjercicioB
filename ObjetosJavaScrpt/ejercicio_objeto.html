@@ -9,11 +9,12 @@
         font-family: Arial, sans-serif;
         background: #f5f5f5;
         margin: 0;
-        padding: 20px;
+        padding: 40px;
+        
     }
 
     .contenedor {
-        max-width: 800px;
+        max-width: 1200px;
         margin: auto;
         background: white;
         padding: 20px;
@@ -31,6 +32,7 @@
         border-radius: 10px;
         margin-bottom: 20px;
         border: 1px solid #ddd;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.8);
     }
 
     label {
@@ -67,12 +69,12 @@
         margin-top: 20px;
     }   
     .paquete-card {
-        background: #fff;
-        padding: 15px;
+        background: #ffffff;
+        padding: 18px 20px;
         border-left: 6px solid #3498db;
         border-radius: 5px;
         margin-bottom: 15px;
-        box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.8);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -80,8 +82,26 @@
         gap: 20px;
     }
 
+    .paquete-card h3 {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #000000;
+    margin-bottom: 10px;
+    }
+
+    .paquete-card p::first-line {
+    font-weight: 600;
+    }
+
+    .paquete-card p span.label {
+    font-weight: 600;
+    color: #2c3e50;
+
+    }
     .paquete-card p {
         margin: 5px 0;
+        position: relative;
     }
 
     .paquete-dibujo {
@@ -91,8 +111,43 @@
         justify-content: center;
         align-items: center;
         border: 2px solid #ccc;
-        border-radius: 10px;    
+        border-radius: 10px;  
+        position: relative;
+        background: #f0f0f0;  
     }
+    #repartidor {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+    }
+
+    #repartidor form {
+    flex: 1;
+    }
+
+    #listadoPaquetes {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    }
+
+    .btn-eliminar {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        font-size: 16px;
+        background: #fff7f7;
+        color:  #c0392b;
+        border: none;
+        border-radius: 6px;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+    
+    }
+
 </style>
 
     </head>
@@ -142,20 +197,24 @@
 
                     <label for="largoPaquete">Largo (cm)</label>
                     <input type="number" id="largoPaquete" min="1" required>
-            
+
                     <label for="anchoPaquete">Ancho (cm)</label>
                     <input type="number" id="anchoPaquete" min="1" required>
 
                     <label for="altoPaquete">Alto (cm)</label>
                     <input type="number" id="altoPaquete" min="1" required>
 
-
                     <label for="destinoPaquete">Destino</label>
-                    <input type="text" id="destinoPaquete" required>
+                    <select id="destinoPaquete" required>
+                        <option value disabled selected>Seleccione
+                            destino</option>
+                        <option value="Nacional">Nacional</option>
+                        <option value="Internacional">Internacional</option>
+                    </select>
 
                     <label for="colorPaquete">Color</label>
                     <select id="colorPaquete" required>
-                        <option value = "" disabled selected>Seleccione un
+                        <option value disabled selected>Seleccione un
                             color</option>
                         <option value="red">Rojo</option>
                         <option value="yellow">Amarillo</option>
@@ -187,7 +246,9 @@
         const listadoPaquetes = document.getElementById('listadoPaquetes');
     
         // Array para almacenar los repartidores
-        let repartidores = [];
+        let repartidores = [
+            new Repartidor("Carlos Gómez", "1234-ABC", 5),
+            new Repartidor("Lucía Fernández", "9876-ZYX", 2)];
 
         //Cada objeto paquete se guarda en un objeto principal Reparto
         let Reparto = {
@@ -283,12 +344,12 @@
                 `Repartidor: ${paquete.repartidor.nombre} (${paquete.repartidor.vehiculo})`;
 
             // Añadir todos los elementos al contenedor info
-            info.appendChild(titulo);
-            info.appendChild(peso);
-            info.appendChild(dimensiones);
-            info.appendChild(color);
-            info.appendChild(destino);
-            info.appendChild(repartidorInfo);
+            info.append(titulo);
+            info.append(peso);
+            info.append(dimensiones);
+            info.append(color);
+            info.append(destino);
+            info.append(repartidorInfo);
 
             // Columna con dibujo del paquete
             const dibujo = document.createElement('div');
@@ -296,8 +357,20 @@
             dibujo.className = 'paquete-dibujo';
 
             // Añadir columnas a la card
-            card.appendChild(info);
-            card.appendChild(dibujo);
+            card.append(info);
+            card.append(dibujo);
+
+            const btnEliminar  = document.createElement('button');
+            btnEliminar.textContent = 'X';
+            btnEliminar.className = 'btn-eliminar';
+
+            btnEliminar.onclick = function () {
+                // Eliminar paquete del array
+                Reparto.paquetes = Reparto.paquetes.filter(p => p.id !== paquete.id);
+                // Volver a pintar los paquetes
+                pintarPaquetes();
+            };
+            card.appendChild(btnEliminar);
 
             // Dibujar la caja en el div correspondiente
             const canvas = draw(paquete.largo, paquete.ancho, paquete.alto, paquete.color);
@@ -374,55 +447,63 @@
         selectRepartidor.selectedIndex = 0;
         
     });
-    // Función para dibujar la caja del paquete
+        // Función para dibujar el paquete en un canvas
     function draw(largo, ancho, alto, color) {
-        //Crear Canvas
-        const canvas = document.createElement("canvas");
-        canvas.width = 200;
-        canvas.height = 200;
-        const ctx = canvas.getContext("2d");
+    const canvas = document.createElement("canvas");
+    canvas.width = 200;
+    canvas.height = 200;
+    const ctx = canvas.getContext("2d");
 
-        // Ajustar escala profundidad
-        largo = largo / 3;
+    // --- Escalado automático si las medidas son grandes ---
+    const maxMedida = Math.max(largo, ancho, alto);
+    const maxPermitido = 150;      // tamaño máximo dibujable
+    const factor = maxMedida > maxPermitido ? maxPermitido / maxMedida : 1;
 
-        // Limpia
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    largo *= factor;
+    ancho *= factor;
+    alto  *= factor;
 
-        // Dibujo
-        // color y opacidad
-        ctx.fillStyle = color;
-        ctx.globalAlpha = 0.6;
+    // Profundidad (igual que antes)
+    const d = largo / 3;
 
-        // líneas de contorno (mismo esquema que en el código A)
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(largo, largo);
-        ctx.lineTo(ancho + largo, largo);
-        ctx.lineTo(ancho, 0);
-        ctx.lineTo(0, 0);
-        ctx.lineTo(0, alto);
-        ctx.lineTo(largo, largo + alto);
-        ctx.lineTo(ancho + largo, largo + alto);
-        ctx.lineTo(ancho + largo, largo);
-        ctx.lineWidth = 2;
-        ctx.stroke();
+    // --- Cálculo del tamaño del dibujo final ---
+    const dibujoWidth  = ancho + d;
+    const dibujoHeight = alto + d;
 
-        // relleno de contorno
-        ctx.fill();
+    // --- Centramos el dibujo ---
+    const offsetX = (canvas.width  - dibujoWidth)  / 2;
+    const offsetY = (canvas.height - dibujoHeight) / 2;
+    ctx.translate(offsetX, offsetY);
 
-        // rectángulo trasero (cara frontal)
-        ctx.fillRect(0, 0, ancho, alto);
+    // Estilo
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.6;
 
-        // desplazar el rectángulo
-        ctx.translate(largo, largo);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(d, d);
+    ctx.lineTo(ancho + d, d);
+    ctx.lineTo(ancho, 0);
+    ctx.lineTo(0, 0);
 
-        // rectángulo desplazado (cara lateral)
-        ctx.fillRect(0, 0, ancho, alto);
+    ctx.lineTo(0, alto);
+    ctx.lineTo(d, alto + d);
+    ctx.lineTo(ancho + d, alto + d);
+    ctx.lineTo(ancho + d, d);
 
-        // Añadir el canvas al elemento destino
-        return canvas;
-    }
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fill();
 
+    // Cara trasera
+    ctx.fillRect(0, 0, ancho, alto);
+
+    // Cara frontal desplazada
+    ctx.translate(d, d);
+    ctx.fillRect(0, 0, ancho, alto);
+
+    return canvas;
+}
 
     
     // Inicio
