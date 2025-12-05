@@ -65,21 +65,42 @@
     button:hover {
         background-color: #2980b9;
     }
-    #listadoPaquetes {
-        margin-top: 20px;
-    }   
-    .paquete-card {
-        background: #ffffff;
-        padding: 18px 20px;
-        border-left: 6px solid #3498db;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.8);
+
+    #repartidor {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        flex-direction: row;
         gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    #repartidor form {
+        flex: 1 1 300px;    }   
+
+    #listadoPaquetes {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .paquete-card .info-paquete {
+    width: 100%;
+
+}
+
+    
+    .paquete-card {
+    position: relative;
+    background: #ffffff;
+    padding: 18px 20px;
+    border-left: 6px solid #3498db;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;    /*canvas arriba y texto abajo.*/ 
+    align-items: center;         
+    gap: 12px;
     }
 
     .paquete-card h3 {
@@ -90,48 +111,32 @@
     margin-bottom: 10px;
     }
 
-    .paquete-card p::first-line {
-    font-weight: 600;
+    .paquete-card p{
+        margin: 5px 0;
     }
 
-    .paquete-card p span.label {
+    .paquete-card p label {
     font-weight: 600;
     color: #2c3e50;
 
     }
-    .paquete-card p {
-        margin: 5px 0;
-        position: relative;
-    }
 
     .paquete-dibujo {
-        width: 200px;
-        height: 200px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: 2px solid #ccc;
-        border-radius: 10px;  
-        position: relative;
-        background: #f0f0f0;  
-    }
-    #repartidor {
+    width: 100%;
+    max-width: 250px;               
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background: #f0f0f0;
+    box-sizing: border-box;
+    padding: 10px;
     }
 
-    #repartidor form {
-    flex: 1;
-    }
 
-    #listadoPaquetes {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 20px;
-    }
+    
+
 
     .btn-eliminar {
         position: absolute;
@@ -145,6 +150,7 @@
         width: 25px;
         height: 25px;
         cursor: pointer;
+        line-height: 1;
     
     }
 
@@ -165,8 +171,7 @@
                 <li>Repartidor de cada paquete creado se selecciona desde un
                     elemento select</li>
                 <li>Cada objeto <code>paquete</code> se guarda en un objeto
-                    principal,
-                    llamado <code>Reparto</code></li>
+                    principal, llamado <code>Reparto</code></li>
                 <li>Representación visual de cada paquete creado con su
                     información</li>
             </ul>
@@ -235,7 +240,6 @@
 
             <h2>Paquetes Creados</h2>
             <div id="listadoPaquetes"></div>
-            <div id="dibujo"></div>
         </div>
 
         <script>
@@ -298,7 +302,7 @@
             repartidores.forEach((repartidor, index) => {
                 const option = document.createElement('option');
                 option.value = index; // índice del repartidor en el array
-                option.textContent = repartidor.nombre + ' (' + repartidor.vehiculo + ')';
+                option.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
                 selectRepartidor.append(option);
             });
         }
@@ -326,7 +330,8 @@
             titulo.textContent = `Paquete #${paquete.id}`;
 
             const peso = document.createElement('p');   
-            peso.textContent = `Peso: ${paquete.peso} kg`;
+            peso.innerHTML = `<span class="label">Peso:</span> ${paquete.peso} kg`;
+
 
             const dimensiones = document.createElement('p');
             dimensiones.textContent =
@@ -453,6 +458,7 @@
     canvas.width = 200;
     canvas.height = 200;
     const ctx = canvas.getContext("2d");
+    let grosor = 2;
 
     // --- Escalado automático si las medidas son grandes ---
     const maxMedida = Math.max(largo, ancho, alto);
@@ -462,6 +468,7 @@
     largo *= factor;
     ancho *= factor;
     alto  *= factor;
+    grosor *= factor;
 
     // Profundidad (igual que antes)
     const d = largo / 3;
@@ -501,6 +508,9 @@
     // Cara frontal desplazada
     ctx.translate(d, d);
     ctx.fillRect(0, 0, ancho, alto);
+
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
 
     return canvas;
 }

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Objetos JS</title>
+    <script src="biblioteca.js"></script>
+    <style>
+        .error {
+            border: 1px solid red;
+        }
+
+        .panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .ficha {
+            border: 1px solid;
+            padding: 1rem;
+            background-color: rgb(97, 98, 97);
+            color: white;
+            border-radius: .5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>Gestión de datos usando objetos</h1>
+        <p>El ejercicio consiste en una aplicación que gestione un sistema de reparto de paquetes con las siguientes
+            características:</p>
+        <ul>
+            <li>Un objeto repartidor</li>
+            <li>Un objeto paquete</li>
+            <li>Interfaz para crear repartidores</li>
+            <li>Los repartidores se almacenan en un array</li>
+            <li>Interfaz para crear paquetes</li>
+            <li>El repartidor de cada paquete creado se selecciona desde un elemento select</li>
+            <li>Cada objeto paquete se guarda en un objeto principal llamado reparto</li>
+            <li>Representación visual de cada paquete creado con su información</li>
+        </ul>
+        <section class="datos">
+            <h2>Intro Datos</h2>
+            <div class="columnas">
+                <div class="repartidor"></div>
+                <div class="caja">
+                    <div class="fila-input"><label for="in_largo">Largo:</label><input type="number" name="in_largo"
+                            id="in_largo" min="10" max="150" step="10"></div>
+                    <div class="fila-input"><label for="in_ancho">Ancho:</label><input type="number" name="in_ancho"
+                            id="in_ancho" min="10" max="150" step="10"></div>
+                    <div class="fila-input"><label for="in_alto">Alto:</label><input type="number" name="in_alto"
+                            id="in_alto" min="10" max="150" step="10"></div>
+                    <div class="fila-input"><label for="in_color">Color:</label><input type="color" name="in_color"
+                            id="in_color"></div>
+                    <div class="fila-form"><button id="btn_caja">Crear</button></div>
+                </div>
+            </div>
+
+        </section>
+        <section id="fichas" class="panel"></section>
+    </div>
+    <script>
+        const LARGO = document.querySelector('#in_largo')
+        const ANCHO = document.querySelector('#in_ancho')
+        const ALTO = document.querySelector('#in_alto')
+        const COLOR = document.querySelector('#in_color')
+        const BTN_CAJA = document.querySelector('#btn_caja')
+        const FICHAS = document.querySelector('#fichas')
+        const ladomin = 10
+        const ladomax = 150
+
+        const reparto = {}
+        const identificadores = []
+
+        function Caja(id, largo, ancho, alto, color) {
+            this.identificador = id
+            this.largo = parseInt(largo)
+            this.ancho = parseInt(ancho)
+            this.alto = parseInt(alto)
+            this.color = color
+            this.nodos = [
+                ['h4', 'tit-ficha', 'caja_' + this.identificador],
+                ['p', 'fila-ficha', 'Alto: ' + this.alto],
+                ['p', 'fila-ficha', 'Ancho: ' + this.ancho],
+                ['p', 'fila-ficha', 'Largo: ' + this.largo]
+            ],
+            this.figura = () => dibujaCubo(this.largo, this.ancho, this.alto, this.color)
+        }
+        function creaObjetoCaja() {
+            let largo = leeValor(LARGO)
+            let ancho = leeValor(ANCHO)
+            let alto = leeValor(ALTO)
+            if (!largo || !ancho || !alto) {
+                return
+            }
+            largo = limitaNumero(largo, ladomin, ladomax)
+            ancho = limitaNumero(ancho, ladomin, ladomax)
+            alto = limitaNumero(alto, ladomin, ladomax)
+            let color = COLOR.value
+            !color ? color = 'darkgoldenrod' : color = color
+            let id = creaId()
+            let caja = new Caja(id, largo, ancho, alto, color)
+            reparto['caja_' + id] = caja
+            creaFicha()
+        }
+        function creaFicha() {
+            FICHAS.textContent = ''
+            for (const caja_id in reparto) {
+                if (!Object.hasOwn(reparto, caja_id)) continue;
+                const paquete = reparto[caja_id];
+                let articulo = creaNodo('article', 'ficha', null)
+                paquete.nodos.forEach((nodo) => {
+                    const elemento = creaNodo(nodo[0],nodo[1], nodo[2])
+                    articulo.append(elemento)
+                })
+                articulo.append(paquete.figura())
+                FICHAS.append(articulo)
+            }
+
+        }
+
+        function creaId() {
+            let id_caja
+            do {
+                id_caja = aleatorioEntre(1, 10000)
+                identificadores.push(id_caja)
+            } while (identificadores.indexOf(id_caja) === -1)
+            return id_caja
+        }
+        function leeValor(campo) {
+            if (isNaN(campo.value) || campo.value <= 0) {
+                campo.classList.add('error')
+                return false
+            }
+            return campo.value
+        }
+        function checkValor() {
+            let valor = limitaNumero(this.value, ladomin, ladomax)
+            this.value = valor;
+        }
+
+        LARGO.onchange = checkValor
+        ANCHO.onchange = checkValor
+        ALTO.onchange = checkValor
+        LARGO.onfocus = () => LARGO.classList.remove('error')
+        ANCHO.onfocus = () => ANCHO.classList.remove('error')
+        ALTO.onfocus = () => ALTO.classList.remove('error')
+        BTN_CAJA.onclick = creaObjetoCaja
+
+    </script>
+</body>
+
+</html>

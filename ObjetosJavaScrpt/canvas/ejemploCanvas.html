@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Uso de canvas</title>
+        <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+    }
+    .contenedor {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .controles {
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .fila-control {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .fila-control label {
+        width: 120px;
+        font-size: 0.9rem;
+    }
+    
+    .fila-control input[type="range"] {
+        flex: 1;
+    }
+
+    .controles h4 {
+        margin-top: 15px;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    #grafico {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        min-height: 200px;
+        background-color: #fafafa;
+        display: flex
+
+    }
+
+
+        </style>
+    </head>
+
+    <body>
+        <div class="contenedor">
+            <h1>Manipulando Imágenes con <em>Canvas</em> </h1>
+            <section class="controles">
+                <div class="fila-control">
+                    <label for="in-largo">Largo</label>
+                    <input type="range" name="in-largo" id="in-largo" min="50" max="1500"
+                        step="10">
+                </div>
+                <div class="fila-control">
+                    <label for="in-alto">Alto</label>
+                    <input type="range" name="in-alto" id="in-alto" min="50" max="1500"
+                        step="10">
+                </div>
+                <div class="fila-control">
+                    <label for="in-ancho">Ancho</label>
+                    <input type="range" name="in-ancho" id="in-ancho" min="50" max="1500"
+                        step="10">
+                </div>
+                <div class="fila-control">
+                    <label for="in-size">Tamaño</label>
+                    <input type="range" name="in-size" id="in-size" min="100" max="1000"
+                        step="10">
+                </div>
+                <div class="fila-control">
+                    <label for="in-perspectiva">Perspectiva</label>
+                    <input type="range" name="in-perspectiva" id="in-perspectiva" min="2" max="20"
+                        step="1">
+                </div>
+                <h4>Color</h4>
+                <div class="fila-control">
+                    <label for="in-rojo">Rojo</label>
+                    <input type="range" name="in-rojo" id="in-rojo" min="0" max="255"
+                        step="1">
+                </div>
+                <div class="fila-control">
+                    <label for="in-verde">Verde</label>
+                    <input type="range" name="in-verde" id="in-verde" min="0" max="255"
+                        step="1">
+                </div>
+                <div class="fila-control">
+                    <label for="in-azul">Azul</label>
+                    <input type="range" name="in-azul" id="in-azul" min="0" max="255"
+                        step="1">
+                </div>
+                <div class="fila-control">
+    <label for="in-largo">Largo</label>
+    <input type="range" id="in-largo" min="50" max="1500" step="10">
+    <span id="val-largo">50</span>
+</div>
+
+
+            </section>
+            <section id="grafico"></section>
+        </div>
+        <script>
+        const SIZE = document.querySelector('#in-size');
+        const PERSPECTIVA = document.querySelector('#in-perspectiva');
+        const LARGO = document.querySelector('#in-largo');
+        const ANCHO = document.querySelector('#in-ancho');
+        const ALTO = document.querySelector('#in-alto');
+        const ROJO = document.querySelector('#in-rojo');
+        const VERDE = document.querySelector('#in-verde');
+        const AZUL = document.querySelector('#in-azul');    
+
+    //función que dibuja un cubo con perspectiva sobre un elemento canvas, recibe parámetros largo, ancho, alto y color y devuelve el objeto canvas con él. El tamaño del lienzo sobre el que dibuja está definido por una constante en la primera línea, puede cambiarse si es necesario. Si las medidas del objeto a dibujar son mayores que el lienzo el objeto se escala en el lienzo, y si es más pequeño que el lienzo queda centrado sobre él. La segunda constante cambia la perspectiva del objeto
+function dibujaCubo(largo, ancho, alto, color, dimensiones, profundidad) {
+    const lienzo = dimensiones;
+    const perspectiva = profundidad
+    const limite = lienzo - (lienzo / perspectiva)
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    let grosor = 2
+    const mayor = Math.max(largo, ancho, alto)
+    if (mayor > limite) {
+        const coef = limite / mayor
+        largo *= coef
+        ancho *= coef
+        alto *= coef
+        grosor *= coef
+    }
+    canvas.width = lienzo;
+    canvas.height = lienzo;
+    largo = largo / perspectiva
+    const x = (lienzo - (ancho + largo)) / 2
+    const y = (lienzo - (alto + largo)) / 2
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.translate(x, y)
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.6;
+    ctx.moveTo(0, 0)
+    ctx.lineTo(largo, largo)
+    ctx.lineTo(ancho + largo, largo)
+    ctx.lineTo(ancho, 0)
+    ctx.lineTo(0, 0)
+    ctx.lineTo(0, alto)
+    ctx.lineTo(largo, largo + alto)
+    ctx.lineTo(ancho + largo, largo + alto)
+    ctx.lineTo(ancho + largo, largo)
+    ctx.lineWidth = 2;
+    ctx.stroke()
+    ctx.fill()
+    ctx.fillRect(0, 0, ancho, alto);
+    ctx.translate(largo, largo);
+    ctx.fillRect(0, 0, ancho, alto);
+    return canvas;
+}
+
+function insertaCubo(){
+    const size = SIZE.value;//tamaño del cubo
+    const perspectiva = PERSPECTIVA.value;//perspectiva del cubo
+    const largo = LARGO.value;
+    const ancho = ANCHO.value;
+    const alto = ALTO.value;
+    const rojo = ROJO.value;
+    const verde = VERDE.value;  
+    const azul = AZUL.value;  
+    const color = `rgb(${rojo},${verde},${azul})`;
+    document.getElementById("grafico").innerHTML = "";
+    const canvas = dibujaCubo(largo, ancho, alto, color, size, perspectiva);
+    document.getElementById("grafico").appendChild(canvas);
+
+}
+SIZE.oninput = insertaCubo
+PERSPECTIVA.oninput = insertaCubo
+LARGO.oninput = insertaCubo
+ANCHO.oninput = insertaCubo
+ALTO.oninput = insertaCubo
+ROJO.oninput = insertaCubo
+VERDE.oninput = insertaCubo
+AZUL.oninput = insertaCubo
+//Dibuja el cubo inicialmente
+insertaCubo();
+    </script>
+    </body>
+</html>
