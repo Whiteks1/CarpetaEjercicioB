@@ -44,21 +44,24 @@
                         <button type="button" class="btn btn-light" id="btn_ocultar">Comenzar</button>
                     </div>
                 </form>
-                <form class="bg-success p-2 rounded mt-3 d-flex w-50 align-items-center">
-                    <div class="form-floating mb-3 w-75">
+                <form class="bg-success p-2 rounded mt-3 d-flex align-items-center">
+                    <div class="form-floating mb-3 flex-grow-1">
                         <input type="text" id="in_letra" class="form-control w-75 fs-1 h-auto text-center"
                             placeholder="Introduce una letra" size="1" maxlength="1">
                         <label for="in_letra">Letra</label>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-light" id="btn_jugar" disabled>Probar</button>
+                        <!--botón de reinicio -->
+                        <button type="button" class="btn btn-outline-light ms-2" id="btn_reiniciar"
+                            disabled>Reiniciar</button>
                     </div>
                 </form>
                 <div class="card mt-4 p-2">
                     <h3>Información del Juego</h3>
                     <p>Letras a encontrar <span id="out_total">0</span></p>
                     <p>Letras encontradas <span id="out_encontradas">0</span></p>
-                    <p>Numero de errores restantes <span id="out_errores">0</span></p>
+                    <p>Número de errores restantes <span id="out_errores">0</span></p>
                     <div class="card m-2">
                         <h5>Letras falladas</h5>
                         <div id="contenedor_fallos"></div>
@@ -68,13 +71,38 @@
             <div class="col-8">
                 <h3>Visor</h3>
                 <div class="bg-warning-subtle p-3" id="casillero"></div>
-                <div class="alert alert-success mt-4" id="mensajes">
+
+                <div class="alert alert-success mt-4 d-none" id="mensajes">
                     <h4 class="alert-heading">Mensaje</h4>
                     <p class="cuerpo">Cuerpo de mensaje</p>
+                </div>
+
+                <!-- TOAST -->
+                <div class="position-relative mt-4 d-flex justify-content-center" style="z-index: 11;">
+                    <div id="gameToast" class="toast text-bg-info" role="alert" aria-live="assertive" aria-atomic="true"
+                        data-bs-autohide="true" data-bs-delay="3000">
+                        <div class="toast-header">
+                            <strong class="me-auto" id="toastTitle">Mensaje</strong>
+                            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <div class="toast-body">
+                            <div id="toastBody">Cuerpo de mensaje</div>
+                            <div class="mt-2 pt-2 border-top d-flex gap-2 d-none" id="toastActions">
+                                <button type="button" class="btn btn-sm btn-primary" id="toastRestartBtn">
+                                    Jugar otra vez
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="toast">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
         crossorigin="anonymous"></script>
@@ -85,13 +113,16 @@
         const input_letra = document.querySelector('#in_letra');
         const btn_ocultar = document.querySelector('#btn_ocultar');
         const btn_jugar = document.querySelector('#btn_jugar');
+        const btn_reiniciar = document.querySelector('#btn_reiniciar');
         const casillero = document.querySelector('#casillero');
         const out_errores = document.querySelector('#out_errores');
         const out_total = document.querySelector('#out_total');
         const out_encontradas = document.querySelector('#out_encontradas');
         const out_fallos = document.querySelector('#contenedor_fallos');
         const mensaje = document.querySelector('#mensajes');
-        const especiales = ['¡', '!', '¿', '?', ',', '.', ';', ':','-','_','`','´','¨','^','[',']','{','}','<','>'];
+
+        const especiales = ['¡', '!', '¿', '?', ',', '.', ';', ':', '-', '_', '`', '´', '¨', '^', '[', ']', '{', '}', '<', '>'];
+
         const titulo_mensaje = [
             '¡Bienvenid@!',
             'Texto no válido',
@@ -100,7 +131,8 @@
             'Letra ya usada',
             'Acertaste!',
             'Fallaste!',
-            'Juego Terminado'];
+            'Juego Terminado'
+        ];
         const texto_mensaje = [
             'Introduce la frase que tiene que adivinar tu compañero y pulsa en Comenzar para iniciar el juego.',
             'El texto introducido no cumple con las condiciones del juego. Asegúrate de que es correcto y vuelve a introducirlo.',
@@ -112,21 +144,87 @@
             'La letra introducida sí forma parte de las letras ocultas',
             'La letra introducida no forma parte de las letras que tienes que encontrar',
             '¡¡Enhorabuena!! <br> Has GANADO el juego',
-            'Lo siento, has perdido. La frase oculta era:'];
-        const formato_mensajes = ['alert-danger', 'alert-warning', 'alert-info', 'alert-success']
+            // “La frase oculta era:”  eliminada para no duplicarlo
+            'Lo siento, has perdido.',
+            '¡Atención! Solo te queda un error más.' //nuevo
+        ];
+        const formato_mensajes = ['alert-danger', 'alert-warning', 'alert-info', 'alert-success'];
+
+        //referencias al toast
+        const toastElement = document.querySelector('#gameToast');
+        const toastTitle = document.querySelector('#toastTitle');
+        const toastBody = document.querySelector('#toastBody');
+        const toastActions = document.querySelector('#toastActions');
+        const toastRestartBtn = document.querySelector('#toastRestartBtn');
+        let toastInstance = null;
+
         //variables GLOBALES
         let cadena_inicial = ''; //texto tecleado en el input
         let cadena_en_bruto = []; //caracteres disponibles en la cadena después de quitar espacios
         let cadena_limpia = []; // caracteres en minúsculas y sin tildes
-        let letras_ocultas = 0; //indica el número de letrar a descubrir para terminar el juego
-        let errores = 2; // fallos permitidos antes de perder el juego
+        let letras_ocultas = 0; //indica el número de letras a descubrir para terminar el juego
+        let errores = 5; // fallos permitidos antes de perder el juego
         let letras_encontradas = 0; //número de letras descubiertas
         let cadena_encontradas = []; //guardar las letras que ya hemos descubierto
         let cadena_falladas = []; //guardar las letras falladas
 
+        // estado del juego
+        let juegoIniciado = false;
+        let juegoTerminado = false;
 
+        function initToast() {
+            if (toastElement && !toastInstance) {
+                toastInstance = bootstrap.Toast.getOrCreateInstance(toastElement);
+            }
+        }
 
-        //FUNCIONES
+        //función "traduce" un formato de alerta de Bootstrap a un formato equivalente para toast
+        function getToastBgClass(formatoIndex) {
+            const claseAlert = formato_mensajes[formatoIndex] || '';
+            if (claseAlert.includes('danger')) return 'text-bg-danger';
+            if (claseAlert.includes('warning')) return 'text-bg-warning';
+            if (claseAlert.includes('success')) return 'text-bg-success';
+            return 'text-bg-info';
+        }
+
+        //usa el toast y acepta índices o textos directos
+        function muestraMensaje(titulo, cuerpo, formato, esFinal) {
+            initToast();
+            if (!toastInstance) return;
+
+            let tituloTexto = titulo_mensaje[titulo] || 'Mensaje';
+            let cuerpoHTML = texto_mensaje[cuerpo] || '';
+
+            // si es final y ha perdido, añadimos la frase oculta al mensaje
+            if (esFinal && errores === 0 && cadena_inicial) {
+                cuerpoHTML += `<p class="bg-danger text-white p-2 mt-2 mb-0">La frase oculta era: ${cadena_inicial}</p>`;
+            }
+
+            toastTitle.textContent = tituloTexto;
+            toastBody.innerHTML = cuerpoHTML;
+
+            // limpiar colores previas
+            toastElement.classList.remove('text-bg-info', 'text-bg-success', 'text-bg-danger', 'text-bg-warning');
+
+            const bgClass = getToastBgClass(formato);
+            toastElement.classList.add(bgClass);
+
+            // gestión de acciones y autohide
+            if (esFinal) {
+                toastActions.classList.remove('d-none');//toast con botones jugar/cerrar
+                toastElement.setAttribute('data-bs-autohide', 'false');
+                toastInstance._config.autohide = false;
+            } else {
+                toastActions.classList.add('d-none');
+                toastElement.setAttribute('data-bs-autohide', 'true');
+                toastInstance._config.autohide = true;//No se cierra solo
+                toastInstance._config.delay = 3000;//mensaje normal se cierra en 3s
+            }
+
+            toastInstance.show();
+        }
+
+        //FUNCIONE(cambios mínimos)
         function preparaCadena() {
             //recibe y limpia cadena
             cadena_inicial = textoTrim(input_oculto.value);
@@ -142,9 +240,10 @@
                 return;
             }
             //devuelve casillas con caracteres al tablero
-            casillero.innerHTML = ''
+            casillero.innerHTML = '';
+            letras_ocultas = 0;
             for (const caracter of cadena_limpia) {
-                let simbolo = retornaCaracter(caracter)
+                let simbolo = retornaCaracter(caracter);
                 //incremento letras a descubrir 
                 if (simbolo === String.fromCharCode(8212)) {
                     letras_ocultas++;
@@ -155,7 +254,7 @@
                     casillero.append(nodo);
                 }
             }
-            preparaEscenario()
+            preparaEscenario();
         }
         function preparaArrays(cadena) {
             cadena_en_bruto = [];
@@ -167,9 +266,9 @@
             }
             //comprobamos que las cadenas miden lo mismo y tienen contenido
             if (cadena_en_bruto.length !== cadena_limpia.length || cadena_limpia.length === 0) {
-                return false
+                return false;
             }
-            return true
+            return true;
         }
         function retornaCaracter(caracter) {
             let simbolo = String.fromCharCode(8212);
@@ -178,16 +277,21 @@
             } else if (especiales.indexOf(caracter) !== -1) {
                 simbolo = caracter;
             }
-            return simbolo
+            return simbolo;
         }
         function preparaEscenario() {
-            input_oculto.value = ''
+            input_oculto.value = '';
             btn_ocultar.disabled = true;
             btn_jugar.disabled = false;
-            muestraMensaje(0, 3, 2, false);
+            btn_reiniciar.disabled = false; // ahora se puede pedir reinicio
+            juegoIniciado = true;
+            juegoTerminado = false;
+            muestraMensaje(0, 3, 2, false); // "El juego está preparado para comenzar"
             actualizaMarcador();
         }
         function compruebaLetra(params) {
+            if (!juegoIniciado || juegoTerminado) return;
+
             //leo el valor del input
             let letra_in = textoTrim(input_letra.value);
             //limpio el input
@@ -198,7 +302,8 @@
             }
             //aceptar caracteres validados
             if (especiales.indexOf(letra_in) !== -1) {
-                muestraMensaje(3, 5, 0, false);
+                // carácter NO permitido
+                muestraMensaje(3, 4, 0, false);
                 return;
             }
             //buscamos la versión en minúscula y sin tilde
@@ -210,22 +315,30 @@
             }
             //comprobar si letra está en la cadena
             if (cadena_limpia.indexOf(letra_in_limpia) !== -1) {
-                //en ese caso guardarla en la lista de encontradas y mostrarla en el casillero
+                // ✅ ACIERTO
                 cadena_encontradas.push(letra_in_limpia);
                 muestraCasillas(letra_in_limpia);
                 muestraMensaje(5, 7, 3, false);
             } else {
-                //en caso contrario pasarla a la lista de errores
+                // ❌ FALLO
                 gestionaFallo(letra_in_limpia);
-                muestraMensaje(6, 8, 0, false);
+
+                // aquí SÍ tiene sentido mirar errores restantes
+                if (errores === 1) { // solo queda un fallo
+                    muestraMensaje('¡Cuidado!', 11, 'warning', false);
+                } else {
+                    muestraMensaje(6, 8, 0, false);
+                }
             }
+
             //en ambos casos actualizamos marcador
             actualizaMarcador();
             comprobarEsFinal();
         }
+
         function muestraCasillas(letra) {
             //recogemos todos los span que pueden ser cambiados en una colección
-            let casillas = casillero.querySelectorAll('.casilla')
+            let casillas = casillero.querySelectorAll('.casilla');
             //comprobamos para cada letra de la cadena limpia si es igual a la letra proporcionada
             for (let i = 0; i < cadena_limpia.length; i++) {
                 if (cadena_limpia[i] === letra) {
@@ -245,7 +358,7 @@
             out_errores.textContent = errores;
             out_encontradas.textContent = letras_encontradas;
             out_total.textContent = letras_ocultas;
-            out_fallos.textContent = cadena_falladas;
+            out_fallos.textContent = cadena_falladas.join(' ');
         }
         function gestionaFallo(caracter) {
             //añadir el caracter a la cadena de fallos
@@ -255,80 +368,103 @@
         }
         function comprobarEsFinal() {
             if (letras_ocultas === 0) {
-                muestraMensaje(7,9,3,true);
+                // gana
+                muestraMensaje(7, 9, 3, true);
                 configReinicio(true);
             } else if (errores === 0) {
-                muestraMensaje(7,10,0,true);
+                // pierde
+                muestraMensaje(7, 10, 0, true);
                 configReinicio(false);
             }
         }
 
-        function muestraMensaje(titulo, cuerpo, formato, esFinal) {
-            let titular = mensaje.querySelector('h4');
-            let parrafo = mensaje.querySelector('.cuerpo');
-            mensaje.className = 'alert ' + formato_mensajes[formato];
-            titular.textContent = titulo_mensaje[titulo];
-            parrafo.innerHTML = texto_mensaje[cuerpo];
-            if (esFinal && errores === 0) {
-                let resuelto = creaNodo('p','bg-danger text-white p-3', cadena_inicial);
-                mensaje.append(resuelto)
+        function configReinicio(ganador) {
+            juegoTerminado = true;
+            btn_jugar.disabled = true;
+            input_letra.disabled = true;
+            // botón reinicio sigue habilitado para empezar nueva partida
+        }
+
+        // reinicio completo del juego
+        function reiniciaJuego() {
+            cadena_inicial = '';
+            cadena_en_bruto = [];
+            cadena_limpia = [];
+            letras_ocultas = 0;
+            errores = 5;
+            letras_encontradas = 0;
+            cadena_encontradas = [];
+            cadena_falladas = [];
+
+            casillero.innerHTML = '';
+            out_errores.textContent = 0;
+            out_encontradas.textContent = 0;
+            out_total.textContent = 0;
+            out_fallos.textContent = '';
+
+            btn_ocultar.disabled = false;
+            btn_jugar.disabled = true;
+            btn_reiniciar.disabled = true;
+
+            input_oculto.disabled = false;
+            input_letra.disabled = false;
+            resetInput(input_oculto);
+
+            juegoIniciado = false;
+            juegoTerminado = false;
+
+            if (toastInstance) {
+                toastActions.classList.add('d-none');
+                toastInstance.hide();
+            }
+
+            // mensaje inicial de bienvenida
+            muestraMensaje(0, 0, 2, false);
+        }
+
+        //manejador de clic en botón Reiniciar (confirmación si el juego está en curso)
+        function manejarReinicio() {
+            if (!juegoIniciado || juegoTerminado) {
+                reiniciaJuego();
+            } else {
+                // juego en marcha → confirmar con toast en primer plano
+                muestraMensaje(
+                    'Confirmación',
+                    'Hay una partida en curso. ¿Seguro que quieres reiniciar?',
+                    'warning',
+                    true // lo tratamos como "final" para que no se cierre solo y muestre botones
+                );
             }
         }
-        function configReinicio(ganador) {
-            btn_jugar.disabled = true
-        }
+
+        //manejo tecla ENTER
+        input_oculto.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!btn_ocultar.disabled) {
+                    btn_ocultar.click();
+                }
+            }
+        });
+
+        input_letra.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!btn_jugar.disabled && !juegoTerminado) {
+                    btn_jugar.click();
+                }
+            }
+        });
 
         //ASIGNACIONES
         btn_ocultar.onclick = preparaCadena;
         btn_jugar.onclick = compruebaLetra;
         btn_reiniciar.onclick = manejarReinicio;
         toastRestartBtn.onclick = reiniciaJuego;
-        //INICIO
+
+        //mensaje de bienvenida usando el toast
         muestraMensaje(0, 0, 2, false);
     </script>
 </body>
 
 </html>
-function muestraMensaje(titulo, cuerpo, formato, esFinal) {
-    initToast();
-    if (!toastInstance) return;
-
-    // título y cuerpo: solo índices numéricos
-    let tituloTexto = titulo_mensaje[titulo] || 'Mensaje';
-    let cuerpoHTML = texto_mensaje[cuerpo] || '';
-
-    // si pierde, añadir frase oculta
-    if (esFinal && errores === 0 && cadena_inicial) {
-        cuerpoHTML += `
-            <p class="bg-danger text-white p-2 mt-2 mb-0">
-                La frase oculta era: ${cadena_inicial}
-            </p>`;
-    }
-
-    toastTitle.textContent = tituloTexto;
-    toastBody.innerHTML = cuerpoHTML;
-
-    // quitar colores anteriores
-    toastElement.classList.remove(
-        'text-bg-info', 'text-bg-success', 
-        'text-bg-danger', 'text-bg-warning'
-    );
-
-    // formato siempre es índice → usar getToastBgClass directamente
-    const bgClass = getToastBgClass(formato);
-    toastElement.classList.add(bgClass);
-
-    // autohide según si es final
-    if (esFinal) {
-        toastActions.classList.remove('d-none');
-        toastElement.setAttribute('data-bs-autohide', 'false');
-        toastInstance._config.autohide = false;
-    } else {
-        toastActions.classList.add('d-none');
-        toastElement.setAttribute('data-bs-autohide', 'true');
-        toastInstance._config.autohide = true;
-        toastInstance._config.delay = 3000;
-    }
-
-    toastInstance.show();
-}

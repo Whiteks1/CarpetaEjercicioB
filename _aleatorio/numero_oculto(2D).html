@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+        crossorigin="anonymous">
     <title>Juego del Número Oculto</title>
 </head>
 
@@ -66,15 +68,18 @@
                 <h3 class="text-center">Resultados</h3>
                 <div id="resultados"></div>
             </div>
-
         </section>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
         crossorigin="anonymous"></script>
+
+    <!-- Mantenemos la biblioteca externa -->
     <script src="biblioteca.js"></script>
+
     <script>
-        //CONSTANTES DEL DOM
+        // CONSTANTES DEL DOM
         const marcador_intentos = document.querySelector('#in_intentos');
         const marcador_numero = document.querySelector('#in_numero');
         const btn_iniciar = document.querySelector('#btn_iniciar');
@@ -82,46 +87,51 @@
         const cuadro_mensajes = document.querySelector('#mensajes');
         const cuadro_estado = document.querySelector('#info_estado');
         const marcador_ganadores = document.querySelector('#resultados');
-       
-        //VARIABLES de APLICACIÓN
+
+        // VARIABLES de APLICACIÓN
         const lista_ganadores = [];
         let numero_oculto = 0;
         let tope_max = 0;
         let tope_min = 0;
         let numero_intro = 0;
-        let salida = '';
         let errores = 0;
         let final_juego = false;
 
-        //FUNCIONES
+        // FUNCIONES
         function preparaJuego() {
-            if (!(marcador_intentos.value >= 1 && marcador_intentos.value < 6)) {
+            const intentos = parseInt(marcador_intentos.value);
+
+            if (isNaN(intentos) || !(intentos >= 1 && intentos <= 5)) {
                 configuraMensaje(true, 'Dato no Válido', 'El número de intentos debe ser entre 1 y 5', 'danger');
                 marcador_intentos.value = 1;
                 return;
             }
-            //ocultar cuadro mensajes
+            // ocultar cuadro mensajes
             configuraMensaje(false);
-            //calcular número oculto
-            numero_oculto = aleatorioEntre(1, 100);
-            //establecer valores variables
-            console.log('oculto', numero_oculto)
+            // calcular número oculto
+            numero_oculto = aleatorioEntre(1, 100);  // de biblioteca.js
+            console.log('oculto', numero_oculto);
+            // establecer valores variables
             estableceValores();
-            //habilitar modo juego
+            // habilitar modo juego
             modoJuego(true);
         }
+
         function compruebaValor() {
             if (final_juego) {
                 configuraMensaje(true, 'Juego Finalizado', 'El juego ya ha terminado, no puedes continuar', 'warning');
                 return;
             }
-            numero_intro = marcador_numero.value;
+
+            numero_intro = parseInt(marcador_numero.value);
+
             if (isNaN(numero_intro) || !(numero_intro >= 1 && numero_intro <= 100)) {
                 configuraMensaje(true, 'Dato no Válido', 'El número introducido debe ser entre 1 y 100', 'danger');
-                marcador_numero.value = 1;
+                marcador_numero.value = '';
                 return;
             }
-            //comparar el valor y muestra salida
+
+            // comparar el valor y muestra salida
             if (numero_intro > tope_max) {
                 muestraSalida('danger', 'demasiado alto');
             } else if (numero_intro > numero_oculto) {
@@ -134,6 +144,7 @@
                 juegoGanado();
                 return;
             }
+
             errores--;
             if (errores === 0) {
                 configuraMensaje(true, 'Juego Perdido', 'El número oculto es ' + numero_oculto, 'danger');
@@ -141,71 +152,89 @@
                 final_juego = true;
             }
         }
+
         function juegoGanado() {
             muestraSalida('success', 'correcto');
-            configuraMensaje(true, 'Juego Ganado', 'El número oculto es ' + numero_oculto, 'success')
-            setTimeout(creaResultados,1000);
+            configuraMensaje(true, 'Juego Ganado', 'El número oculto es ' + numero_oculto, 'success');
+            setTimeout(creaResultados, 1000);
             marcador_numero.disabled = true;
             final_juego = true;
         }
+
         function muestraSalida(formato, contenido) {
-            let parrafo = creaNodo('p', `fs-5 d-flex gap-4 mx-4 bg-${formato}-subtle text-${formato}-emphasis`, `El número es ${contenido}`);
+            let parrafo = creaNodo(   // de biblioteca.js
+                'p',
+                `fs-5 d-flex gap-4 mx-4 bg-${formato}-subtle text-${formato}-emphasis`,
+                `El número es ${contenido}`
+            );
             let span = creaNodo('span', `badge text-bg-${formato}`, numero_intro);
             parrafo.prepend(span);
             cuadro_estado.append(parrafo);
             marcador_numero.select();
         }
+
         function estableceValores() {
             tope_max = numero_oculto + 15;
             tope_min = numero_oculto - 15;
             errores = parseInt(marcador_intentos.value);
-            marcador_numero.value = 0;
-            marcador_numero.select();
+            marcador_numero.value = '';
+            marcador_numero.disabled = false;
+            marcador_numero.focus();
         }
+
         function configuraMensaje(visible, titulo, cuerpo, formato) {
             if (visible) {
                 cuadro_mensajes.classList.remove('d-none');
             } else {
                 cuadro_mensajes.classList.add('d-none');
-                cuadro_mensajes.querySelector('#reglas').className = 'd-none';
+                const reglas = cuadro_mensajes.querySelector('#reglas');
+                if (reglas) reglas.className = 'd-none';
             }
             if (titulo) {
                 cuadro_mensajes.querySelector('h4').textContent = titulo;
             }
-            if (cuerpo) {
+            if (cuerpo !== undefined) {
                 cuadro_mensajes.querySelector('p').textContent = cuerpo;
             }
             if (formato) {
                 cuadro_mensajes.className = `alert alert-${formato} mt-4`;
             }
         }
+
         function modoJuego(modo) {
             marcador_intentos.disabled = modo;
             marcador_numero.disabled = !modo;
             btn_iniciar.disabled = modo;
         }
+
         function creaResultados() {
-            //pide un nombre que sea válido
+            // pide un nombre que sea válido
             let nombre = '';
             let puntos = 500;
             do {
-                nombre = validaTxt(prompt('Nombre'));
+                nombre = validaTxt(prompt('Nombre')); 
             } while (!nombre);
             if (errores < 3) {
                 puntos = 200;
             }
             lista_ganadores.push([nombre, puntos]);
-            muestraGanadores()
+            muestraGanadores();
         }
+
         function muestraGanadores() {
-           marcador_ganadores.innerHTML = '';
-           for (const ganador of lista_ganadores) {
-            let parrafo = creaNodo('p', `fs-5 d-flex justfy-content-between2 px-4 bg-dark-subtle text-dark-emphasis`, ganador[0]);
-            let span = creaNodo('span', `badge text-bg-dark`, ganador[1]);
-            parrafo.append(span);
-            marcador_ganadores.append(parrafo)
-           } 
+            marcador_ganadores.innerHTML = '';
+            for (const ganador of lista_ganadores) {
+                let parrafo = creaNodo(
+                    'p',
+                    'fs-5 d-flex justify-content-between px-4 bg-dark-subtle text-dark-emphasis',
+                    ganador[0]
+                );
+                let span = creaNodo('span', 'badge text-bg-dark', ganador[1]);
+                parrafo.append(span);
+                marcador_ganadores.append(parrafo);
+            }
         }
+
         function reiniciaJuego() {
             if (!final_juego) {
                 let confirma = confirm('¿Seguro que quieres reiniciar antes de terminar esta partida?');
@@ -216,19 +245,24 @@
             modoJuego(false);
             cuadro_estado.innerHTML = '';
             configuraMensaje(true, 'Reglas del Juego', '', 'light');
-            cuadro_mensajes.querySelector('#reglas').className = '';
+            const reglas = cuadro_mensajes.querySelector('#reglas');
+            if (reglas) reglas.className = '';
             final_juego = false;
+            errores = 0;
+            marcador_numero.value = '';
+            marcador_intentos.disabled = false;
+            btn_iniciar.disabled = false;
         }
 
-        //ASIGNACIONES
+        // ASIGNACIONES
         btn_iniciar.onclick = preparaJuego;
         btn_reiniciar.onclick = reiniciaJuego;
-        //  marcador_numero.onchange = compruebaValor;
+
         marcador_numero.onkeydown = function (e) {
-            if (e.key === 'Enter')
-                compruebaValor()
-        }
-        
+            if (e.key === 'Enter') {
+                compruebaValor();
+            }
+        };
     </script>
 </body>
 

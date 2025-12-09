@@ -87,9 +87,7 @@
     .paquete-card .info-paquete {
     width: 100%;
 
-}
-
-    
+}  
     .paquete-card {
     position: relative;
     background: #ffffff;
@@ -134,10 +132,6 @@
     padding: 10px;
     }
 
-
-    
-
-
     .btn-eliminar {
         position: absolute;
         top: 8px;
@@ -153,6 +147,22 @@
         line-height: 1;
     
     }
+
+    .btn-editar {
+    position: absolute;
+    top: 8px;
+    right: 40px;
+    font-size: 16px;
+    background: #f5fff7;
+    color: #27ae60;
+    border: none;
+    border-radius: 6px;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    line-height: 1;
+}
+
 
 </style>
 
@@ -234,11 +244,12 @@
                             repartidor</option>
                     </select>
 
-                    <button type="submit">Crear Paquete</button>
+                    <button id="btnPaquete" type="submit">Crear Paquete</button>
                 </form>
             </div>
 
             <h2>Paquetes Creados</h2>
+            <button id="btnBorrarDatos">Borrar datos guardados</button>
             <div id="listadoPaquetes"></div>
         </div>
 
@@ -247,12 +258,13 @@
         const formRepartidor   = document.getElementById('formRepartidor');
         const formPaquete      = document.getElementById('formPaquete'); 
         const selectRepartidor = document.getElementById('repartidorPaquete');
-        const listadoPaquetes = document.getElementById('listadoPaquetes');
+        const listadoPaquetes  = document.getElementById('listadoPaquetes');
+        const btnPaquete       = document.getElementById('btnPaquete');
+        const btnBorrarDatos   = document.getElementById('btnBorrarDatos');
+
     
         // Array para almacenar los repartidores
-        let repartidores = [
-            new Repartidor("Carlos Gómez", "1234-ABC", 5),
-            new Repartidor("Lucía Fernández", "9876-ZYX", 2)];
+        let repartidores = [];
 
         //Cada objeto paquete se guarda en un objeto principal Reparto
         let Reparto = {
@@ -261,6 +273,10 @@
                 this.paquetes.push(paquete);
             }
         };
+
+         //Variables modo edición
+        let modoEdicion = false;
+        let paqueteEnEdicion = null;
 
         // Constructor Repartidor
         function Repartidor(nombre, vehiculo, experiencia) {
@@ -286,6 +302,135 @@
             this.volumen = function () {
                 return this.superficie() * this.alto;
             };
+        }
+
+        //
+        function EnModoEdición(paquete) {
+            modoEdicion = true;
+            paqueteEnEdicion = paquete;
+            
+            //cargar datos en el formulario
+            document.getElementById('pesoPaquete').value = paquete.peso;
+            document.getElementById('largoPaquete').value = paquete.largo;
+            document.getElementById('anchoPaquete').value = paquete.ancho;
+            document.getElementById('altoPaquete').value = paquete.alto;
+            document.getElementById('destinoPaquete').value = paquete.destino;
+            document.getElementById('colorPaquete').value = paquete.color;
+
+            //seleccionar el repartidor 
+            const indexRep = repartidores.indexOf(paquete.repartidor);
+            if (indexRep !== -1) {
+                selectRepartidor.value = indexRep;
+                
+            }else {
+                selectRepartidor.selectedIndex = 0
+            }
+            //cambia el texto del boton del formulario
+
+            btnPaquete.textContent = 'Guardar cambios'
+
+            // Deshabilitar inputs y selects del formulario de repartidor
+            const camposRepartidor = formRepartidor.querySelectorAll('input, select');
+            camposRepartidor.forEach(campo => {
+                campo.disabled = true;
+            });
+
+            alert (" Estas en Modo Edición");
+            return;
+            
+        }
+
+        function salirModoEdicion() {
+            modoEdicion = false;
+            paqueteEnEdicion = null;
+            btnPaquete.textContent = 'Crear Paquete'
+
+            //Rehabilitar inputs y selects del formulario Repartidor
+
+            const camposRepartidor = formRepartidor.querySelectorAll('input, select');
+            camposRepartidor.forEach(campo => {
+                campo.disabled = false;
+            });
+            
+        }
+
+        //localStorage
+
+        function guardarDatos() {
+            //Convertir arrays a texto
+            const textoRepartidores = JSON.stringify(repartidores);
+            const textoPaquetes     = JSON.stringify(Reparto.paquetes);
+
+            //Guarda en el storage
+            localStorage.setItem('repartidores', textoRepartidores);
+            localStorage.setItem('paquetes', textoPaquetes);
+            
+        }
+
+        //Cargar desde el localStorage
+        function cargamosDatos() {
+            const textoRepartidores = localStorage.getItem('repartidores');
+            const textoPaquetes     = localStorage.getItem('paquetes');
+
+            //si hay reapartidores guardados, los cargamos
+            if (textoRepartidores) {
+                const datosRep = JSON.parse(textoRepartidores);
+                repartidores   = datosRep.map(r => new Repartidor(r.nombre, r.vehiculo, r.experiencia ));
+                
+            }
+
+            //si hay paquetes guardados, lo cargamos
+            if (textoPaquetes) {
+                const datosPaq   = JSON.parse(textoPaquetes);
+                Reparto.paquetes = datosPaq.map(p=> {
+                //Busca el repartidor por nombre
+                const repEncontrado = repartidores.find(r => r.nombre === p.repartidor.nombre)|| repartidores[0] || null
+                
+                return new Paquete (
+                    p.id,
+                    p.peso,
+                    p.largo,
+                    p.ancho,
+                    p.alto,
+                    p.destino,
+                    p.color,
+                    repEncontrado
+                );
+            });
+
+        }
+            //actualiza Interfaz
+            actualizarSelectRepartidores();
+            pintarPaquetes()
+        }
+
+        function borrarDatos() {
+            if (modoEdicion) {
+                alert('Modo Edición: Guarda primero los cambios');
+                return;                
+            }
+
+            //Confirmación antes de borrar
+            const seguro = confirm("¿Seguro que quieres borrar todos los datos guardados?");
+            if (!seguro) {
+                return; // Cancelado por el usuario, no hacemos nada
+            }
+            //Borramos el localStorage
+            localStorage.removeItem('repartidores');
+            localStorage.removeItem('paquetes');
+
+            //Limpia los arrays
+            repartidores     = [];
+            Reparto.paquetes = [];
+
+            actualizarSelectRepartidores();
+            pintarPaquetes();
+
+            alert('Datos Borrados');
+
+            btnBorrarDatos.addEventListener('click', borrarDatos);
+
+            
         }
 
         // Recorre el array de repartidores y actualiza el select
@@ -365,17 +510,44 @@
             card.append(info);
             card.append(dibujo);
 
+            //Botones Eliminar/Editar
+            
+            //Eliminar
             const btnEliminar  = document.createElement('button');
             btnEliminar.textContent = 'X';
             btnEliminar.className = 'btn-eliminar';
 
             btnEliminar.onclick = function () {
+
+                if (modoEdicion) {
+                    alert('Modo Edición: No puedes eliminar, guarda primero');
+                    return;   
+                }
+                //confirmación antes de eliminar
+                const confirmar = confirm(`¿Seguro que quieres eliminar el paquete #${paquete.id}?`);
+                if (!confirmar) {
+                    return;  
+                }
                 // Eliminar paquete del array
                 Reparto.paquetes = Reparto.paquetes.filter(p => p.id !== paquete.id);
                 // Volver a pintar los paquetes
                 pintarPaquetes();
             };
-            card.appendChild(btnEliminar);
+            card.append(btnEliminar);
+
+            //Editar
+            const btnEditar = document.createElement('button');
+            btnEditar.textContent = '✎';
+            btnEditar.className = 'btn-editar'
+
+            btnEditar.onclick = function () {
+                if (modoEdicion && paqueteEnEdicion && paqueteEnEdicion.id !== paquete.id) {
+                    alert('Modo Edición: Ya estas editando otro paquete. Guarda los cambios');
+                    return;   
+                }
+                EnModoEdición(paquete);                
+            };
+            card.append(btnEditar);
 
             // Dibujar la caja en el div correspondiente
             const canvas = draw(paquete.largo, paquete.ancho, paquete.alto, paquete.color);
@@ -394,6 +566,12 @@
         formRepartidor.addEventListener('submit', function (event) {
             event.preventDefault();
 
+            if (modoEdicion) {
+                alert('Modo Edición: Guarda primero los cambios')
+                return;
+                
+            }
+
             const nombre = document.getElementById('nombreRepartidor').value.trim();
             const vehiculo = document.getElementById('vehiculoRepartidor').value.trim();
             const experiencia = parseInt(document.getElementById('experienciaRepartidor').value);
@@ -408,6 +586,7 @@
 
             actualizarSelectRepartidores();
             formRepartidor.reset();
+            guardarDatos();
             
         });
 
@@ -431,6 +610,25 @@
         }
         // Crear nuevo paquete
         const repartidorSeleccionado = repartidores[indiceRepartidor];
+        //Si estamos en modo edición
+        if (modoEdicion && paqueteEnEdicion) {
+            paqueteEnEdicion.peso       = peso;
+            paqueteEnEdicion.largo      = largo;
+            paqueteEnEdicion.ancho      = ancho;
+            paqueteEnEdicion.alto       = alto;
+            paqueteEnEdicion.destino    = destino;
+            paqueteEnEdicion.color      = color ;
+            paqueteEnEdicion.repartidor = repartidorSeleccionado;
+        
+            pintarPaquetes();
+            formPaquete.reset();
+            selectRepartidor.selectedIndex = 0;
+            salirModoEdicion();
+            alert('Paquete actualizado correctamente');
+            return;   
+        }
+
+        //si no estamos en modo edición
         const nuevoIdPaquete = Reparto.paquetes.length + 1;
 
         const nuevoPaquete = new Paquete(
@@ -450,9 +648,12 @@
         formPaquete.reset();
         // Reiniciar el select de repartidores
         selectRepartidor.selectedIndex = 0;
+        guardarDatos();
         
     });
-        // Función para dibujar el paquete en un canvas
+
+
+    // Función para dibujar el paquete en un canvas
     function draw(largo, ancho, alto, color) {
     const canvas = document.createElement("canvas");
     canvas.width = 200;
