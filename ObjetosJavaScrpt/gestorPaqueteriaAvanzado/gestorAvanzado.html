@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Paquetería Avanzado</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2c3e50;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .contenedor {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            max-width: 900px;
+            margin: 0 auto 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .form-container {
+            background: var(--light-color);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-container h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-container h2 i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cabecera-paquetes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--light-color);
+            border-radius: var(--border-radius);
+        }
+
+        .cabecera-paquetes h2 {
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filtros {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filtro-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filtro-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filtro-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .paquetes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .paquete-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            position: relative;
+            transition: var(--transition);
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .paquete-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .paquete-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .paquete-id {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .paquete-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .paquete-actions button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .btn-delete {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+
+        .btn-edit:hover {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .paquete-details {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .detail-value {
+            color: var(--dark-color);
+        }
+
+        .paquete-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .repartidor-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .repartidor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .paquete-dibujo {
+            width: 100%;
+            height: 150px;
+            margin: 15px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: #f8f9fa;
+            border: 1px solid #eee;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-nacional {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--primary-color);
+        }
+
+        .badge-internacional {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .notification-error {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .notification-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-width: 500px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--danger-color);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .forms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .paquetes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cabecera-paquetes {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .filtros {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <header>
+            <h1><i class="fas fa-box-open"></i> Gestor de Paquetería Avanzado</h1>
+            <p class="subtitle">Sistema completo de gestión de reparto y seguimiento de paquetes</p>
+            
+            <div class="description">
+                <p>Este sistema permite gestionar un sistema completo de reparto de paquetes con las siguientes características:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Gestión completa de repartidores (crear, editar, eliminar)</li>
+                    <li>Creación y asignación de paquetes a repartidores</li>
+                    <li>Sistema de filtrado y búsqueda de paquetes</li>
+                    <li>Visualización 3D de paquetes con medidas reales</li>
+                    <li>Almacenamiento local persistente de datos</li>
+                    <li>Estadísticas en tiempo real del sistema</li>
+                </ul>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3 id="totalPaquetes">0</h3>
+                    <p>Paquetes Totales</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalRepartidores">0</h3>
+                    <p>Repartidores Activos</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pesoTotal">0</h3>
+                    <p>Kg Total</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="volumenTotal">0</h3>
+                    <p>cm³ Total</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="forms-grid">
+            <div class="form-container">
+                <h2><i class="fas fa-user-tie"></i> Gestión de Repartidores</h2>
+                
+                <form id="formRepartidor">
+                    <div class="form-group">
+                        <label for="nombreRepartidor"><i class="fas fa-user"></i> Nombre completo</label>
+                        <input type="text" id="nombreRepartidor" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehiculoRepartidor"><i class="fas fa-car"></i> Vehículo (Matrícula)</label>
+                        <input type="text" id="vehiculoRepartidor" placeholder="Ej: ABC-123" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="experienciaRepartidor"><i class="fas fa-chart-line"></i> Experiencia (años)</label>
+                        <input type="number" id="experienciaRepartidor" min="0" value="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="zonaRepartidor"><i class="fas fa-map-marker-alt"></i> Zona de trabajo</label>
+                        <select id="zonaRepartidor" required>
+                            <option value="" disabled selected>Seleccione una zona</option>
+                            <option value="Centro">Centro</option>
+                            <option value="Norte">Zona Norte</option>
+                            <option value="Sur">Zona Sur</option>
+                            <option value="Este">Zona Este</option>
+                            <option value="Oeste">Zona Oeste</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="btnSubmitRepartidor">
+                        <i class="fas fa-plus"></i> Crear Repartidor
+                    </button>
+                </form>
+                
+                <hr style="margin: 25px 0; border: none; border-top: 1px solid #ddd;">
+                
+                <div class="form-group">
+                    <label for="repartidorEditar"><i class="fas fa-edit"></i> Gestionar repartidor</label>
+                    <select id="repartidorEditar">
+                        <option value="" disabled selected>Seleccione un repartidor</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="btnEditarRepartidor" class="btn btn-warning" style="flex: 1;">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button type="button" id="btnEliminarRepartidor" class="btn btn-danger" style="flex: 1;">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <h2><i class="fas fa-box"></i> Crear Paquete</h2>
+                
+                <form id="formPaquete">
+                    <div class="form-group">
+                        <label for="pesoPaquete"><i class="fas fa-weight-hanging"></i> Peso (kg)</label>
+                        <input type="number" id="pesoPaquete" min="0.1" step="0.1" placeholder="Ej: 2.5" required>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                        <div class="form-group">
+                            <label for="largoPaquete"><i class="fas fa-ruler-vertical"></i> Largo (cm)</label>
+                            <input type="number" id="largoPaquete" min="10" max="150" placeholder="Largo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="anchoPaquete"><i class="fas fa-ruler-horizontal"></i> Ancho (cm)</label>
+                            <input type="number" id="anchoPaquete" min="10" max="150" placeholder="Ancho" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="altoPaquete"><i class="fas fa-ruler"></i> Alto (cm)</label>
+                            <input type="number" id="altoPaquete" min="10" max="150" placeholder="Alto" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="destinoPaquete"><i class="fas fa-map-marked-alt"></i> Destino</label>
+                        <select id="destinoPaquete" required>
+                            <option value="" disabled selected>Seleccione destino</option>
+                            <option value="Nacional">Nacional</option>
+                            <option value="Internacional">Internacional</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="colorPaquete"><i class="fas fa-palette"></i> Color del paquete</label>
+                        <select id="colorPaquete" required>
+                            <option value="" disabled selected>Seleccione un color</option>
+                            <option value="#e74c3c">Rojo</option>
+                            <option value="#f1c40f">Amarillo</option>
+                            <option value="#2ecc71">Verde</option>
+                            <option value="#ffffff">Blanco</option>
+                            <option value="#34495e">Negro</option>
+                            <option value="#3498db">Azul</option>
+                            <option value="#9b59b6">Morado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="repartidorPaquete"><i class="fas fa-user-tie"></i> Asignar a repartidor</label>
+                        <select id="repartidorPaquete" required>
+                            <option value="" disabled selected>Seleccione un repartidor</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-block" id="btnSubmitPaquete">
+                        <i class="fas fa-plus-circle"></i> Crear Paquete
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="cabecera-paquetes">
+            <h2><i class="fas fa-boxes"></i> Paquetes Registrados</h2>
+            
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="filtros">
+                    <button class="filtro-btn active" data-filtro="todos">Todos</button>
+                    <button class="filtro-btn" data-filtro="nacional">Nacional</button>
+                    <button class="filtro-btn" data-filtro="internacional">Internacional</button>
+                    <button class="filtro-btn" data-filtro="sin-asignar">Sin asignar</button>
+                </div>
+                
+                <button id="btnBorrarDatos" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Limpiar datos
+                </button>
+            </div>
+        </div>
+        
+        <div id="listadoPaquetes" class="paquetes-grid">
+            <!-- Paquetes se cargarán aquí dinámicamente -->
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-box-open"></i>
+                <h3>No hay paquetes registrados</h3>
+                <p>Crea tu primer paquete usando el formulario de la derecha</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Confirmar acción</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div id="modalBody">
+                <p>¿Estás seguro de que quieres realizar esta acción?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modalCancel" class="btn">Cancelar</button>
+                <button id="modalConfirm" class="btn btn-danger">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notificación flotante -->
+    <div id="notification" class="notification" style="display: none;">
+        <i id="notificationIcon" class="fas fa-info-circle"></i>
+        <div>
+            <strong id="notificationTitle">Notificación</strong>
+            <p id="notificationMessage">Mensaje de notificación</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== MÓDULO PRINCIPAL ====================
+        const GestorPaqueteria = (function() {
+            // Referencias DOM
+            const DOM = {
+                formRepartidor: document.getElementById('formRepartidor'),
+                formPaquete: document.getElementById('formPaquete'),
+                selectRepartidor: document.getElementById('repartidorPaquete'),
+                selectRepartidorEditar: document.getElementById('repartidorEditar'),
+                listadoPaquetes: document.getElementById('listadoPaquetes'),
+                btnSubmitRepartidor: document.getElementById('btnSubmitRepartidor'),
+                btnSubmitPaquete: document.getElementById('btnSubmitPaquete'),
+                btnEditarRepartidor: document.getElementById('btnEditarRepartidor'),
+                btnEliminarRepartidor: document.getElementById('btnEliminarRepartidor'),
+                btnBorrarDatos: document.getElementById('btnBorrarDatos'),
+                filtroBtns: document.querySelectorAll('.filtro-btn'),
+                emptyState: document.getElementById('emptyState'),
+                // Estadísticas
+                totalPaquetes: document.getElementById('totalPaquetes'),
+                totalRepartidores: document.getElementById('totalRepartidores'),
+                pesoTotal: document.getElementById('pesoTotal'),
+                volumenTotal: document.getElementById('volumenTotal'),
+                // Modal
+                confirmModal: document.getElementById('confirmModal'),
+                modalTitle: document.getElementById('modalTitle'),
+                modalBody: document.getElementById('modalBody'),
+                modalConfirm: document.getElementById('modalConfirm'),
+                modalCancel: document.getElementById('modalCancel'),
+                closeModal: document.getElementById('closeModal'),
+                // Notificación
+                notification: document.getElementById('notification'),
+                notificationTitle: document.getElementById('notificationTitle'),
+                notificationMessage: document.getElementById('notificationMessage'),
+                notificationIcon: document.getElementById('notificationIcon')
+            };
+            
+            // Estado de la aplicación
+            let state = {
+                repartidores: [],
+                paquetes: [],
+                modoEdicion: {
+                    activo: false,
+                    tipo: null, // 'repartidor' o 'paquete'
+                    id: null,
+                    indice: null
+                },
+                filtroActual: 'todos',
+                nextPaqueteId: 1
+            };
+            
+            // ==================== CLASES ====================
+            class Repartidor {
+                constructor(nombre, vehiculo, experiencia, zona) {
+                    this.id = Date.now() + Math.random().toString(36).substr(2, 9);
+                    this.nombre = nombre;
+                    this.vehiculo = vehiculo;
+                    this.experiencia = parseInt(experiencia);
+                    this.zona = zona;
+                    this.fechaCreacion = new Date();
+                    this.paquetesAsignados = 0;
+                }
+                
+                actualizar(nombre, vehiculo, experiencia, zona) {
+                    this.nombre = nombre;
+                    this.vehiculo = vehiculo;
+                    this.experiencia = parseInt(experiencia);
+                    this.zona = zona;
+                }
+                
+                incrementarPaquetes() {
+                    this.paquetesAsignados++;
+                }
+                
+                decrementarPaquetes() {
+                    this.paquetesAsignados = Math.max(0, this.paquetesAsignados - 1);
+                }
+            }
+            
+            class Paquete {
+                constructor(id, peso, largo, ancho, alto, destino, color, repartidorId) {
+                    this.id = id;
+                    this.peso = parseFloat(peso);
+                    this.largo = parseInt(largo);
+                    this.ancho = parseInt(ancho);
+                    this.alto = parseInt(alto);
+                    this.destino = destino;
+                    this.color = color;
+                    this.repartidorId = repartidorId;
+                    this.fechaCreacion = new Date();
+                    this.estado = 'pendiente'; // pendiente, en_ruta, entregado
+                    
+                    // Calcular propiedades derivadas
+                    this.superficie = this.calcularSuperficie();
+                    this.volumen = this.calcularVolumen();
+                }
+                
+                calcularSuperficie() {
+                    return this.ancho * this.largo;
+                }
+                
+                calcularVolumen() {
+                    return this.superficie * this.alto;
+                }
+                
+                actualizar(peso, largo, ancho, alto, destino, color, repartidorId) {
+                    this.peso = parseFloat(peso);
+                    this.largo = parseInt(largo);
+                    this.ancho = parseInt(ancho);
+                    this.alto = parseInt(alto);
+                    this.destino = destino;
+                    this.color = color;
+                    this.repartidorId = repartidorId;
+                    
+                    // Recalcular propiedades derivadas
+                    this.superficie = this.calcularSuperficie();
+                    this.volumen = this.calcularVolumen();
+                }
+            }
+            
+            // ==================== UTILIDADES ====================
+            const Utils = {
+                // Mostrar notificación
+                mostrarNotificacion(titulo, mensaje, tipo = 'success') {
+                    DOM.notificationTitle.textContent = titulo;
+                    DOM.notificationMessage.textContent = mensaje;
+                    
+                    // Configurar colores según tipo
+                    DOM.notification.className = 'notification';
+                    DOM.notification.classList.add(`notification-${tipo}`);
+                    
+                    // Configurar icono según tipo
+                    const iconos = {
+                        'success': 'fa-check-circle',
+                        'error': 'fa-exclamation-circle',
+                        'warning': 'fa-exclamation-triangle',
+                        'info': 'fa-info-circle'
+                    };
+                    
+                    DOM.notificationIcon.className = `fas ${iconos[tipo] || 'fa-info-circle'}`;
+                    
+                    // Mostrar notificación
+                    DOM.notification.style.display = 'flex';
+                    
+                    // Ocultar después de 5 segundos
+                    setTimeout(() => {
+                        DOM.notification.style.display = 'none';
+                    }, 5000);
+                },
+                
+                // Mostrar modal de confirmación
+                mostrarModalConfirmacion(titulo, mensaje) {
+                    return new Promise((resolve) => {
+                        DOM.modalTitle.textContent = titulo;
+                        DOM.modalBody.innerHTML = `<p>${mensaje}</p>`;
+                        DOM.confirmModal.style.display = 'flex';
+                        
+                        const confirmar = () => {
+                            limpiarEventos();
+                            DOM.confirmModal.style.display = 'none';
+                            resolve(true);
+                        };
+                        
+                        const cancelar = () => {
+                            limpiarEventos();
+                            DOM.confirmModal.style.display = 'none';
+                            resolve(false);
+                        };
+                        
+                        const limpiarEventos = () => {
+                            DOM.modalConfirm.removeEventListener('click', confirmar);
+                            DOM.modalCancel.removeEventListener('click', cancelar);
+                            DOM.closeModal.removeEventListener('click', cancelar);
+                        };
+                        
+                        DOM.modalConfirm.addEventListener('click', confirmar);
+                        DOM.modalCancel.addEventListener('click', cancelar);
+                        DOM.closeModal.addEventListener('click', cancelar);
+                    });
+                },
+                
+                // Formatear números
+                formatearNumero(num) {
+                    return new Intl.NumberFormat('es-ES').format(num);
+                },
+                
+                // Obtener iniciales de un nombre
+                obtenerIniciales(nombre) {
+                    return nombre.split(' ')
+                        .map(part => part.charAt(0))
+                        .join('')
+                        .toUpperCase()
+                        .substring(0, 2);
+                },
+                
+                // Generar color aleatorio
+                generarColorAleatorio() {
+                    const colores = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c', '#d35400'];
+                    return colores[Math.floor(Math.random() * colores.length)];
+                }
+            };
+            
+            // ==================== GESTIÓN DE DATOS ====================
+            const DataManager = {
+                // Guardar datos en localStorage
+                guardarDatos() {
+                    const datos = {
+                        repartidores: state.repartidores,
+                        paquetes: state.paquetes,
+                        nextPaqueteId: state.nextPaqueteId
+                    };
+                    localStorage.setItem('gestorPaqueteria', JSON.stringify(datos));
+                },
+                
+                // Cargar datos desde localStorage
+                cargarDatos() {
+                    const datosGuardados = localStorage.getItem('gestorPaqueteria');
+                    
+                    if (datosGuardados) {
+                        try {
+                            const datos = JSON.parse(datosGuardados);
+                            
+                            // Restaurar repartidores
+                            state.repartidores = datos.repartidores.map(r => 
+                                Object.assign(new Repartidor(), r)
+                            );
+                            
+                            // Restaurar paquetes
+                            state.paquetes = datos.paquetes.map(p => 
+                                Object.assign(new Paquete(), p)
+                            );
+                            
+                            // Restaurar ID siguiente
+                            state.nextPaqueteId = datos.nextPaqueteId || 1;
+                            
+                            Utils.mostrarNotificacion(
+                                'Datos cargados', 
+                                `Se han cargado ${state.repartidores.length} repartidores y ${state.paquetes.length} paquetes`, 
+                                'success'
+                            );
+                        } catch (error) {
+                            console.error('Error al cargar datos:', error);
+                            Utils.mostrarNotificacion('Error', 'No se pudieron cargar los datos guardados', 'error');
+                        }
+                    }
+                },
+                
+                // Borrar todos los datos
+                async borrarDatos() {
+                    const confirmado = await Utils.mostrarModalConfirmacion(
+                        'Borrar todos los datos',
+                        '¿Estás seguro de que quieres borrar TODOS los datos? Esta acción no se puede deshacer.'
+                    );
+                    
+                    if (confirmado) {
+                        state.repartidores = [];
+                        state.paquetes = [];
+                        state.nextPaqueteId = 1;
+                        localStorage.removeItem('gestorPaqueteria');
+                        
+                        this.actualizarUI();
+                        Utils.mostrarNotificacion('Datos borrados', 'Todos los datos han sido eliminados', 'success');
+                    }
+                },
+                
+                // Actualizar estadísticas
+                actualizarEstadisticas() {
+                    // Total paquetes
+                    DOM.totalPaquetes.textContent = Utils.formatearNumero(state.paquetes.length);
+                    
+                    // Total repartidores
+                    DOM.totalRepartidores.textContent = Utils.formatearNumero(state.repartidores.length);
+                    
+                    // Peso total
+                    const pesoTotal = state.paquetes.reduce((total, paquete) => total + paquete.peso, 0);
+                    DOM.pesoTotal.textContent = Utils.formatearNumero(pesoTotal.toFixed(1));
+                    
+                    // Volumen total
+                    const volumenTotal = state.paquetes.reduce((total, paquete) => total + paquete.volumen, 0);
+                    DOM.volumenTotal.textContent = Utils.formatearNumero(volumenTotal);
+                },
+                
+                // Actualizar toda la UI
+                actualizarUI() {
+                    this.actualizarSelectRepartidores();
+                    this.actualizarListadoPaquetes();
+                    this.actualizarEstadisticas();
+                    this.actualizarSelectEdicion();
+                    this.guardarDatos();
+                }
+            };
+            
+            // ==================== GESTIÓN DE REPARTIDORES ====================
+            const RepartidorManager = {
+                // Agregar nuevo repartidor
+                agregarRepartidor(nombre, vehiculo, experiencia, zona) {
+                    const nuevoRepartidor = new Repartidor(nombre, vehiculo, experiencia, zona);
+                    state.repartidores.push(nuevoRepartidor);
+                    
+                    DataManager.actualizarUI();
+                    Utils.mostrarNotificacion(
+                        'Repartidor creado', 
+                        `${nombre} ha sido agregado al sistema`, 
+                        'success'
+                    );
+                },
+                
+                // Editar repartidor existente
+                editarRepartidor(indice, nombre, vehiculo, experiencia, zona) {
+                    if (indice >= 0 && indice < state.repartidores.length) {
+                        state.repartidores[indice].actualizar(nombre, vehiculo, experiencia, zona);
+                        
+                        DataManager.actualizarUI();
+                        Utils.mostrarNotificacion(
+                            'Repartidor actualizado', 
+                            `${nombre} ha sido actualizado`, 
+                            'success'
+                        );
+                        
+                        return true;
+                    }
+                    return false;
+                },
+                
+                // Eliminar repartidor
+                async eliminarRepartidor(indice) {
+                    if (indice < 0 || indice >= state.repartidores.length) {
+                        Utils.mostrarNotificacion('Error', 'Repartidor no encontrado', 'error');
+                        return;
+                    }
+                    
+                    const repartidor = state.repartidores[indice];
+                    
+                    // Verificar si tiene paquetes asignados
+                    const paquetesAsignados = state.paquetes.filter(p => p.repartidorId === repartidor.id);
+                    
+                    if (paquetesAsignados.length > 0) {
+                        Utils.mostrarNotificacion(
+                            'No se puede eliminar', 
+                            `${repartidor.nombre} tiene ${paquetesAsignados.length} paquete(s) asignado(s). Reasigna los paquetes primero.`, 
+                            'error'
+                        );
+                        return;
+                    }
+                    
+                    const confirmado = await Utils.mostrarModalConfirmacion(
+                        'Eliminar repartidor',
+                        `¿Estás seguro de que quieres eliminar a ${repartidor.nombre}?`
+                    );
+                    
+                    if (confirmado) {
+                        state.repartidores.splice(indice, 1);
+                        
+                        DataManager.actualizarUI();
+                        Utils.mostrarNotificacion(
+                            'Repartidor eliminado', 
+                            `${repartidor.nombre} ha sido eliminado del sistema`, 
+                            'success'
+                        );
+                    }
+                },
+                
+                // Obtener repartidor por ID
+                obtenerRepartidorPorId(id) {
+                    return state.repartidores.find(r => r.id === id);
+                },
+                
+                // Actualizar selects de repartidores
+                actualizarSelectRepartidores() {
+                    // Limpiar selects
+                    DOM.selectRepartidor.innerHTML = '';
+                    DOM.selectRepartidorEditar.innerHTML = '';
+                    
+                    // Opción por defecto
+                    const opcionDefault = document.createElement('option');
+                    opcionDefault.value = '';
+                    opcionDefault.textContent = 'Seleccione un repartidor';
+                    opcionDefault.disabled = true;
+                    opcionDefault.selected = true;
+                    
+                    DOM.selectRepartidor.appendChild(opcionDefault.cloneNode(true));
+                    DOM.selectRepartidorEditar.appendChild(opcionDefault.cloneNode(true));
+                    
+                    // Agregar repartidores
+                    state.repartidores.forEach((repartidor, index) => {
+                        const option = document.createElement('option');
+                        option.value = repartidor.id;
+                        option.textContent = `${repartidor.nombre} (${repartidor.vehiculo}) - ${repartidor.zona}`;
+                        DOM.selectRepartidor.appendChild(option);
+                        
+                        const optionEdit = document.createElement('option');
+                        optionEdit.value = index;
+                        optionEdit.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
+                        DOM.selectRepartidorEditar.appendChild(optionEdit);
+                    });
+                },
+                
+                // Actualizar select de edición
+                actualizarSelectEdicion() {
+                    DOM.selectRepartidorEditar.innerHTML = '';
+                    
+                    const opcionDefault = document.createElement('option');
+                    opcionDefault.value = '';
+                    opcionDefault.textContent = 'Seleccione un repartidor';
+                    opcionDefault.disabled = true;
+                    opcionDefault.selected = true;
+                    
+                    DOM.selectRepartidorEditar.appendChild(opcionDefault);
+                    
+                    state.repartidores.forEach((repartidor, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
+                        DOM.selectRepartidorEditar.appendChild(option);
+                    });
+                },
+                
+                // Cargar datos de repartidor para editar
+                cargarRepartidorParaEditar(indice) {
+                    if (indice >= 0 && indice < state.repartidores.length) {
+                        const repartidor = state.repartidores[indice];
+                        
+                        document.getElementById('nombreRepartidor').value = repartidor.nombre;
+                        document.getElementById('vehiculoRepartidor').value = repartidor.vehiculo;
+                        document.getElementById('experienciaRepartidor').value = repartidor.experiencia;
+                        document.getElementById('zonaRepartidor').value = repartidor.zona;
+                        
+                        DOM.btnSubmitRepartidor.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+                        state.modoEdicion.activo = true;
+                        state.modoEdicion.tipo = 'repartidor';
+                        state.modoEdicion.indice = indice;
+                        
+                        Utils.mostrarNotificacion(
+                            'Modo edición', 
+                            `Editando a ${repartidor.nombre}`, 
+                            'info'
+                        );
+                    }
+                },
+                
+                // Salir del modo edición de repartidor
+                salirModoEdicionRepartidor() {
+                    DOM.formRepartidor.reset();
+                    DOM.btnSubmitRepartidor.innerHTML = '<i class="fas fa-plus"></i> Crear Repartidor';
+                    state.modoEdicion.activo = false;
+                    state.modoEdicion.tipo = null;
+                    state.modoEdicion.indice = null;
+                }
+            };
+            
+            // ==================== GESTIÓN DE PAQUETES ====================
+            const PaqueteManager = {
+                // Agregar nuevo paquete
+                agregarPaquete(peso, largo, ancho, alto, destino, color, repartidorId) {
+                    const nuevoPaquete = new Paquete(
+                        state.nextPaqueteId,
+                        peso,
+                        largo,
+                        ancho,
+                        alto,
+                        destino,
+                        color,
+                        repartidorId
+                    );
+                    
+                    state.paquetes.push(nuevoPaquete);
+                    state.nextPaqueteId++;
+                    
+                    // Incrementar contador del repartidor
+                    const repartidor = RepartidorManager.obtenerRepartidorPorId(repartidorId);
+                    if (repartidor) {
+                        repartidor.incrementarPaquetes();
+                    }
+                    
+                    DataManager.actualizarUI();
+                    Utils.mostrarNotificacion(
+                        'Paquete creado', 
+                        `Paquete #${nuevoPaquete.id} creado exitosamente`, 
+                        'success'
+                    );
+                },
+                
+                // Editar paquete existente
+                editarPaquete(id, peso, largo, ancho, alto, destino, color, repartidorId) {
+                    const paqueteIndex = state.paquetes.findIndex(p => p.id === id);
+                    
+                    if (paqueteIndex !== -1) {
+                        const paquete = state.paquetes[paqueteIndex];
+                        const repartidorAnteriorId = paquete.repartidorId;
+                        
+                        paquete.actualizar(peso, largo, ancho, alto, destino, color, repartidorId);
+                        
+                        // Actualizar contadores de repartidores si cambió
+                        if (repartidorAnteriorId !== repartidorId) {
+                            const repartidorAnterior = RepartidorManager.obtenerRepartidorPorId(repartidorAnteriorId);
+                            const repartidorNuevo = RepartidorManager.obtenerRepartidorPorId(repartidorId);
+                            
+                            if (repartidorAnterior) repartidorAnterior.decrementarPaquetes();
+                            if (repartidorNuevo) repartidorNuevo.incrementarPaquetes();
+                        }
+                        
+                        DataManager.actualizarUI();
+                        Utils.mostrarNotificacion(
+                            'Paquete actualizado', 
+                            `Paquete #${id} actualizado exitosamente`, 
+                            'success'
+                        );
+                        
+                        return true;
+                    }
+                    return false;
+                },
+                
+                // Eliminar paquete
+                async eliminarPaquete(id) {
+                    const paqueteIndex = state.paquetes.findIndex(p => p.id === id);
+                    
+                    if (paqueteIndex !== -1) {
+                        const paquete = state.paquetes[paqueteIndex];
+                        
+                        const confirmado = await Utils.mostrarModalConfirmacion(
+                            'Eliminar paquete',
+                            `¿Estás seguro de que quieres eliminar el paquete #${id}?`
+                        );
+                        
+                        if (confirmado) {
+                            // Decrementar contador del repartidor
+                            if (paquete.repartidorId) {
+                                const repartidor = RepartidorManager.obtenerRepartidorPorId(paquete.repartidorId);
+                                if (repartidor) {
+                                    repartidor.decrementarPaquetes();
+                                }
+                            }
+                            
+                            // Eliminar paquete
+                            state.paquetes.splice(paqueteIndex, 1);
+                            
+                            DataManager.actualizarUI();
+                            Utils.mostrarNotificacion(
+                                'Paquete eliminado', 
+                                `Paquete #${id} eliminado exitosamente`, 
+                                'success'
+                            );
+                        }
+                    }
+                },
+                
+                // Cargar datos de paquete para editar
+                cargarPaqueteParaEditar(id) {
+                    const paquete = state.paquetes.find(p => p.id === id);
+                    
+                    if (paquete) {
+                        document.getElementById('pesoPaquete').value = paquete.peso;
+                        document.getElementById('largoPaquete').value = paquete.largo;
+                        document.getElementById('anchoPaquete').value = paquete.ancho;
+                        document.getElementById('altoPaquete').value = paquete.alto;
+                        document.getElementById('destinoPaquete').value = paquete.destino;
+                        document.getElementById('colorPaquete').value = paquete.color;
+                        DOM.selectRepartidor.value = paquete.repartidorId;
+                        
+                        DOM.btnSubmitPaquete.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+                        state.modoEdicion.activo = true;
+                        state.modoEdicion.tipo = 'paquete';
+                        state.modoEdicion.id = id;
+                        
+                        Utils.mostrarNotificacion(
+                            'Modo edición', 
+                            `Editando paquete #${id}`, 
+                            'info'
+                        );
+                    }
+                },
+                
+                // Salir del modo edición de paquete
+                salirModoEdicionPaquete() {
+                    DOM.formPaquete.reset();
+                    DOM.selectRepartidor.selectedIndex = 0;
+                    DOM.btnSubmitPaquete.innerHTML = '<i class="fas fa-plus-circle"></i> Crear Paquete';
+                    state.modoEdicion.activo = false;
+                    state.modoEdicion.tipo = null;
+                    state.modoEdicion.id = null;
+                },
+                
+                // Filtrar paquetes
+                filtrarPaquetes(filtro) {
+                    let paquetesFiltrados = [...state.paquetes];
+                    
+                    switch (filtro) {
+                        case 'nacional':
+                            paquetesFiltrados = paquetesFiltrados.filter(p => p.destino === 'Nacional');
+                            break;
+                        case 'internacional':
+                            paquetesFiltrados = paquetesFiltrados.filter(p => p.destino === 'Internacional');
+                            break;
+                        case 'sin-asignar':
+                            paquetesFiltrados = paquetesFiltrados.filter(p => !p.repartidorId);
+                            break;
+                        case 'todos':
+                        default:
+                            // No filtrar, mostrar todos
+                            break;
+                    }
+                    
+                    return paquetesFiltrados;
+                },
+                
+                // Actualizar listado de paquetes
+                actualizarListadoPaquetes() {
+                    // Limpiar listado
+                    DOM.listadoPaquetes.innerHTML = '';
+                    
+                    // Obtener paquetes filtrados
+                    const paquetesFiltrados = this.filtrarPaquetes(state.filtroActual);
+                    
+                    // Mostrar estado vacío si no hay paquetes
+                    if (paquetesFiltrados.length === 0) {
+                        const emptyState = document.createElement('div');
+                        emptyState.className = 'empty-state';
+                        emptyState.innerHTML = `
+                            <i class="fas fa-box-open"></i>
+                            <h3>No hay paquetes ${state.filtroActual !== 'todos' ? 'con este filtro' : 'registrados'}</h3>
+                            <p>Crea tu primer paquete usando el formulario</p>
+                        `;
+                        DOM.listadoPaquetes.appendChild(emptyState);
+                        return;
+                    }
+                    
+                    // Crear tarjetas para cada paquete
+                    paquetesFiltrados.forEach(paquete => {
+                        const repartidor = paquete.repartidorId ? 
+                            RepartidorManager.obtenerRepartidorPorId(paquete.repartidorId) : null;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'paquete-card';
+                        card.style.borderTopColor = paquete.color;
+                        
+                        // Determinar clase del badge según destino
+                        const badgeClass = paquete.destino === 'Nacional' ? 'badge-nacional' : 'badge-internacional';
+                        
+                        card.innerHTML = `
+                            <div class="paquete-header">
+                                <div class="paquete-id">Paquete #${paquete.id}</div>
+                                <span class="badge ${badgeClass}">${paquete.destino}</span>
+                            </div>
+                            
+                            <div class="paquete-dibujo" id="dibujo-${paquete.id}">
+                                <!-- El dibujo 3D se generará con JavaScript -->
+                            </div>
+                            
+                            <div class="paquete-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Peso:</span>
+                                    <span class="detail-value">${paquete.peso} kg</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Dimensiones:</span>
+                                    <span class="detail-value">${paquete.largo} × ${paquete.ancho} × ${paquete.alto} cm</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Superficie:</span>
+                                    <span class="detail-value">${Utils.formatearNumero(paquete.superficie)} cm²</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Volumen:</span>
+                                    <span class="detail-value">${Utils.formatearNumero(paquete.volumen)} cm³</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Color:</span>
+                                    <span class="detail-value">
+                                        <span style="display: inline-block; width: 15px; height: 15px; background-color: ${paquete.color}; border-radius: 2px; margin-right: 5px;"></span>
+                                        ${paquete.color}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="paquete-footer">
+                                <div class="repartidor-info">
+                                    ${repartidor ? `
+                                        <div class="repartidor-avatar" style="background-color: ${Utils.generarColorAleatorio()}">
+                                            ${Utils.obtenerIniciales(repartidor.nombre)}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600;">${repartidor.nombre}</div>
+                                            <div style="font-size: 0.85rem; color: #7f8c8d;">${repartidor.vehiculo}</div>
+                                        </div>
+                                    ` : `
+                                        <div class="repartidor-avatar" style="background-color: #95a5a6;">
+                                            <i class="fas fa-question"></i>
+                                        </div>
+                                        <div style="font-weight: 600; color: #7f8c8d;">Sin asignar</div>
+                                    `}
+                                </div>
+                                
+                                <div class="paquete-actions">
+                                    <button class="btn-edit" data-id="${paquete.id}" title="Editar paquete">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-delete" data-id="${paquete.id}" title="Eliminar paquete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        DOM.listadoPaquetes.appendChild(card);
+                        
+                        // Generar dibujo 3D del paquete
+                        this.generarDibujoPaquete(paquete);
+                    });
+                    
+                    // Agregar event listeners a los botones de edición y eliminación
+                    document.querySelectorAll('.btn-edit').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const id = parseInt(btn.getAttribute('data-id'));
+                            this.cargarPaqueteParaEditar(id);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.btn-delete').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const id = parseInt(btn.getAttribute('data-id'));
+                            this.eliminarPaquete(id);
+                        });
+                    });
+                },
+                
+                // Generar dibujo 3D del paquete
+                generarDibujoPaquete(paquete) {
+                    const container = document.getElementById(`dibujo-${paquete.id}`);
+                    if (!container) return;
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                    container.appendChild(canvas);
+                    
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Limpiar canvas
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Calcular dimensiones proporcionales
+                    const maxDimension = Math.max(paquete.largo, paquete.ancho, paquete.alto);
+                    const scale = Math.min(canvas.width, canvas.height) * 0.7 / maxDimension;
+                    
+                    const largo = paquete.largo * scale;
+                    const ancho = paquete.ancho * scale;
+                    const alto = paquete.alto * scale;
+                    
+                    // Posicionar en el centro
+                    const centerX = canvas.width / 2;
+                    const centerY = canvas.height / 2;
+                    
+                    // Dibujar perspectiva 3D simple
+                    const perspective = 0.3;
+                    
+                    // Cara frontal
+                    ctx.fillStyle = paquete.color;
+                    ctx.globalAlpha = 0.8;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - ancho/2, centerY - alto/2);
+                    ctx.lineTo(centerX + ancho/2, centerY - alto/2);
+                    ctx.lineTo(centerX + ancho/2, centerY + alto/2);
+                    ctx.lineTo(centerX - ancho/2, centerY + alto/2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    
+                    // Cara lateral (derecha)
+                    ctx.fillStyle = paquete.color;
+                    ctx.globalAlpha = 0.6;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + ancho/2, centerY - alto/2);
+                    ctx.lineTo(centerX + ancho/2 + largo * perspective, centerY - alto/2 - largo * perspective);
+                    ctx.lineTo(centerX + ancho/2 + largo * perspective, centerY + alto/2 - largo * perspective);
+                    ctx.lineTo(centerX + ancho/2, centerY + alto/2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Cara superior
+                    ctx.fillStyle = paquete.color;
+                    ctx.globalAlpha = 0.4;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - ancho/2, centerY - alto/2);
+                    ctx.lineTo(centerX + ancho/2, centerY - alto/2);
+                    ctx.lineTo(centerX + ancho/2 + largo * perspective, centerY - alto/2 - largo * perspective);
+                    ctx.lineTo(centerX - ancho/2 + largo * perspective, centerY - alto/2 - largo * perspective);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            };
+            
+            // ==================== MANEJADORES DE EVENTOS ====================
+            const EventHandlers = {
+                // Inicializar todos los event listeners
+                inicializar() {
+                    // Formulario de repartidor
+                    DOM.formRepartidor.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.manejarSubmitRepartidor();
+                    });
+                    
+                    // Formulario de paquete
+                    DOM.formPaquete.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.manejarSubmitPaquete();
+                    });
+                    
+                    // Botón editar repartidor
+                    DOM.btnEditarRepartidor.addEventListener('click', () => {
+                        const indice = parseInt(DOM.selectRepartidorEditar.value);
+                        if (!isNaN(indice)) {
+                            RepartidorManager.cargarRepartidorParaEditar(indice);
+                        } else {
+                            Utils.mostrarNotificacion('Advertencia', 'Selecciona un repartidor para editar', 'warning');
+                        }
+                    });
+                    
+                    // Botón eliminar repartidor
+                    DOM.btnEliminarRepartidor.addEventListener('click', async () => {
+                        const indice = parseInt(DOM.selectRepartidorEditar.value);
+                        if (!isNaN(indice)) {
+                            await RepartidorManager.eliminarRepartidor(indice);
+                        } else {
+                            Utils.mostrarNotificacion('Advertencia', 'Selecciona un repartidor para eliminar', 'warning');
+                        }
+                    });
+                    
+                    // Botón borrar todos los datos
+                    DOM.btnBorrarDatos.addEventListener('click', () => {
+                        DataManager.borrarDatos();
+                    });
+                    
+                    // Filtros de paquetes
+                    DOM.filtroBtns.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            // Remover clase active de todos los botones
+                            DOM.filtroBtns.forEach(b => b.classList.remove('active'));
+                            
+                            // Agregar clase active al botón clickeado
+                            btn.classList.add('active');
+                            
+                            // Actualizar filtro
+                            state.filtroActual = btn.getAttribute('data-filtro');
+                            
+                            // Actualizar listado
+                            PaqueteManager.actualizarListadoPaquetes();
+                        });
+                    });
+                    
+                    // Cerrar modal con ESC
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && DOM.confirmModal.style.display === 'flex') {
+                            DOM.confirmModal.style.display = 'none';
+                        }
+                    });
+                    
+                    // Cerrar modal al hacer clic fuera
+                    DOM.confirmModal.addEventListener('click', (e) => {
+                        if (e.target === DOM.confirmModal) {
+                            DOM.confirmModal.style.display = 'none';
+                        }
+                    });
+                },
+                
+                // Manejar submit del formulario de repartidor
+                manejarSubmitRepartidor() {
+                    const nombre = document.getElementById('nombreRepartidor').value.trim();
+                    const vehiculo = document.getElementById('vehiculoRepartidor').value.trim();
+                    const experiencia = document.getElementById('experienciaRepartidor').value;
+                    const zona = document.getElementById('zonaRepartidor').value;
+                    
+                    // Validaciones
+                    if (!nombre || !vehiculo || !zona) {
+                        Utils.mostrarNotificacion('Error', 'Por favor, completa todos los campos obligatorios', 'error');
+                        return;
+                    }
+                    
+                    if (state.modoEdicion.activo && state.modoEdicion.tipo === 'repartidor') {
+                        // Modo edición
+                        RepartidorManager.editarRepartidor(
+                            state.modoEdicion.indice,
+                            nombre,
+                            vehiculo,
+                            experiencia,
+                            zona
+                        );
+                        RepartidorManager.salirModoEdicionRepartidor();
+                    } else {
+                        // Modo creación
+                        RepartidorManager.agregarRepartidor(nombre, vehiculo, experiencia, zona);
+                        DOM.formRepartidor.reset();
+                    }
+                },
+                
+                // Manejar submit del formulario de paquete
+                manejarSubmitPaquete() {
+                    const peso = document.getElementById('pesoPaquete').value;
+                    const largo = document.getElementById('largoPaquete').value;
+                    const ancho = document.getElementById('anchoPaquete').value;
+                    const alto = document.getElementById('altoPaquete').value;
+                    const destino = document.getElementById('destinoPaquete').value;
+                    const color = document.getElementById('colorPaquete').value;
+                    const repartidorId = DOM.selectRepartidor.value;
+                    
+                    // Validaciones
+                    if (!peso || !largo || !ancho || !alto || !destino || !color || !repartidorId) {
+                        Utils.mostrarNotificacion('Error', 'Por favor, completa todos los campos obligatorios', 'error');
+                        return;
+                    }
+                    
+                    if (state.modoEdicion.activo && state.modoEdicion.tipo === 'paquete') {
+                        // Modo edición
+                        PaqueteManager.editarPaquete(
+                            state.modoEdicion.id,
+                            peso,
+                            largo,
+                            ancho,
+                            alto,
+                            destino,
+                            color,
+                            repartidorId
+                        );
+                        PaqueteManager.salirModoEdicionPaquete();
+                    } else {
+                        // Modo creación
+                        PaqueteManager.agregarPaquete(
+                            peso,
+                            largo,
+                            ancho,
+                            alto,
+                            destino,
+                            color,
+                            repartidorId
+                        );
+                        DOM.formPaquete.reset();
+                        DOM.selectRepartidor.selectedIndex = 0;
+                    }
+                }
+            };
+            
+            // ==================== INICIALIZACIÓN ====================
+            const inicializar = () => {
+                // Cargar datos guardados
+                DataManager.cargarDatos();
+                
+                // Inicializar event listeners
+                EventHandlers.inicializar();
+                
+                // Actualizar UI inicial
+                DataManager.actualizarUI();
+                
+                // Mostrar mensaje de bienvenida
+                setTimeout(() => {
+                    if (state.paquetes.length === 0 && state.repartidores.length === 0) {
+                        Utils.mostrarNotificacion(
+                            '¡Bienvenido!', 
+                            'Comienza creando un repartidor y tu primer paquete', 
+                            'info'
+                        );
+                    }
+                }, 1000);
+            };
+            
+            // ==================== API PÚBLICA ====================
+            return {
+                inicializar,
+                // Métodos públicos si se necesitan
+                getEstado: () => ({ ...state }),
+                getRepartidores: () => [...state.repartidores],
+                getPaquetes: () => [...state.paquetes]
+            };
+        })();
+        
+        // Inicializar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            GestorPaqueteria.inicializar();
+        });
+    </script>
+</body>
+
+</html>
