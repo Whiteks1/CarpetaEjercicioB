@@ -198,10 +198,92 @@
             flex: 1;
             margin-top: 10px;
         }
+
+        #notificaciones {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notificacion {
+            min-width: 260px;
+            max-width: 340px;
+            padding: 12px 18px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+
+        .notificacion.success {
+            background-color: #27ae60;
+        }
+
+        .notificacion.warning {
+            background-color: #f1c40f;
+            color: #000;
+        }
+
+        .notificacion.danger {
+            background-color: #e74c3c;
+        }
+
+        .notificacion.hide {
+            animation: fadeOut 0.4s forwards;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99990;
+        }
+
+        #confirmBox {
+            display: none;
+            position: fixed;
+            top: 40%;
+            left: calc(50% - 130px);
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            width: 260px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            font-family: Arial, sans-serif;
+        }
+
+        #confirmBox p {
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        #confirmBox button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        #confirmYes {
+            background: #27ae60;
+            margin-right: 10px;
+        }
+
+        #confirmNo {
+            background: #c0392b;
+        }
     </style>
 </head>
 
 <body>
+    <div id="notificaciones"></div>
     <div class="contenedor">
         <h1>Gestión de Datos Usando Objetos</h1>
         <p>El ejercicio consiste en una aplicación que gestione un sistema
@@ -221,7 +303,6 @@
         </ul>
 
         <div id="repartidor">
-
             <form id="formRepartidor">
                 <h2>Crear Repartidor</h2>
                 <label for="nombreRepartidor">Nombre:</label>
@@ -230,18 +311,15 @@
                 <label for="vehiculoRepartidor">Vehículo: Matrícula</label>
                 <input type="text" id="vehiculoRepartidor" required>
 
-                <label for="experienciaRepartidor">Experiencia
-                    (años):</label>
+                <label for="experienciaRepartidor">Experiencia (años):</label>
                 <input type="number" id="experienciaRepartidor" min="0" value="0" required>
 
                 <button type="submit">Crear Repartidor</button>
                 <hr>
 
-                <label for="repartidorEditar">Editar repartidor
-                    existente:</label>
+                <label for="repartidorEditar">Editar repartidor existente:</label>
                 <select id="repartidorEditar">
-                    <option value="" disabled selected>Seleccione un
-                        repartidor</option>
+                    <option value="" disabled selected>Seleccione un repartidor</option>
                 </select>
 
                 <div class="acciones-repartidor">
@@ -254,7 +332,6 @@
                     </button>
                 </div>
             </form>
-
 
             <form id="formPaquete">
                 <h2>Crear Paquete</h2>
@@ -273,16 +350,14 @@
 
                 <label for="destinoPaquete">Destino</label>
                 <select id="destinoPaquete" required>
-                    <option value disabled selected>Seleccione
-                        destino</option>
+                    <option value="" disabled selected>Seleccione destino</option>
                     <option value="Nacional">Nacional</option>
                     <option value="Internacional">Internacional</option>
                 </select>
 
                 <label for="colorPaquete">Color</label>
                 <select id="colorPaquete" required>
-                    <option value disabled selected>Seleccione un
-                        color</option>
+                    <option value="" disabled selected>Seleccione un color</option>
                     <option value="red">Rojo</option>
                     <option value="yellow">Amarillo</option>
                     <option value="green">Verde</option>
@@ -292,8 +367,7 @@
 
                 <label for="repartidorPaquete">Repartidor</label>
                 <select id="repartidorPaquete" required>
-                    <option value disabled selected>Seleccione un
-                        repartidor</option>
+                    <option value="" disabled selected>Seleccione un repartidor</option>
                 </select>
 
                 <button id="btnPaquete" type="submit">Crear Paquete</button>
@@ -303,15 +377,22 @@
         <div class="cabecera-paquetes">
             <h2>Paquetes Creados</h2>
             <button id="btnBorrarDatos" class="btn-borrar-datos" title="Borrar todos los datos guardados">
-                🗑 Borrar datos
+                🗑 Borrar Datos Guardados
             </button>
         </div>
 
         <div id="listadoPaquetes"></div>
+        <div id="overlay"></div>
+        
+        <div id="confirmBox">
+            <p id="confirmText"></p>
+            <button id="confirmYes">Sí</button>
+            <button id="confirmNo">No</button>
+        </div>
+
     </div>
 
     <script>
-
         // REFERENCIAS DOM
 
         const formRepartidor = document.getElementById('formRepartidor');
@@ -323,7 +404,148 @@
         const selectRepartidorEditar = document.getElementById('repartidorEditar');
         const btnEditarRepartidor = document.getElementById('btnEditarRepartidor');
         const btnEliminarRepartidor = document.getElementById('btnEliminarRepartidor');
+                const contenedorNotificaciones = document.getElementById('notificaciones');
 
+                // CONFIRM PERSONALIZADO
+
+                function miConfirm(mensaje, callback) {
+                    const box = document.getElementById('confirmBox');
+                    const texto = document.getElementById('confirmText');
+                    const btnSi = document.getElementById('confirmYes');
+                    const btnNo = document.getElementById('confirmNo');
+                    const overlay = document.getElementById('overlay');
+
+                    texto.textContent = mensaje;
+                    overlay.style.display = 'block';
+                    box.style.display = 'block';
+
+                    btnSi.onclick = () => {
+                        box.style.display = 'none';
+                        overlay.style.display = 'none';
+                        callback(true);
+                    };
+
+                    btnNo.onclick = () => {
+                        box.style.display = 'none';
+                        overlay.style.display = 'none';
+                        callback(false);
+                    };
+                }
+
+                // CONTENEDOR DE NOTIFICACIONES
+
+                // Códigos de mensaje
+
+                function muestraMensaje(codigo) {
+                    let titulo = 'Gestor de Paquetería';
+                    let texto = 'Operación realizada.';
+                    let tipo = 'success'; // success | warning | danger
+
+                    switch (codigo) {
+                        case 1:
+                            titulo = 'Repartidor creado';
+                            texto = 'El repartidor se ha añadido correctamente.';
+                            tipo = 'success';
+                            break;
+
+                        case 2:
+                            titulo = 'Datos no válidos';
+                            texto = 'Por favor, completa todos los campos del repartidor.';
+                            tipo = 'danger';
+                            break;
+
+                        case 3:
+                            titulo = 'Repartidor actualizado';
+                            texto = 'Los datos del repartidor se han guardado correctamente.';
+                            tipo = 'success';
+                            break;
+
+                        case 4:
+                            titulo = 'Repartidor eliminado';
+                            texto = 'El repartidor se ha eliminado correctamente.';
+                            tipo = 'success';
+                            break;
+
+                        case 5:
+                            titulo = 'Modo edición activado';
+                            texto = 'Estás editando un formulario. Guarda o cancela antes de continuar.';
+                            tipo = 'warning';
+                            break;
+
+                        case 6:
+                            titulo = 'Selecciona un Repartidor';
+                            texto = 'Selecciona primero un Repartidor ';
+                            tipo = 'warning';
+                            break;
+
+                        case 7:
+                            titulo = 'Datos guardados';
+                            texto = 'Los datos se han almacenado en el localStorage.';
+                            tipo = 'success';
+                            break;
+
+                        case 8:
+                            titulo = 'Datos borrados';
+                            texto = 'Todos los datos guardados se han borrado correctamente.';
+                            tipo = 'danger';
+                            break;
+
+                        case 9:
+                            titulo = 'Paquete creado';
+                            texto = 'El paquete se ha creado correctamente.';
+                            tipo = 'success';
+                            break;
+
+                        case 10:
+                            titulo = 'Paquete actualizado';
+                            texto = 'El paquete se ha actualizado correctamente.';
+                            tipo = 'success';
+                            break;
+
+                                        case 11:
+                                            titulo = 'Datos de paquete incompletos';
+                                            texto = 'Por favor, completa todos los campos del paquete.';
+                                            tipo = 'danger';
+                                            break;
+
+                                        case 12:
+                                            titulo = 'No se puede eliminar repartidor';
+                                            texto = 'Este repartidor tiene paquetes asignados y no puede eliminarse.';
+                                            tipo = 'warning';
+                                            break;
+
+                                        default:
+                                            titulo = 'Gestor de Paquetería';
+                                            texto = 'Acción realizada.';
+                                            tipo = 'success';
+                                            break;
+                                    }
+
+                                    mostrarNotificacion(tipo, titulo, texto);
+                                }
+
+                                function mostrarNotificacion(tipo, titulo, mensaje, duracion = 3000) {
+                                    if (!contenedorNotificaciones) return;
+
+                                    const noti = document.createElement('div');
+                                    noti.className = `notificacion ${tipo}`;
+                                    noti.innerHTML = `
+                <strong>${titulo} </strong><br>
+                <span>${mensaje}</span>`;
+
+                                    contenedorNotificaciones.append(noti);
+
+                                    //ocultar programado
+                                    const tiempoOcultar = Math.max(duracion - 400, 600);
+
+                                    setTimeout(() => {
+                                        noti.classList.add('hide');
+                                    }, tiempoOcultar);
+
+                                    setTimeout(() => {
+                                        noti.remove();
+                                    }, duracion);
+                                }
 
         // DATOS EN MEMORIA
 
@@ -343,8 +565,6 @@
         // Modo edición de repartidor
         let modoEdicionRepartidor = false;
         let indiceRepartidorEnEdicion = null;
-
-
 
         // CONSTRUCTORES
 
@@ -403,7 +623,7 @@
                 campo.disabled = true;
             });
 
-            alert('Estás en modo edición de paquete');
+            muestraMensaje(5);
         }
 
         function salirModoEdicionPaquete() {
@@ -436,6 +656,11 @@
             btnFormRepartidor.textContent = 'Guardar cambios';
 
             selectRepartidorEditar.selectedIndex = 0;
+
+            // DESHABILITAR FORMULARIO DE PAQUETES mientras se edita un repartidor
+            formPaquete.querySelectorAll('input, select, button').forEach(campo => {
+                campo.disabled = true;
+            });
         }
 
         function salirModoEdicionRepartidor() {
@@ -447,20 +672,30 @@
 
             formRepartidor.reset();
             selectRepartidorEditar.selectedIndex = 0;
+
+
+            formPaquete.querySelectorAll('input, select, button').forEach(campo => {
+                campo.disabled = false;
+            });
         }
 
         // ELIMINAR REPARTIDOR
 
         function borrarRepartidor() {
             if (modoEdicionPaquete) {
-                alert('Modo edición: guarda primero los cambios del paquete.');
+                muestraMensaje(5);
+                return;
+            }
+
+            if (modoEdicionRepartidor) {
+                muestraMensaje(5);
                 return;
             }
 
             const indice = selectRepartidorEditar.value;
 
             if (indice === '') {
-                alert('Selecciona un repartidor para eliminar');
+                muestraMensaje(6);
                 return;
             }
 
@@ -469,33 +704,23 @@
             const tienePaquetes = Reparto.paquetes.some(p => p.repartidor === repAEliminar);
 
             if (tienePaquetes) {
-                alert('No se puede eliminar este repartidor porque tiene paquetes asignados');
+                muestraMensaje(12);
                 return;
             }
 
-            const seguro = confirm(`¿Seguro que quieres eliminar al repartidor ${repAEliminar.nombre}?`);
-            if (!seguro) return;
+            miConfirm(`¿Seguro que quieres eliminar al repartidor ${repAEliminar.nombre}?`, function (seguro) {
+                if (!seguro) return;
 
-            // Eliminar del array
-            repartidores.splice(indiceNum, 1);
+                repartidores.splice(indiceNum, 1);
 
-            // Si el que se elimina es el que estaba en modo edición, limpiamos el formulario
-            if (modoEdicionRepartidor && indiceRepartidorEnEdicion === indiceNum) {
+                actualizarSelectRepartidores();
+                pintarPaquetes();
+                guardarDatos();
                 salirModoEdicionRepartidor();
-            } else {
-                // Por si había datos escritos en el formulario, los limpiamos igualmente
-                formRepartidor.reset();
-                const btnFormRepartidor = formRepartidor.querySelector('button[type="submit"]');
-                btnFormRepartidor.textContent = 'Crear Repartidor';
-            }
 
-            actualizarSelectRepartidores();
-            pintarPaquetes();
-            guardarDatos();
-
-            alert('Repartidor eliminado correctamente');
+                muestraMensaje(4);
+            });
         }
-
 
         // LOCALSTORAGE
 
@@ -508,15 +733,26 @@
             const textoRepartidores = localStorage.getItem('repartidores');
             const textoPaquetes = localStorage.getItem('paquetes');
 
-            if (textoRepartidores) {
+            if (textoRepartidores && textoRepartidores !== '[]') {
+            // Ya hay repartidores guardados en localStorage
                 const datosRep = JSON.parse(textoRepartidores);
                 repartidores = datosRep.map(r => new Repartidor(r.nombre, r.vehiculo, r.experiencia));
+            } else {
+                // si no hay repartidores o el array está vacío → cargamos de ejemplo
+                repartidores = [
+                    new Repartidor('Laura Martínez', '1234-ABC', 5),
+                    new Repartidor('Carlos Gómez', '5678-DEF', 3),
+                    new Repartidor('Ana Ruiz', '9012-GHI', 8)
+                ];
+
+                localStorage.setItem('repartidores', JSON.stringify(repartidores));
             }
 
             if (textoPaquetes) {
                 const datosPaq = JSON.parse(textoPaquetes);
                 Reparto.paquetes = datosPaq.map(p => {
-                    const repEncontrado = repartidores.find(r => r.nombre === p.repartidor?.nombre) || repartidores[0] || null;
+                    const repEncontrado =
+                        repartidores.find(r => r.nombre === p.repartidor?.nombre) || null;
 
                     return new Paquete(
                         p.id,
@@ -533,29 +769,33 @@
 
             actualizarSelectRepartidores();
             pintarPaquetes();
-
-
         }
 
         function borrarDatos() {
             if (modoEdicionPaquete) {
-                alert('Modo edición: guarda primero los cambios del paquete.');
+                muestraMensaje(5);
                 return;
             }
 
-            const seguro = confirm('¿Seguro que quieres borrar todos los datos guardados?');
-            if (!seguro) return;
+            if (modoEdicionRepartidor) {
+                muestraMensaje(5);
+                return;
+            }
 
-            localStorage.removeItem('repartidores');
-            localStorage.removeItem('paquetes');
+            miConfirm('¿Seguro que quieres borrar todos los datos guardados?', function (seguro) {
+                if (!seguro) return;
 
-            repartidores = [];
-            Reparto.paquetes = [];
+                localStorage.removeItem('repartidores');
+                localStorage.removeItem('paquetes');
 
-            actualizarSelectRepartidores();
-            pintarPaquetes();
+                repartidores = [];
+                Reparto.paquetes = [];
 
-            alert('Datos guardados borrados');
+                actualizarSelectRepartidores();
+                pintarPaquetes();
+
+                muestraMensaje(8);
+            });
         }
 
         // INTERFAZ REPARTIDORES (SELECT)
@@ -565,7 +805,8 @@
             selectRepartidor.innerHTML = '';
             const opcionInicial = document.createElement('option');
             opcionInicial.value = '';
-            opcionInicial.selected = true;          // ← sin disabled
+            opcionInicial.disabled = true;
+            opcionInicial.selected = true;
             opcionInicial.textContent = 'Seleccione un repartidor';
             selectRepartidor.append(opcionInicial);
 
@@ -574,10 +815,10 @@
             const opcionEditarInicial = document.createElement('option');
             opcionEditarInicial.value = '';
             opcionEditarInicial.disabled = true;
+            opcionEditarInicial.selected = true;
             opcionEditarInicial.textContent = 'Seleccione un repartidor';
             selectRepartidorEditar.append(opcionEditarInicial);
 
-            // Rellenar con los repartidores
             repartidores.forEach((repartidor, index) => {
                 const option1 = document.createElement('option');
                 option1.value = index;
@@ -589,12 +830,7 @@
                 option2.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
                 selectRepartidorEditar.append(option2);
             });
-
-
-            selectRepartidor.selectedIndex = 0;
         }
-
-
 
         // PINTAR PAQUETES
 
@@ -620,21 +856,24 @@
                 peso.innerHTML = `<span class="label">Peso:</span> ${paquete.peso} kg`;
 
                 const dimensiones = document.createElement('p');
-                dimensiones.textContent =
-                    `Dimensiones: ${paquete.largo} x ${paquete.ancho} x ${paquete.alto} cm (Sup: ${paquete.superficie()} cm²)`;
+                dimensiones.innerHTML =
+                    `<span class="label">Dimensiones:</span>
+                ${paquete.largo} x ${paquete.ancho} x ${paquete.alto} cm 
+                (Sup: ${paquete.superficie()} cm²)`;
 
                 const color = document.createElement('p');
-                color.textContent = `Color: ${paquete.color}`;
+                color.innerHTML = `<span class="label">Color:</span> ${paquete.color}`;
 
                 const destino = document.createElement('p');
-                destino.textContent = `Destino: ${paquete.destino}`;
+                destino.innerHTML = `<span class="label">Destino:</span> ${paquete.destino}`;
 
                 const repartidorInfo = document.createElement('p');
                 if (paquete.repartidor) {
-                    repartidorInfo.textContent =
-                        `Repartidor: ${paquete.repartidor.nombre} (${paquete.repartidor.vehiculo})`;
+                    repartidorInfo.innerHTML =
+                        `<span class="label">Repartidor:</span>
+                    ${paquete.repartidor.nombre} (${paquete.repartidor.vehiculo})`;
                 } else {
-                    repartidorInfo.textContent = 'Repartidor: No asignado';
+                    repartidorInfo.innerHTML = `<span class="label">Repartidor:</span> No asignado`;
                 }
 
                 info.append(titulo, peso, dimensiones, color, destino, repartidorInfo);
@@ -649,16 +888,22 @@
                 btnEliminar.className = 'btn-eliminar';
                 btnEliminar.onclick = function () {
                     if (modoEdicionPaquete) {
-                        alert('Modo edición: no puedes eliminar, guarda primero.');
+                        muestraMensaje(5);
                         return;
                     }
 
-                    const confirmar = confirm(`¿Seguro que quieres eliminar el paquete #${paquete.id}?`);
-                    if (!confirmar) return;
+                    if (modoEdicionRepartidor) {
+                        muestraMensaje(5);
+                        return;
+                    }
 
-                    Reparto.paquetes = Reparto.paquetes.filter(p => p.id !== paquete.id);
-                    pintarPaquetes();
-                    guardarDatos();
+                    miConfirm(`¿Seguro que quieres eliminar el paquete #${paquete.id}?`, function (confirmar) {
+                        if (!confirmar) return;
+
+                        Reparto.paquetes = Reparto.paquetes.filter(p => p.id !== paquete.id);
+                        pintarPaquetes();
+                        guardarDatos();
+                    });
                 };
 
                 // Botón editar
@@ -666,8 +911,13 @@
                 btnEditar.textContent = '✎';
                 btnEditar.className = 'btn-editar';
                 btnEditar.onclick = function () {
+                    if (modoEdicionRepartidor) {
+                        muestraMensaje(5);
+                        return;
+                    }
+
                     if (modoEdicionPaquete && paqueteEnEdicion && paqueteEnEdicion.id !== paquete.id) {
-                        alert('Modo edición: ya estás editando otro paquete. Guarda los cambios.');
+                        muestraMensaje(5);
                         return;
                     }
                     entrarModoEdicionPaquete(paquete);
@@ -688,7 +938,7 @@
             event.preventDefault();
 
             if (modoEdicionPaquete) {
-                alert('Modo edición: guarda primero los cambios del paquete.');
+                muestraMensaje(6);
                 return;
             }
 
@@ -697,7 +947,7 @@
             const experiencia = parseInt(document.getElementById('experienciaRepartidor').value);
 
             if (!nombre || !vehiculo || experiencia < 0) {
-                alert('Por favor, complete todos los campos del repartidor.');
+                muestraMensaje(2);
                 return;
             }
 
@@ -711,7 +961,7 @@
                 pintarPaquetes();
                 guardarDatos();
                 salirModoEdicionRepartidor();
-                alert('Repartidor actualizado correctamente');
+                muestraMensaje(3);
                 return;
             }
 
@@ -719,18 +969,20 @@
             repartidores.push(nuevoRepartidor);
 
             actualizarSelectRepartidores();
-
-            selectRepartidor.selectedIndex = 0;
-
             formRepartidor.reset();
             guardarDatos();
+            muestraMensaje(1);
         });
-
 
         // FORMULARIO PAQUETE
 
         formPaquete.addEventListener('submit', function (event) {
             event.preventDefault();
+
+            if (modoEdicionRepartidor) {
+                muestraMensaje(5);
+                return;
+            }
 
             const peso = parseFloat(document.getElementById('pesoPaquete').value);
             const largo = parseInt(document.getElementById('largoPaquete').value);
@@ -741,7 +993,7 @@
             const idxRep = selectRepartidor.value;
 
             if (!peso || !largo || !ancho || !alto || !destino || !color || idxRep === '') {
-                alert('Por favor, complete todos los campos del paquete.');
+                muestraMensaje(11);
                 return;
             }
 
@@ -760,12 +1012,12 @@
                 pintarPaquetes();
                 guardarDatos();
                 salirModoEdicionPaquete();
-                alert('Paquete actualizado correctamente');
+                muestraMensaje(10);
                 return;
             }
 
             // Crear nuevo paquete
-            const nuevoIdPaquete = Reparto.paquetes.length + 1;
+            const nuevoIdPaquete = generarIdUnico();
 
             const nuevoPaquete = new Paquete(
                 nuevoIdPaquete,
@@ -783,8 +1035,17 @@
             formPaquete.reset();
             selectRepartidor.selectedIndex = 0;
             guardarDatos();
+            muestraMensaje(9);
         });
 
+                //Id Unico
+                function generarIdUnico() {
+                    let id;
+                    do {
+                        id = Math.floor(1000 + Math.random() * 9000);
+                    } while (Reparto.paquetes.some(p => p.id === id));
+                    return id;
+                }
 
         // DIBUJO DEL PAQUETE
 
@@ -847,21 +1108,25 @@
             return canvas;
         }
 
-
-        // BOTONES 
+                // BOTONES
 
         btnBorrarDatos.addEventListener('click', borrarDatos);
 
         btnEditarRepartidor.addEventListener('click', function () {
             if (modoEdicionPaquete) {
-                alert('Modo edición: estás editando un paquete. Guarda para continuar.');
+                muestraMensaje(5);
+                return;
+            }
+
+            if (modoEdicionRepartidor) {
+                muestraMensaje(5);
                 return;
             }
 
             const indice = selectRepartidorEditar.value;
 
             if (indice === '') {
-                alert('Seleccione un repartidor para editar');
+                muestraMensaje(6);
                 return;
             }
 
@@ -869,7 +1134,6 @@
         });
 
         btnEliminarRepartidor.addEventListener('click', borrarRepartidor);
-
 
         // INICIO
 

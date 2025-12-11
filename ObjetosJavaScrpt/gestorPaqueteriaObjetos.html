@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,10 +19,11 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             text-align: center;
         }
 
@@ -31,7 +33,7 @@
             border-radius: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
-            box-shadow: 0px 4px 12px rgba(0,0,0,0.8);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.8);
         }
 
         label {
@@ -40,7 +42,8 @@
             font-weight: bold;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -90,7 +93,7 @@
             padding: 18px 20px;
             border-left: 6px solid #3498db;
             border-radius: 5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -195,683 +198,946 @@
             flex: 1;
             margin-top: 10px;
         }
+
+        #notificaciones {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notificacion {
+            min-width: 260px;
+            max-width: 340px;
+            padding: 12px 18px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+
+        .notificacion.success {
+            background-color: #27ae60;
+        }
+
+        .notificacion.warning {
+            background-color: #f1c40f;
+            color: #000;
+        }
+
+        .notificacion.danger {
+            background-color: #e74c3c;
+        }
+
+        .notificacion.hide {
+            animation: fadeOut 0.4s forwards;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99990;
+        }
+
+        #confirmBox {
+            display: none;
+            position: fixed;
+            top: 40%;
+            left: calc(50% - 130px);
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            width: 260px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 99999;
+            font-family: Arial, sans-serif;
+        }
+
+        #confirmBox p {
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        #confirmBox button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        #confirmYes {
+            background: #27ae60;
+            margin-right: 10px;
+        }
+
+        #confirmNo {
+            background: #c0392b;
+        }
     </style>
 </head>
+
 <body>
-<div class="contenedor">
-    <h1>Gestión de Datos Usando Objetos</h1>
-    <p>El ejercicio consiste en una aplicación que gestione un sistema
-        de reparto de paquetes con las siguientes características:</p>
-    <ul>
-        <li>Un objeto repartidor</li>
-        <li>Un objeto paquete</li>
-        <li>Interfaz para crear repartidores</li>
-        <li>Los repartidores se almacenan en un Array</li>
-        <li>Interfaz para crear paquetes</li>
-        <li>Repartidor de cada paquete creado se selecciona desde un
-            elemento select</li>
-        <li>Cada objeto <code>paquete</code> se guarda en un objeto
-            principal, llamado <code>Reparto</code></li>
-        <li>Representación visual de cada paquete creado con su
-            información</li>
-    </ul>
+    <div id="notificaciones"></div>
+    <div class="contenedor">
+        <h1>Gestión de Datos Usando Objetos</h1>
+        <p>El ejercicio consiste en una aplicación que gestione un sistema
+            de reparto de paquetes con las siguientes características:</p>
+        <ul>
+            <li>Un objeto repartidor</li>
+            <li>Un objeto paquete</li>
+            <li>Interfaz para crear repartidores</li>
+            <li>Los repartidores se almacenan en un Array</li>
+            <li>Interfaz para crear paquetes</li>
+            <li>Repartidor de cada paquete creado se selecciona desde un
+                elemento select</li>
+            <li>Cada objeto <code>paquete</code> se guarda en un objeto
+                principal, llamado <code>Reparto</code></li>
+            <li>Representación visual de cada paquete creado con su
+                información</li>
+        </ul>
 
-    <div id="repartidor">
-        <!-- FORMULARIO REPARTIDOR -->
-        <form id="formRepartidor">
-            <h2>Crear Repartidor</h2>
-            <label for="nombreRepartidor">Nombre:</label>
-            <input type="text" id="nombreRepartidor" required>
+        <div id="repartidor">
+            <form id="formRepartidor">
+                <h2>Crear Repartidor</h2>
+                <label for="nombreRepartidor">Nombre:</label>
+                <input type="text" id="nombreRepartidor" required>
 
-            <label for="vehiculoRepartidor">Vehículo: Matrícula</label>
-            <input type="text" id="vehiculoRepartidor" required>
+                <label for="vehiculoRepartidor">Vehículo: Matrícula</label>
+                <input type="text" id="vehiculoRepartidor" required>
 
-            <label for="experienciaRepartidor">Experiencia (años):</label>
-            <input type="number" id="experienciaRepartidor" min="0" value="0" required>
+                <label for="experienciaRepartidor">Experiencia (años):</label>
+                <input type="number" id="experienciaRepartidor" min="0" value="0" required>
 
-            <button type="submit">Crear Repartidor</button>
-            <hr>
+                <button type="submit">Crear Repartidor</button>
+                <hr>
 
-            <label for="repartidorEditar">Editar repartidor existente:</label>
-            <select id="repartidorEditar">
-                <option value="" disabled selected>Seleccione un repartidor</option>
-            </select>
+                <label for="repartidorEditar">Editar repartidor existente:</label>
+                <select id="repartidorEditar">
+                    <option value="" disabled selected>Seleccione un repartidor</option>
+                </select>
 
-            <div class="acciones-repartidor">
-                <button type="button" id="btnEditarRepartidor">
-                    Cargar para editar
+                <div class="acciones-repartidor">
+                    <button type="button" id="btnEditarRepartidor">
+                        Cargar para editar
+                    </button>
+
+                    <button type="button" class="btn-borrar-datos" id="btnEliminarRepartidor">
+                        Eliminar repartidor
+                    </button>
+                    </div>
+                    </form>
+
+            <form id="formPaquete">
+                <h2>Crear Paquete</h2>
+
+                <label for="pesoPaquete">Peso (kg)</label>
+                <input type="number" id="pesoPaquete" min="0.1" step="0.1" required>
+
+                <label for="largoPaquete">Largo (cm)</label>
+                <input type="number" id="largoPaquete" min="10" max="150" required>
+
+                <label for="anchoPaquete">Ancho (cm)</label>
+                <input type="number" id="anchoPaquete" min="10" max="150" required>
+
+                <label for="altoPaquete">Alto (cm)</label>
+                <input type="number" id="altoPaquete" min="10" max="150" required>
+
+                <label for="destinoPaquete">Destino</label>
+                <select id="destinoPaquete" required>
+                    <option value="" disabled selected>Seleccione destino</option>
+                    <option value="Nacional">Nacional</option>
+                    <option value="Internacional">Internacional</option>
+                </select>
+
+                <label for="colorPaquete">Color</label>
+                <select id="colorPaquete" required>
+                    <option value="" disabled selected>Seleccione un color</option>
+                    <option value="red">Rojo</option>
+                    <option value="yellow">Amarillo</option>
+                    <option value="green">Verde</option>
+                    <option value="white">Blanco</option>
+                    <option value="black">Negro</option>
+                </select>
+
+                <label for="repartidorPaquete">Repartidor</label>
+                <select id="repartidorPaquete" required>
+                    <option value="" disabled selected>Seleccione un repartidor</option>
+                </select>
+
+                <button id="btnPaquete" type="submit">Crear Paquete</button>
+                </form>
+                </div>
+
+        <div class="cabecera-paquetes">
+            <h2>Paquetes Creados</h2>
+            <button id="btnBorrarDatos" class="btn-borrar-datos" title="Borrar todos los datos guardados">
+                🗑 Borrar Datos Guardados
                 </button>
+                </div>
 
-                <button type="button" class="btn-borrar-datos" id="btnEliminarRepartidor">
-                    Eliminar repartidor
-                </button>
-            </div>
-        </form>
+        <div id="listadoPaquetes"></div>
+        <div id="overlay"></div>
+        
+        <div id="confirmBox">
+            <p id="confirmText"></p>
+            <button id="confirmYes">Sí</button>
+            <button id="confirmNo">No</button>
+        </div>
 
-        <!-- FORMULARIO PAQUETE -->
-        <form id="formPaquete">
-            <h2>Crear Paquete</h2>
-
-            <label for="pesoPaquete">Peso (kg)</label>
-            <input type="number" id="pesoPaquete" min="0.1" step="0.1" required>
-
-            <label for="largoPaquete">Largo (cm)</label>
-            <input type="number" id="largoPaquete" min="10" max="150" required>
-
-            <label for="anchoPaquete">Ancho (cm)</label>
-            <input type="number" id="anchoPaquete" min="10" max="150" required>
-
-            <label for="altoPaquete">Alto (cm)</label>
-            <input type="number" id="altoPaquete" min="10" max="150" required>
-
-            <label for="destinoPaquete">Destino</label>
-            <select id="destinoPaquete" required>
-                <option value="" disabled selected>Seleccione destino</option>
-                <option value="Nacional">Nacional</option>
-                <option value="Internacional">Internacional</option>
-            </select>
-
-            <label for="colorPaquete">Color</label>
-            <select id="colorPaquete" required>
-                <option value="" disabled selected>Seleccione un color</option>
-                <option value="red">Rojo</option>
-                <option value="yellow">Amarillo</option>
-                <option value="green">Verde</option>
-                <option value="white">Blanco</option>
-                <option value="black">Negro</option>
-            </select>
-
-            <label for="repartidorPaquete">Repartidor</label>
-            <select id="repartidorPaquete" required>
-                <option value="" disabled selected>Seleccione un repartidor</option>
-            </select>
-
-            <button id="btnPaquete" type="submit">Crear Paquete</button>
-        </form>
     </div>
 
-    <div class="cabecera-paquetes">
-        <h2>Paquetes Creados</h2>
-        <button id="btnBorrarDatos" class="btn-borrar-datos" title="Borrar todos los datos guardados">
-            🗑 Borrar datos
-        </button>
-    </div>
-
-    <div id="listadoPaquetes"></div>
-</div>
-
-<script>
-    
-    // REFERENCIAS DOM
-
-    const formRepartidor         = document.getElementById('formRepartidor');
-    const formPaquete            = document.getElementById('formPaquete');
-    const selectRepartidor       = document.getElementById('repartidorPaquete');
-    const listadoPaquetes        = document.getElementById('listadoPaquetes');
-    const btnPaquete             = document.getElementById('btnPaquete');
-    const btnBorrarDatos         = document.getElementById('btnBorrarDatos');
-    const selectRepartidorEditar = document.getElementById('repartidorEditar');
-    const btnEditarRepartidor    = document.getElementById('btnEditarRepartidor');
-    const btnEliminarRepartidor  = document.getElementById('btnEliminarRepartidor');
-
-
-    // DATOS EN MEMORIA
-
-    let repartidores = [];
-
-    const Reparto = {
-        paquetes: [],
-        agregarPaquete(paquete) {
-            this.paquetes.push(paquete);
-        }
-    };
-
-    // Modo edición de paquetes
-    let modoEdicionPaquete = false;
-    let paqueteEnEdicion   = null;
-
-    // Modo edición de repartidor
-    let modoEdicionRepartidor     = false;
-    let indiceRepartidorEnEdicion = null;
-
-
-    // CONSTRUCTORES
-
-    function Repartidor(nombre, vehiculo, experiencia) {
-        this.nombre      = nombre;
-        this.vehiculo    = vehiculo;
-        this.experiencia = experiencia;
-    }
-
-    function Paquete(id, peso, largo, ancho, alto, destino, color, repartidor) {
-        this.id         = id;
-        this.peso       = peso;
-        this.largo      = largo;
-        this.ancho      = ancho;
-        this.alto       = alto;
-        this.destino    = destino;
-        this.color      = color;
-        this.repartidor = repartidor;
-
-        this.superficie = function () {
-            return this.ancho * this.largo;
-        };
-
-        this.volumen = function () {
-            return this.superficie() * this.alto;
-        };
-    }
-
-
-    // MODO EDICIÓN PAQUETE
-
-    function entrarModoEdicionPaquete(paquete) {
-        modoEdicionPaquete = true;
-        paqueteEnEdicion   = paquete;
-
-        // Cargar datos del paquete en el formulario
-        document.getElementById('pesoPaquete').value    = paquete.peso;
-        document.getElementById('largoPaquete').value   = paquete.largo;
-        document.getElementById('anchoPaquete').value   = paquete.ancho;
-        document.getElementById('altoPaquete').value    = paquete.alto;
-        document.getElementById('destinoPaquete').value = paquete.destino;
-        document.getElementById('colorPaquete').value   = paquete.color;
-
-        // Seleccionar el repartidor correspondiente
-        const indexRep = repartidores.indexOf(paquete.repartidor);
-        if (indexRep !== -1) {
-            selectRepartidor.value = indexRep.toString();
-        } else {
-            selectRepartidor.selectedIndex = 0;
-        }
-
-        // Cambiar texto del botón
-        btnPaquete.textContent = 'Guardar cambios';
-
-        // Deshabilitar todos los campos del formulario de repartidor para evitar conflictos
-        formRepartidor.querySelectorAll('input, select').forEach(campo => {
-            campo.disabled = true;
-        });
-
-        alert('Estás en modo edición de paquete');
-    }
-
-    function salirModoEdicionPaquete() {
-        modoEdicionPaquete = false;
-        paqueteEnEdicion   = null;
-        btnPaquete.textContent = 'Crear Paquete';
-
-        // Rehabilitar el formulario de repartidor
-        formRepartidor.querySelectorAll('input, select').forEach(campo => {
-            campo.disabled = false;
-        });
-
-        formPaquete.reset();
-        selectRepartidor.selectedIndex = 0;
-    }
-
-
-    // MODO EDICIÓN REPARTIDOR
-
-    function entrarModoEdicionRepartidor(indice) {
-        modoEdicionRepartidor     = true;
-        indiceRepartidorEnEdicion = indice;
-
-        const rep = repartidores[indice];
-
-        document.getElementById('nombreRepartidor').value      = rep.nombre;
-        document.getElementById('vehiculoRepartidor').value    = rep.vehiculo;
-        document.getElementById('experienciaRepartidor').value = rep.experiencia;
-
-        const btnFormRepartidor = formRepartidor.querySelector('button[type="submit"]');
-        btnFormRepartidor.textContent = 'Guardar cambios';
-
-        selectRepartidorEditar.selectedIndex = 0;
-    }
-
-    function salirModoEdicionRepartidor() {
-        modoEdicionRepartidor     = false;
-        indiceRepartidorEnEdicion = null;
-
-        const btnFormRepartidor = formRepartidor.querySelector('button[type="submit"]');
-        btnFormRepartidor.textContent = 'Crear Repartidor';
-
-        formRepartidor.reset();
-        selectRepartidorEditar.selectedIndex = 0;
-    }
-
-    
-    // ELIMINAR REPARTIDOR
-    
-    function borrarRepartidor() {
-        if (modoEdicionPaquete) {
-            alert('Modo edición: guarda primero los cambios del paquete.');
-            return;
-        }
-
-        const indice = selectRepartidorEditar.value;
-
-        if (indice === '') {
-            alert('Selecciona un repartidor para eliminar');
-            return;
-        }
-
-        const indiceNum      = parseInt(indice);
-        const repAEliminar   = repartidores[indiceNum];
-        const tienePaquetes  = Reparto.paquetes.some(p => p.repartidor === repAEliminar);
-
-        if (tienePaquetes) {
-            alert('No se puede eliminar este repartidor porque tiene paquetes asignados');
-            return;
-        }
-
-        const seguro = confirm(`¿Seguro que quieres eliminar al repartidor ${repAEliminar.nombre}?`);
-        if (!seguro) return;
-
-        repartidores.splice(indiceNum, 1);
-
-        actualizarSelectRepartidores();
-        pintarPaquetes();
-        guardarDatos();
-        salirModoEdicionRepartidor();
-
-        alert('Repartidor eliminado correctamente');
-    }
-
-    // LOCALSTORAGE
-
-    function guardarDatos() {
-        localStorage.setItem('repartidores', JSON.stringify(repartidores));
-        localStorage.setItem('paquetes', JSON.stringify(Reparto.paquetes));
-    }
-
-    function cargarDatos() {
-        const textoRepartidores = localStorage.getItem('repartidores');
-        const textoPaquetes     = localStorage.getItem('paquetes');
-
-        if (textoRepartidores && textoRepartidores !== '[]') {
-            // Ya hay repartidores guardados en localStorage
-            const datosRep = JSON.parse(textoRepartidores);
-            repartidores = datosRep.map(r => new Repartidor(r.nombre, r.vehiculo, r.experiencia));
-        } else {
-            // si no hay repartidores o el array está vacío → cargamos de ejemplo
-            repartidores = [
-                new Repartidor('Laura Martínez', '1234-ABC', 5),
-                new Repartidor('Carlos Gómez', '5678-DEF', 3),
-                new Repartidor('Ana Ruiz', '9012-GHI', 8)
-            ];
-
-            localStorage.setItem('repartidores', JSON.stringify(repartidores));
-        }
-
-
-        if (textoPaquetes) {
-            const datosPaq = JSON.parse(textoPaquetes);
-            Reparto.paquetes = datosPaq.map(p => {
-                const repEncontrado =
-                    repartidores.find(r => r.nombre === p.repartidor?.nombre) || null;
-
-                return new Paquete(
-                    p.id,
-                    p.peso,
-                    p.largo,
-                    p.ancho,
-                    p.alto,
-                    p.destino,
-                    p.color,
-                    repEncontrado
-                );
-            });
-        }
-
-        actualizarSelectRepartidores();
-        pintarPaquetes();
-    }
-
-
-    function borrarDatos() {
-        if (modoEdicionPaquete) {
-            alert('Modo edición: guarda primero los cambios del paquete.');
-            return;
-        }
-
-        const seguro = confirm('¿Seguro que quieres borrar todos los datos guardados?');
-        if (!seguro) return;
-
-        localStorage.removeItem('repartidores');
-        localStorage.removeItem('paquetes');
-
-        repartidores     = [];
-        Reparto.paquetes = [];
-
-        actualizarSelectRepartidores();
-        pintarPaquetes();
-
-        alert('Datos guardados borrados');
-    }
-
-
-    // INTERFAZ REPARTIDORES (SELECT)
-
-    function actualizarSelectRepartidores() {
-        // Select asignar repartidor al paquete
-        selectRepartidor.innerHTML = '';
-        const opcionInicial = document.createElement('option');
-        opcionInicial.value       = '';
-        opcionInicial.disabled    = true;
-        opcionInicial.selected    = true;
-        opcionInicial.textContent = 'Seleccione un repartidor';
-        selectRepartidor.append(opcionInicial);
-
-        // Select editar/eliminar repartidor
-        selectRepartidorEditar.innerHTML = '';
-        const opcionEditarInicial = document.createElement('option');
-        opcionEditarInicial.value       = '';
-        opcionEditarInicial.disabled    = true;
-        opcionEditarInicial.selected    = true;
-        opcionEditarInicial.textContent = 'Seleccione un repartidor';
-        selectRepartidorEditar.append(opcionEditarInicial);
-
-        repartidores.forEach((repartidor, index) => {
-            const option1       = document.createElement('option');
-            option1.value       = index;
-            option1.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
-            selectRepartidor.append(option1);
-
-            const option2       = document.createElement('option');
-            option2.value       = index;
-            option2.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
-            selectRepartidorEditar.append(option2);
-        });
-    }
-
-
-    // PINTAR PAQUETES
-
-    function pintarPaquetes() {
-        listadoPaquetes.innerHTML = '';
-
-        if (Reparto.paquetes.length === 0) {
-            listadoPaquetes.innerHTML = '<p>No hay paquetes creados.</p>';
-            return;
-        }
-
-        Reparto.paquetes.forEach(paquete => {
-            const card = document.createElement('div');
-            card.className = 'paquete-card';
-
-            const info = document.createElement('div');
-            info.className = 'info-paquete';
-
-            const titulo = document.createElement('h3');
-            titulo.textContent = `Paquete #${paquete.id}`;
-
-            const peso = document.createElement('p');
-            peso.innerHTML = `<span class="label">Peso:</span> ${paquete.peso} kg`;
-            const dimensiones = document.createElement('p');
-            dimensiones.innerHTML =
-                `<span class="label">Dimensiones:</span> 
+    <script>
+                        // REFERENCIAS DOM
+
+                        const formRepartidor = document.getElementById('formRepartidor');
+                        const formPaquete = document.getElementById('formPaquete');
+                        const selectRepartidor = document.getElementById('repartidorPaquete');
+                        const listadoPaquetes = document.getElementById('listadoPaquetes');
+                        const btnPaquete = document.getElementById('btnPaquete');
+                        const btnBorrarDatos = document.getElementById('btnBorrarDatos');
+                        const selectRepartidorEditar = document.getElementById('repartidorEditar');
+                        const btnEditarRepartidor = document.getElementById('btnEditarRepartidor');
+                        const btnEliminarRepartidor = document.getElementById('btnEliminarRepartidor');
+                        const contenedorNotificaciones = document.getElementById('notificaciones');
+
+                        // CONFIRM PERSONALIZADO
+
+                        function miConfirm(mensaje, callback) {
+                            const box = document.getElementById('confirmBox');
+                            const texto = document.getElementById('confirmText');
+                            const btnSi = document.getElementById('confirmYes');
+                            const btnNo = document.getElementById('confirmNo');
+                            const overlay = document.getElementById('overlay');
+
+                            texto.textContent = mensaje;
+                            overlay.style.display = 'block';
+                            box.style.display = 'block';
+
+                            btnSi.onclick = () => {
+                                box.style.display = 'none';
+                                overlay.style.display = 'none';
+                                callback(true);
+                            };
+
+                            btnNo.onclick = () => {
+                                box.style.display = 'none';
+                                overlay.style.display = 'none';
+                                callback(false);
+                            };
+                        }
+
+                        // CONTENEDOR DE NOTIFICACIONES
+
+                        // Códigos de mensaje
+
+                        function muestraMensaje(codigo) {
+                            let titulo = 'Gestor de Paquetería';
+                            let texto = 'Operación realizada.';
+                            let tipo = 'success'; // success | warning | danger
+
+                            switch (codigo) {
+                                case 1:
+                                    titulo = 'Repartidor creado';
+                                    texto = 'El repartidor se ha añadido correctamente.';
+                                    tipo = 'success';
+                                    break;
+
+                                case 2:
+                                    titulo = 'Datos no válidos';
+                                    texto = 'Por favor, completa todos los campos del repartidor.';
+                                    tipo = 'danger';
+                                    break;
+
+                                case 3:
+                                    titulo = 'Repartidor actualizado';
+                                    texto = 'Los datos del repartidor se han guardado correctamente.';
+                                    tipo = 'success';
+                                    break;
+
+                                case 4:
+                                    titulo = 'Repartidor eliminado';
+                                    texto = 'El repartidor se ha eliminado correctamente.';
+                                    tipo = 'success';
+                                    break;
+
+                                case 5:
+                                    titulo = 'Modo edición activado';
+                                    texto = 'Estás editando un formulario. Guarda o cancela antes de continuar.';
+                                    tipo = 'warning';
+                                    break;
+
+                                case 6:
+                                    titulo = 'Selecciona un Repartidor';
+                                    texto = 'Selecciona primero un Repartidor ';
+                                    tipo = 'warning';
+                                    break;
+
+                                case 7:
+                                    titulo = 'Datos guardados';
+                                    texto = 'Los datos se han almacenado en el localStorage.';
+                                    tipo = 'success';
+                                    break;
+
+                                case 8:
+                                    titulo = 'Datos borrados';
+                                    texto = 'Todos los datos guardados se han borrado correctamente.';
+                                    tipo = 'danger';
+                                    break;
+
+                                case 9:
+                                    titulo = 'Paquete creado';
+                                    texto = 'El paquete se ha creado correctamente.';
+                                    tipo = 'success';
+                                    break;
+
+                                case 10:
+                                    titulo = 'Paquete actualizado';
+                                    texto = 'El paquete se ha actualizado correctamente.';
+                                    tipo = 'success';
+                                    break;
+
+                                case 11:
+                                    titulo = 'Datos de paquete incompletos';
+                                    texto = 'Por favor, completa todos los campos del paquete.';
+                                    tipo = 'danger';
+                                    break;
+
+                                case 12:
+                                    titulo = 'No se puede eliminar repartidor';
+                                    texto = 'Este repartidor tiene paquetes asignados y no puede eliminarse.';
+                                    tipo = 'warning';
+                                    break;
+
+                                default:
+                                    titulo = 'Gestor de Paquetería';
+                                    texto = 'Acción realizada.';
+                                    tipo = 'success';
+                                    break;
+                            }
+
+                            mostrarNotificacion(tipo, titulo, texto);
+                        }
+
+                        function mostrarNotificacion(tipo, titulo, mensaje, duracion = 3000) {
+                            if (!contenedorNotificaciones) return;
+
+                            const noti = document.createElement('div');
+                            noti.className = `notificacion ${tipo}`;
+                            noti.innerHTML = `
+                <strong>${titulo} </strong><br>
+                <span>${mensaje}</span>`;
+
+                            contenedorNotificaciones.append(noti);
+
+                            //ocultar programado
+                            const tiempoOcultar = Math.max(duracion - 400, 600);
+
+                            setTimeout(() => {
+                                noti.classList.add('hide');
+                            }, tiempoOcultar);
+
+                        setTimeout(() => {
+                            noti.remove();
+                        }, duracion);
+                    }
+
+                        // DATOS EN MEMORIA
+
+                        let repartidores = [];
+
+                        const Reparto = {
+                            paquetes: [],
+                            agregarPaquete(paquete) {
+                                this.paquetes.push(paquete);
+                            }
+                        };
+
+                        // Modo edición de paquetes
+                        let modoEdicionPaquete = false;
+                        let paqueteEnEdicion = null;
+
+                        // Modo edición de repartidor
+                        let modoEdicionRepartidor = false;
+                        let indiceRepartidorEnEdicion = null;
+
+                        // CONSTRUCTORES
+
+                        function Repartidor(nombre, vehiculo, experiencia) {
+                        this.nombre = nombre;
+                        this.vehiculo = vehiculo;
+                        this.experiencia = experiencia;
+                    }
+
+                        function Paquete(id, peso, largo, ancho, alto, destino, color, repartidor) {
+                        this.id = id;
+                        this.peso = peso;
+                        this.largo = largo;
+                        this.ancho = ancho;
+                        this.alto = alto;
+                        this.destino = destino;
+                        this.color = color;
+                        this.repartidor = repartidor;
+
+                        this.superficie = function () {
+                            return this.ancho * this.largo;
+                        };
+
+                        this.volumen = function () {
+                            return this.superficie() * this.alto;
+                        };
+                    }
+
+                        // MODO EDICIÓN PAQUETE
+
+                        function entrarModoEdicionPaquete(paquete) {
+                            modoEdicionPaquete = true;
+                        paqueteEnEdicion = paquete;
+
+                        // Cargar datos del paquete en el formulario
+                        document.getElementById('pesoPaquete').value = paquete.peso;
+                        document.getElementById('largoPaquete').value = paquete.largo;
+                        document.getElementById('anchoPaquete').value = paquete.ancho;
+                        document.getElementById('altoPaquete').value = paquete.alto;
+                        document.getElementById('destinoPaquete').value = paquete.destino;
+                        document.getElementById('colorPaquete').value = paquete.color;
+
+                        // Seleccionar el repartidor correspondiente
+                        const indexRep = repartidores.indexOf(paquete.repartidor);
+                        if (indexRep !== -1) {
+                            selectRepartidor.value = indexRep.toString();
+                        } else {
+                            selectRepartidor.selectedIndex = 0;
+                        }
+
+                        // Cambiar texto del botón
+                        btnPaquete.textContent = 'Guardar cambios';
+
+                        // Deshabilitar todos los campos del formulario de repartidor para evitar conflictos
+                        formRepartidor.querySelectorAll('input, select').forEach(campo => {
+                            campo.disabled = true;
+                        });
+
+                        muestraMensaje(5);
+                    }
+
+                        function salirModoEdicionPaquete() {
+                            modoEdicionPaquete = false;
+                        paqueteEnEdicion = null;
+                        btnPaquete.textContent = 'Crear Paquete';
+
+                        // Rehabilitar el formulario de repartidor
+                        formRepartidor.querySelectorAll('input, select').forEach(campo => {
+                            campo.disabled = false;
+                        });
+
+                        formPaquete.reset();
+                        selectRepartidor.selectedIndex = 0;
+                    }
+
+                        // MODO EDICIÓN REPARTIDOR
+
+                        function entrarModoEdicionRepartidor(indice) {
+                        modoEdicionRepartidor = true;
+                        indiceRepartidorEnEdicion = indice;
+
+                        const rep = repartidores[indice];
+
+                        document.getElementById('nombreRepartidor').value = rep.nombre;
+                        document.getElementById('vehiculoRepartidor').value = rep.vehiculo;
+                        document.getElementById('experienciaRepartidor').value = rep.experiencia;
+
+                        const btnFormRepartidor = formRepartidor.querySelector('button[type="submit"]');
+                        btnFormRepartidor.textContent = 'Guardar cambios';
+
+                        selectRepartidorEditar.selectedIndex = 0;
+
+                        formPaquete.querySelectorAll('input, select ').forEach(campo => {
+                            campo.disabled = true;
+                        });
+                    }
+
+                        function salirModoEdicionRepartidor() {
+                        modoEdicionRepartidor = false;
+                        indiceRepartidorEnEdicion = null;
+
+                        const btnFormRepartidor = formRepartidor.querySelector('button[type="submit"]');
+                        btnFormRepartidor.textContent = 'Crear Repartidor';
+
+                        formRepartidor.reset();
+                        selectRepartidorEditar.selectedIndex = 0;
+
+
+                        formPaquete.querySelectorAll('input, select, button').forEach(campo => {
+                            campo.disabled = false;
+                        });
+                    }
+
+                        // ELIMINAR REPARTIDOR
+
+                        function borrarRepartidor() {
+                            if (modoEdicionPaquete) {
+                            muestraMensaje(5);
+                            return;
+                        }
+
+                        if (modoEdicionRepartidor) {
+                            muestraMensaje(5);
+                            return;
+                        }
+
+                        const indice = selectRepartidorEditar.value;
+
+                        if (indice === '') {
+                        muestraMensaje(6);
+                        return;
+                    }
+
+                        const indiceNum = parseInt(indice);
+                        const repAEliminar = repartidores[indiceNum];
+                        const tienePaquetes = Reparto.paquetes.some(p => p.repartidor === repAEliminar);
+
+                        if (tienePaquetes) {
+                        muestraMensaje(12);
+                        return;
+                    }
+
+                        miConfirm(`¿Seguro que quieres eliminar al repartidor ${repAEliminar.nombre}?`, function (seguro) {
+                            if (!seguro) return;
+
+                        repartidores.splice(indiceNum, 1);
+
+                        actualizarSelectRepartidores();
+                        pintarPaquetes();
+                        guardarDatos();
+                        salirModoEdicionRepartidor();
+
+                        muestraMensaje(4);
+                    });
+                    }
+
+                        // LOCALSTORAGE
+
+                        function guardarDatos() {
+                            localStorage.setItem('repartidores', JSON.stringify(repartidores));
+                            localStorage.setItem('paquetes', JSON.stringify(Reparto.paquetes));
+                        }
+
+                        function cargarDatos() {
+                            const textoRepartidores = localStorage.getItem('repartidores');
+                        const textoPaquetes = localStorage.getItem('paquetes');
+
+                        if (textoRepartidores && textoRepartidores !== '[]') {
+                            // Ya hay repartidores guardados en localStorage
+                            const datosRep = JSON.parse(textoRepartidores);
+                            repartidores = datosRep.map(r => new Repartidor(r.nombre, r.vehiculo, r.experiencia));
+                        } else {
+                            // si no hay repartidores o el array está vacío → cargamos de ejemplo
+                            repartidores = [
+                                new Repartidor('Laura Martínez', '1234-ABC', 5),
+                                new Repartidor('Carlos Gómez', '5678-DEF', 3),
+                                new Repartidor('Ana Ruiz', '9012-GHI', 8)
+                            ];
+
+                        localStorage.setItem('repartidores', JSON.stringify(repartidores));
+                    }
+
+                        if (textoPaquetes) {
+                            const datosPaq = JSON.parse(textoPaquetes);
+                            Reparto.paquetes = datosPaq.map(p => {
+                                const repEncontrado =
+                                    repartidores.find(r => r.nombre === p.repartidor?.nombre) || null;
+
+                            return new Paquete(
+                                p.id,
+                                p.peso,
+                                p.largo,
+                                p.ancho,
+                                p.alto,
+                                p.destino,
+                                p.color,
+                                repEncontrado
+                            );
+                        });
+                    }
+
+                        actualizarSelectRepartidores();
+                        pintarPaquetes();
+                    }
+
+                        function borrarDatos() {
+                            if (modoEdicionPaquete) {
+                            muestraMensaje(5);
+                            return;
+                        }
+
+                        if (modoEdicionRepartidor) {
+                            muestraMensaje(5);
+                            return;
+                        }
+
+                        miConfirm('¿Seguro que quieres borrar todos los datos guardados?', function (seguro) {
+                            if (!seguro) return;
+
+                        localStorage.removeItem('repartidores');
+                        localStorage.removeItem('paquetes');
+
+                        repartidores = [];
+                        Reparto.paquetes = [];
+
+                        actualizarSelectRepartidores();
+                        pintarPaquetes();
+
+                        muestraMensaje(8);
+                    });
+                    }
+
+                        // INTERFAZ REPARTIDORES (SELECT)
+
+                        function actualizarSelectRepartidores() {
+                            // Select asignar repartidor al paquete
+                            selectRepartidor.innerHTML = '';
+                            const opcionInicial = document.createElement('option');
+                        opcionInicial.value = '';
+                        opcionInicial.disabled = true;
+                        opcionInicial.selected = true;
+                        opcionInicial.textContent = 'Seleccione un repartidor';
+                        selectRepartidor.append(opcionInicial);
+
+                        // Select editar/eliminar repartidor
+                        selectRepartidorEditar.innerHTML = '';
+                        const opcionEditarInicial = document.createElement('option');
+                        opcionEditarInicial.value = '';
+                        opcionEditarInicial.disabled = true;
+                        opcionEditarInicial.selected = true;
+                        opcionEditarInicial.textContent = 'Seleccione un repartidor';
+                        selectRepartidorEditar.append(opcionEditarInicial);
+
+                        repartidores.forEach((repartidor, index) => {
+                        const option1 = document.createElement('option');
+                        option1.value = index;
+                        option1.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
+                        selectRepartidor.append(option1);
+
+                        const option2 = document.createElement('option');
+                        option2.value = index;
+                        option2.textContent = `${repartidor.nombre} (${repartidor.vehiculo})`;
+                        selectRepartidorEditar.append(option2);
+                    });
+                    }
+
+                        // PINTAR PAQUETES
+
+                        function pintarPaquetes() {
+                            listadoPaquetes.innerHTML = '';
+
+                        if (Reparto.paquetes.length === 0) {
+                            listadoPaquetes.innerHTML = '<p>No hay paquetes creados.</p>';
+                            return;
+                        }
+
+                        Reparto.paquetes.forEach(paquete => {
+                            const card = document.createElement('div');
+                            card.className = 'paquete-card';
+
+                        const info = document.createElement('div');
+                        info.className = 'info-paquete';
+
+                        const titulo = document.createElement('h3');
+                        titulo.textContent = `Paquete #${paquete.id}`;
+
+                        const peso = document.createElement('p');
+                        peso.innerHTML = `<span class="label">Peso:</span> ${paquete.peso} kg`;
+
+                        const dimensiones = document.createElement('p');
+                        dimensiones.innerHTML =
+                    `<span class="label">Dimensiones:</span>
                 ${paquete.largo} x ${paquete.ancho} x ${paquete.alto} cm 
                 (Sup: ${paquete.superficie()} cm²)`;
 
-            const color = document.createElement('p');
-            color.innerHTML = `<span class="label">Color:</span> ${paquete.color}`;
+                        const color = document.createElement('p');
+                        color.innerHTML = `<span class="label">Color:</span> ${paquete.color}`;
 
-            const destino = document.createElement('p');
-            destino.innerHTML = `<span class="label">Destino:</span> ${paquete.destino}`;
+                        const destino = document.createElement('p');
+                        destino.innerHTML = `<span class="label">Destino:</span> ${paquete.destino}`;
 
-            const repartidorInfo = document.createElement('p');
-            if (paquete.repartidor) {
-                repartidorInfo.innerHTML =
-                    `<span class="label">Repartidor:</span> 
+                        const repartidorInfo = document.createElement('p');
+                        if (paquete.repartidor) {
+                            repartidorInfo.innerHTML =
+                        `<span class="label">Repartidor:</span>
                     ${paquete.repartidor.nombre} (${paquete.repartidor.vehiculo})`;
-            } else {
-                repartidorInfo.innerHTML = `<span class="label">Repartidor:</span> No asignado`;
-            }
+                    } else {
+                        repartidorInfo.innerHTML = `<span class="label">Repartidor:</span> No asignado`;
+                    }
 
-            info.append(titulo, peso, dimensiones, color, destino, repartidorInfo);
+                        info.append(titulo, peso, dimensiones, color, destino, repartidorInfo);
 
-            const dibujo = document.createElement('div');
-            dibujo.id        = 'dibujo' + paquete.id;
-            dibujo.className = 'paquete-dibujo';
+                        const dibujo = document.createElement('div');
+                        dibujo.id = 'dibujo' + paquete.id;
+                        dibujo.className = 'paquete-dibujo';
 
-            // Botón eliminar
-            const btnEliminar = document.createElement('button');
-            btnEliminar.textContent = 'X';
-            btnEliminar.className   = 'btn-eliminar';
-            btnEliminar.onclick     = function () {
-                if (modoEdicionPaquete) {
-                    alert('Modo edición: no puedes eliminar, guarda primero.');
-                    return;
-                }
+                        // Botón eliminar
+                        const btnEliminar = document.createElement('button');
+                        btnEliminar.textContent = 'X';
+                        btnEliminar.className = 'btn-eliminar';
+                        btnEliminar.onclick = function () {
+                            if (modoEdicionPaquete) {
+                            muestraMensaje(5);
+                            return;
+                        }
 
-                const confirmar = confirm(`¿Seguro que quieres eliminar el paquete #${paquete.id}?`);
-                if (!confirmar) return;
+                        if (modoEdicionRepartidor) {
+                            muestraMensaje(5);
+                            return;
+                        }
 
-                Reparto.paquetes = Reparto.paquetes.filter(p => p.id !== paquete.id);
-                pintarPaquetes();
-                guardarDatos();
-            };
+                        miConfirm(`¿Seguro que quieres eliminar el paquete #${paquete.id}?`, function (confirmar) {
+                            if (!confirmar) return;
 
-            // Botón editar
-            const btnEditar = document.createElement('button');
-            btnEditar.textContent = '✎';
-            btnEditar.className   = 'btn-editar';
-            btnEditar.onclick     = function () {
-                if (modoEdicionPaquete && paqueteEnEdicion && paqueteEnEdicion.id !== paquete.id) {
-                    alert('Modo edición: ya estás editando otro paquete. Guarda los cambios.');
-                    return;
-                }
-                entrarModoEdicionPaquete(paquete);
-            };
+                        Reparto.paquetes = Reparto.paquetes.filter(p => p.id !== paquete.id);
+                        pintarPaquetes();
+                        guardarDatos();
+                    });
+                    };
 
-            // Dibujo del paquete
-            const canvas = draw(paquete.largo, paquete.ancho, paquete.alto, paquete.color);
-            dibujo.append(canvas);
+                        // Botón editar
+                        const btnEditar = document.createElement('button');
+                        btnEditar.textContent = '✎';
+                        btnEditar.className = 'btn-editar';
+                        btnEditar.onclick = function () {
+                            if (modoEdicionRepartidor) {
+                                muestraMensaje(5);
+                                return;
+                            }
 
-            card.append(info, dibujo, btnEliminar, btnEditar);
-            listadoPaquetes.appendChild(card);
-        });
-    }
+                            if (modoEdicionPaquete && paqueteEnEdicion && paqueteEnEdicion.id !== paquete.id) {
+                            muestraMensaje(5);
+                            return;
+                        }
+                        entrarModoEdicionPaquete(paquete);
+                    };
 
+                        // Dibujo del paquete
+                        const canvas = draw(paquete.largo, paquete.ancho, paquete.alto, paquete.color);
+                        dibujo.append(canvas);
 
-    // FORMULARIO REPARTIDOR
+                        card.append(info, dibujo, btnEliminar, btnEditar);
+                        listadoPaquetes.appendChild(card);
+                    });
+                    }
 
-    formRepartidor.addEventListener('submit', function (event) {
-        event.preventDefault();
+                        // FORMULARIO REPARTIDOR
 
-        if (modoEdicionPaquete) {
-            alert('Modo edición: guarda primero los cambios del paquete.');
-            return;
-        }
+                        formRepartidor.addEventListener('submit', function (event) {
+                            event.preventDefault();
 
-        const nombre      = document.getElementById('nombreRepartidor').value.trim();
-        const vehiculo    = document.getElementById('vehiculoRepartidor').value.trim();
-        const experiencia = parseInt(document.getElementById('experienciaRepartidor').value);
+                        if (modoEdicionPaquete) {
+                        muestraMensaje(6);
+                        return;
+                    }
 
-        if (!nombre || !vehiculo || experiencia < 0) {
-            alert('Por favor, complete todos los campos del repartidor.');
-            return;
-        }
+                        const nombre = document.getElementById('nombreRepartidor').value.trim();
+                        const vehiculo = document.getElementById('vehiculoRepartidor').value.trim();
+                        const experiencia = parseInt(document.getElementById('experienciaRepartidor').value);
 
-        if (modoEdicionRepartidor && indiceRepartidorEnEdicion !== null) {
-            const rep = repartidores[indiceRepartidorEnEdicion];
-            rep.nombre      = nombre;
-            rep.vehiculo    = vehiculo;
-            rep.experiencia = experiencia;
+                        if (!nombre || !vehiculo || experiencia < 0) {
+                        muestraMensaje(2);
+                        return;
+                    }
 
-            actualizarSelectRepartidores();
-            pintarPaquetes();
-            guardarDatos();
-            salirModoEdicionRepartidor();
-            alert('Repartidor actualizado correctamente');
-            return;
-        }
+                        if (modoEdicionRepartidor && indiceRepartidorEnEdicion !== null) {
+                            const rep = repartidores[indiceRepartidorEnEdicion];
+                        rep.nombre = nombre;
+                        rep.vehiculo = vehiculo;
+                        rep.experiencia = experiencia;
 
-        const nuevoRepartidor = new Repartidor(nombre, vehiculo, experiencia);
-        repartidores.push(nuevoRepartidor);
+                        actualizarSelectRepartidores();
+                        pintarPaquetes();
+                        guardarDatos();
+                        salirModoEdicionRepartidor();
+                        muestraMensaje(3);
+                        return;
+                    }
 
-        actualizarSelectRepartidores();
-        formRepartidor.reset();
-        guardarDatos();
-    });
+                        const nuevoRepartidor = new Repartidor(nombre, vehiculo, experiencia);
+                        repartidores.push(nuevoRepartidor);
 
+                        actualizarSelectRepartidores();
+                        formRepartidor.reset();
+                        guardarDatos();
+                        muestraMensaje(1);
+                    });
 
-    // FORMULARIO PAQUETE
+                        // FORMULARIO PAQUETE
 
-    formPaquete.addEventListener('submit', function (event) {
-        event.preventDefault();
+                        formPaquete.addEventListener('submit', function (event) {
+                            event.preventDefault();
 
-        const peso     = parseFloat(document.getElementById('pesoPaquete').value);
-        const largo    = parseInt(document.getElementById('largoPaquete').value);
-        const ancho    = parseInt(document.getElementById('anchoPaquete').value);
-        const alto     = parseInt(document.getElementById('altoPaquete').value);
-        const destino  = document.getElementById('destinoPaquete').value;
-        const color    = document.getElementById('colorPaquete').value;
-        const idxRep   = selectRepartidor.value;
+                        if (modoEdicionRepartidor) {
+                            muestraMensaje(5);
+                            return;
+                        }
 
-        if (!peso || !largo || !ancho || !alto || !destino || !color || idxRep === '') {
-            alert('Por favor, complete todos los campos del paquete.');
-            return;
-        }
+                        const peso = parseFloat(document.getElementById('pesoPaquete').value);
+                        const largo = parseInt(document.getElementById('largoPaquete').value);
+                        const ancho = parseInt(document.getElementById('anchoPaquete').value);
+                        const alto = parseInt(document.getElementById('altoPaquete').value);
+                        const destino = document.getElementById('destinoPaquete').value;
+                        const color = document.getElementById('colorPaquete').value;
+                        const idxRep = selectRepartidor.value;
 
-        const repartidorSeleccionado = repartidores[idxRep];
+                        if (!peso || !largo || !ancho || !alto || !destino || !color || idxRep === '') {
+                        muestraMensaje(11);
+                        return;
+                    }
 
-        // Modo edición: actualizamos el paquete existente
-        if (modoEdicionPaquete && paqueteEnEdicion) {
-            paqueteEnEdicion.peso       = peso;
-            paqueteEnEdicion.largo      = largo;
-            paqueteEnEdicion.ancho      = ancho;
-            paqueteEnEdicion.alto       = alto;
-            paqueteEnEdicion.destino    = destino;
-            paqueteEnEdicion.color      = color;
-            paqueteEnEdicion.repartidor = repartidorSeleccionado;
+                        const repartidorSeleccionado = repartidores[idxRep];
 
-            pintarPaquetes();
-            guardarDatos();
-            salirModoEdicionPaquete();
-            alert('Paquete actualizado correctamente');
-            return;
-        }
+                        // Modo edición: actualizamos el paquete existente
+                        if (modoEdicionPaquete && paqueteEnEdicion) {
+                        paqueteEnEdicion.peso = peso;
+                        paqueteEnEdicion.largo = largo;
+                        paqueteEnEdicion.ancho = ancho;
+                        paqueteEnEdicion.alto = alto;
+                        paqueteEnEdicion.destino = destino;
+                        paqueteEnEdicion.color = color;
+                        paqueteEnEdicion.repartidor = repartidorSeleccionado;
 
-        // Crear nuevo paquete
-        const nuevoIdPaquete = generarIdUnico();
+                        pintarPaquetes();
+                        guardarDatos();
+                        salirModoEdicionPaquete();
+                        muestraMensaje(10);
+                        return;
+                    }
 
-        const nuevoPaquete = new Paquete(
-            nuevoIdPaquete,
-            peso,
-            largo,
-            ancho,
-            alto,
-            destino,
-            color,
-            repartidorSeleccionado
-        );
+                        // Crear nuevo paquete
+                        const nuevoIdPaquete = generarIdUnico();
 
-        Reparto.agregarPaquete(nuevoPaquete);
-        pintarPaquetes();
-        formPaquete.reset();
-        selectRepartidor.selectedIndex = 0;
-        guardarDatos();
-    });
+                        const nuevoPaquete = new Paquete(
+                            nuevoIdPaquete,
+                            peso,
+                            largo,
+                            ancho,
+                            alto,
+                            destino,
+                            color,
+                            repartidorSeleccionado
+                        );
 
-    //Id Unico
-    function generarIdUnico() {
-        let id;
-        do {
-            id = Math.floor(1000 + Math.random() * 9000);
-        } while (Reparto.paquetes.some(p => p.id === id));
-        return id;
-    }
+                        Reparto.agregarPaquete(nuevoPaquete);
+                        pintarPaquetes();
+                        formPaquete.reset();
+                        selectRepartidor.selectedIndex = 0;
+                        guardarDatos();
+                        muestraMensaje(9);
+                    });
 
-    // DIBUJO DEL PAQUETE
+                        //Id Unico
+                        function generarIdUnico() {
+                            let id;
+                            do {
+                                id = Math.floor(1000 + Math.random() * 9000);
+                            } while (Reparto.paquetes.some(p => p.id === id));
+                            return id;
+                        }
 
-    function draw(largoOriginal, anchoOriginal, altoOriginal, color) {
-        const canvas = document.createElement('canvas');
-        canvas.width  = 200;
-        canvas.height = 200;
+                        // DIBUJO DEL PAQUETE
 
-        const ctx = canvas.getContext('2d');
-        let grosor = 2;
+                        function draw(largoOriginal, anchoOriginal, altoOriginal, color) {
+                            const canvas = document.createElement('canvas');
+                        canvas.width = 200;
+                        canvas.height = 200;
 
-        const maxMedida    = Math.max(largoOriginal, anchoOriginal, altoOriginal);
-        const maxPermitido = 150;
-        const factor       = maxMedida > maxPermitido ? maxPermitido / maxMedida : 1;
+                        const ctx = canvas.getContext('2d');
+                        let grosor = 2;
 
-        const largo = largoOriginal * factor;
-        const ancho = anchoOriginal * factor;
-        const alto  = altoOriginal * factor;
-        grosor      = grosor * factor;
+                        const maxMedida = Math.max(largoOriginal, anchoOriginal, altoOriginal);
+                        const maxPermitido = 150;
+                        const factor = maxMedida > maxPermitido ? maxPermitido / maxMedida : 1;
 
-        const d = largo / 3;
+                        const largo = largoOriginal * factor;
+                        const ancho = anchoOriginal * factor;
+                        const alto = altoOriginal * factor;
+                        grosor = grosor * factor;
 
-        const dibujoWidth  = ancho + d;
-        const dibujoHeight = alto + d;
+                        const d = largo / 3;
 
-        const offsetX = (canvas.width  - dibujoWidth)  / 2;
-        const offsetY = (canvas.height - dibujoHeight) / 2;
-        ctx.translate(offsetX, offsetY);
+                        const dibujoWidth = ancho + d;
+                        const dibujoHeight = alto + d;
 
-        ctx.fillStyle   = color;
-        ctx.globalAlpha = 0.6;
+                        const offsetX = (canvas.width - dibujoWidth) / 2;
+                        const offsetY = (canvas.height - dibujoHeight) / 2;
+                        ctx.translate(offsetX, offsetY);
 
-        // Caja en perspectiva
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(d, d);
-        ctx.lineTo(ancho + d, d);
-        ctx.lineTo(ancho, 0);
-        ctx.lineTo(0, 0);
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = 0.6;
 
-        ctx.lineTo(0, alto);
-        ctx.lineTo(d, alto + d);
-        ctx.lineTo(ancho + d, alto + d);
-        ctx.lineTo(ancho + d, d);
+                        // Caja en perspectiva
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(d, d);
+                        ctx.lineTo(ancho + d, d);
+                        ctx.lineTo(ancho, 0);
+                        ctx.lineTo(0, 0);
 
-        ctx.lineWidth = grosor;
-        ctx.stroke();
-        ctx.fill();
+                        ctx.lineTo(0, alto);
+                        ctx.lineTo(d, alto + d);
+                        ctx.lineTo(ancho + d, alto + d);
+                        ctx.lineTo(ancho + d, d);
 
-        // Cara trasera
-        ctx.fillRect(0, 0, ancho, alto);
+                        ctx.lineWidth = grosor;
+                        ctx.stroke();
+                        ctx.fill();
 
-        // Cara frontal desplazada
-        ctx.translate(d, d);
-        ctx.fillRect(0, 0, ancho, alto);
+                        // Cara trasera
+                        ctx.fillRect(0, 0, ancho, alto);
 
-        canvas.style.width  = '100%';
-        canvas.style.height = 'auto';
+                        // Cara frontal desplazada
+                        ctx.translate(d, d);
+                        ctx.fillRect(0, 0, ancho, alto);
 
-        return canvas;
-    }
+                        canvas.style.width = '100%';
+                        canvas.style.height = 'auto';
 
+                        return canvas;
+                    }
 
-    // BOTONES EXTRA
+                        // BOTONES
 
-    btnBorrarDatos.addEventListener('click', borrarDatos);
+                        btnBorrarDatos.addEventListener('click', borrarDatos);
 
-    btnEditarRepartidor.addEventListener('click', function () {
-        if (modoEdicionPaquete) {
-            alert('Modo edición: estás editando un paquete. Guarda para continuar.');
-            return;
-        }
+                        btnEditarRepartidor.addEventListener('click', function () {
+                            if (modoEdicionPaquete) {
+                            muestraMensaje(5);
+                            return;
+                        }
 
-        const indice = selectRepartidorEditar.value;
+                        if (modoEdicionRepartidor) {
+                            muestraMensaje(5);
+                            return;
+                        }
 
-        if (indice === '') {
-            alert('Seleccione un repartidor para editar');
-            return;
-        }
+                        const indice = selectRepartidorEditar.value;
 
-        entrarModoEdicionRepartidor(parseInt(indice));
-    });
+                        if (indice === '') {
+                        muestraMensaje(6);
+                        return;
+                    }
 
-    btnEliminarRepartidor.addEventListener('click', borrarRepartidor);
+                        entrarModoEdicionRepartidor(parseInt(indice));
+                    });
 
+                        btnEliminarRepartidor.addEventListener('click', borrarRepartidor);
 
-    // INICIO
+                        // INICIO
 
-    cargarDatos();
-</script>
+                        cargarDatos();
+                    </script>
 </body>
+
 </html>
