@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD con Fetch + localStorage</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #333;
+            padding: 20px;
+        }
+
+        .contenedor {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .panel {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr auto auto;
+            align-items: end;
+            background: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+            margin-bottom: 18px;
+        }
+
+        .panel label {
+            font-size: .9rem;
+            color: #555;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .panel input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d6dbe1;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .panel button {
+            padding: 10px 12px;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #1f6feb;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .panel button.sec {
+            background: #6c757d;
+        }
+
+        #usuarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .ficha-user {
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .ficha-user:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .14);
+        }
+
+        .ficha-user img {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px 0;
+        }
+
+        .ficha-user h4 {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .ficha-user p {
+            font-size: .9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .acciones button {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 0;
+            cursor: pointer;
+            font-weight: 600;
+            background: #eef2f7;
+        }
+
+        .acciones button.danger {
+            background: #ffe3e3;
+        }
+
+        .acciones button.warn {
+            background: #fff3cd;
+        }
+
+        .oculto {
+            opacity: .35;
+            filter: grayscale(1);
+        }
+
+        .msg {
+            margin: 10px 0 16px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+        }
+
+        .msg.error {
+            border-left: 5px solid #dc3545;
+        }
+
+        .msg.ok {
+            border-left: 5px solid #198754;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>CRUD (cliente) con <em>fetch</em> + localStorage</h1>
+
+        <div class="panel">
+            <div>
+                <label for="loginInput">Nuevo usuario (login)</label>
+                <input id="loginInput" type="text" placeholder="Ej: marce_dev" />
+            </div>
+            <button id="btnAdd">Añadir</button>
+            <button id="btnReset" class="sec">Reset</button>
+        </div>
+
+        <div id="mensajes"></div>
+        <div id="usuarios"></div>
+    </div>
+
+</body>
+<script>
+    // =========================
+    // Estado y almacenamiento
+    // =========================
+    const LS_KEY = "crud_users_contenteditable_v1";
+    let usuarios = [];
+
+    function mostrarMensaje(texto, tipo = "ok") {
+      const cont = document.getElementById("mensajes");
+      cont.innerHTML = `<div class="msg ${tipo === "error" ? "error" : ""}">${escapeHtml(texto)}</div>`;
+      setTimeout(() => (cont.innerHTML = ""), 2500);
+    }
+
+    function guardarEnLocalStorage() {
+      localStorage.setItem(LS_KEY, JSON.stringify(usuarios));
+    }
+
+    function cargarDeLocalStorage() {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch { return null; }
+    }
+
+    function generarIdLocal() {
+      return "local_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+    }
+
+    // =========================
+    // Fetch inicial (READ)
+    // =========================
+    async function cargarDatos() {
+      // 1) Si hay datos guardados, usar esos
+      const guardados = cargarDeLocalStorage();
+      if (Array.isArray(guardados) && guardados.length) {
+        usuarios = guardados;
+        render();
+        mostrarMensaje("Datos cargados desde localStorage.");
+        return;
+      }
+
+      // 2) Si no hay, pedir a GitHub
+      const url = "https://api.github.com/users";
+
+      try {
+        const res = await fetch(url);
+
+        // fetch NO falla por 404/500, por eso se comprueba ok
+        if (!res.ok) throw new Error(`Error HTTP ${res.status} (${res.statusText})`);
+
+        const datos = await res.json();
+
+        // Normalizamos los objetos para el CRUD local
+        usuarios = datos.map(u => ({
+          id: u.id,
+          login: u.login,
+          avatar_url: u.avatar_url,
+          hidden: false,
+          source: "github"
+        }));
+
+        guardarEnLocalStorage();
+        render();
+        mostrarMensaje("Datos cargados desde GitHub y guardados en localStorage.");
+      } catch (error) {
+        mostrarMensaje("No se pudieron cargar datos: " + error.message, "error");
+      }
+    }
+
+    // =========================
+    // Renderizado
+    // =========================
+    function render() {
+      const contenedor = document.getElementById("usuarios");
+      contenedor.innerHTML = "";
+
+      usuarios.forEach(u => {
+        const card = document.createElement("div");
+        card.className = "ficha-user" + (u.hidden ? " oculto" : "");
+        card.dataset.id = String(u.id);
+
+        card.innerHTML = `
+          <h4 class="login" contenteditable="false">${escapeHtml(u.login)}</h4>
+          <p>Id usuario: ${escapeHtml(String(u.id))}</p>
+          <img src="${escapeAttr(u.avatar_url)}" alt="Avatar de ${escapeAttr(u.login)}" />
+          <div class="acciones">
+            <button data-action="editar" class="warn">Editar</button>
+            <button data-action="ocultar">${u.hidden ? "Mostrar" : "Ocultar"}</button>
+            <button data-action="eliminar" class="danger">Eliminar</button>
+          </div>
+        `;
+
+        contenedor.appendChild(card);
+      });
+    }
+
+    // =========================
+    // CRUD (cliente)
+    // =========================
+    function crearUsuario(login) {
+      const limpio = login.trim();
+      if (!limpio) {
+        mostrarMensaje("El login no puede estar vacío.", "error");
+        return;
+      }
+
+      usuarios.unshift({
+        id: generarIdLocal(),
+        login: limpio,
+        avatar_url: "https://avatars.githubusercontent.com/u/0?v=4",
+        hidden: false,
+        source: "local"
+      });
+
+      guardarEnLocalStorage();
+      render();
+      mostrarMensaje("Usuario añadido.");
+    }
+
+    function eliminarUsuario(id) {
+      const idx = usuarios.findIndex(u => String(u.id) === String(id));
+      if (idx === -1) return;
+
+      const ok = confirm("¿Seguro que quieres eliminar este usuario?");
+      if (!ok) return;
+
+      usuarios.splice(idx, 1);
+      guardarEnLocalStorage();
+      render();
+      mostrarMensaje("Usuario eliminado.");
+    }
+
+    function alternarOculto(id) {
+      const u = usuarios.find(x => String(x.id) === String(id));
+      if (!u) return;
+
+      u.hidden = !u.hidden;
+      guardarEnLocalStorage();
+      render();
+    }
+
+    // UPDATE con contenteditable (Editar/Guardar)
+    function editarConContentEditable(card, id, boton) {
+      const titulo = card.querySelector(".login");
+      const usuario = usuarios.find(u => String(u.id) === String(id));
+      if (!usuario || !titulo) return;
+
+      const enEdicion = boton.textContent.trim().toLowerCase() === "guardar";
+
+      if (!enEdicion) {
+        // Entrar en edición
+        titulo.contentEditable = "true";
+        card.classList.add("editando");
+
+        // Guardamos el valor original por si luego quisieras cancelar
+        titulo.dataset.original = titulo.textContent;
+
+        // Enfocar y poner cursor al final
+        titulo.focus();
+        placeCaretAtEnd(titulo);
+
+        boton.textContent = "Guardar";
+      } else {
+        // Guardar
+        const nuevoTexto = titulo.textContent.trim();
+
+        if (!nuevoTexto) {
+          mostrarMensaje("El login no puede estar vacío.", "error");
+          titulo.focus();
+          return;
+        }
+
+        titulo.contentEditable = "false";
+        card.classList.remove("editando");
+        boton.textContent = "Editar";
+
+        // Persistimos en el array (fuente de verdad)
+        usuario.login = nuevoTexto;
+
+        guardarEnLocalStorage();
+        mostrarMensaje("Usuario editado.");
+      }
+    }
+
+    // =========================
+    // Eventos (delegación)
+    // =========================
+    document.getElementById("usuarios").addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const card = btn.closest(".ficha-user");
+      if (!card) return;
+
+      const id = card.dataset.id;
+      const action = btn.dataset.action;
+
+      if (action === "editar") editarConContentEditable(card, id, btn);
+      if (action === "ocultar") alternarOculto(id);
+      if (action === "eliminar") eliminarUsuario(id);
+    });
+
+    // Extra: Enter para guardar mientras editas; Escape para cancelar
+    document.getElementById("usuarios").addEventListener("keydown", (e) => {
+      const editable = e.target.closest(".login[contenteditable='true']");
+      if (!editable) return;
+
+      const card = e.target.closest(".ficha-user");
+      const btnEditar = card.querySelector("button[data-action='editar']");
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        editarConContentEditable(card, card.dataset.id, btnEditar);
+      }
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        // Cancelar: restaurar texto original
+        const original = editable.dataset.original ?? editable.textContent;
+        editable.textContent = original;
+        editable.contentEditable = "false";
+        card.classList.remove("editando");
+        btnEditar.textContent = "Editar";
+        mostrarMensaje("Edición cancelada.");
+      }
+    });
+
+    document.getElementById("btnAdd").addEventListener("click", () => {
+      const input = document.getElementById("loginInput");
+      crearUsuario(input.value);
+      input.value = "";
+      input.focus();
+    });
+
+    // Reset: borra localStorage y vuelve a cargar desde GitHub
+    document.getElementById("btnReset").addEventListener("click", () => {
+      const ok = confirm("Esto borrará localStorage y recargará desde GitHub. ¿Continuar?");
+      if (!ok) return;
+
+      localStorage.removeItem(LS_KEY);
+      usuarios = [];
+      cargarDatos();
+    });
+
+    // =========================
+    // Utilidades
+    // =========================
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+    function escapeAttr(str) { return escapeHtml(str); }
+
+    // Pone el cursor al final del texto editable
+    function placeCaretAtEnd(el) {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+      function name(params) {
+
+      }
+
+    // Arranque
+    cargarDatos();
+  </script>
+
+</html>

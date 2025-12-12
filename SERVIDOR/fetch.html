@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de Fetch en JavaScript</title>
+</head>
+<style>
+    * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    padding: 20px;
+}
+
+
+.contenedor {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+
+#usuarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+
+.ficha-user {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.ficha-user:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+.ficha-user h4 {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+
+.ficha-user p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+
+.ficha-user img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+</style>
+
+<body>
+    <div class="contenedor">
+        <h1>Uso de <em>Fetch</em> para acceder datos externos</h1>
+        <p>Un ejemplo  de conecxión a un origen de datos externos (github) que devuelve un JSON  que vamos a usar algunos datos para llenar el contenido del DOM</p> <br>
+
+
+        <code><pre>
+            async function cargarDatos() {
+                const url = 'https://api.github.com/users';
+
+                try {
+                    const res = await fetch(url);
+
+                    if (!res.ok) {
+                        throw new Error('No se puede conectar con el servidor');
+                    }
+
+                    const datos = await res.json();
+                    console.log(datos)
+                    //enviamos los datos a procesar
+                    procesarDatos(datos, 'usuarios')
+
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
+
+        </pre></code>
+        <button id="btn_data">Cargar Datos</button>
+
+
+        <div id="usuarios"></div>
+        <script>
+            async function cargarDatos() {
+                const url = 'https://api.github.com/users';
+
+                try {
+                    const res = await fetch(url);
+
+                    if (!res.ok) {
+                        throw new Error('No se puede conectar con el servidor');
+                    }
+
+                    const datos = await res.json();
+                    console.log(datos)
+                    //enviamos los datos a procesar
+                    procesarDatos(datos, 'usuarios')
+
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
+            function procesarDatos(datos, id_destino) {
+                //accede al contenedor
+                const contenedor = document.getElementById(id_destino);
+                
+                //iteramos cada objeto del array
+                datos.forEach((objeto)=> creaContenido(objeto, contenedor));
+                
+            }
+            function creaContenido(objeto, contenedor) {
+                const caja = document.createElement('div');
+                caja.className = 'ficha-user';
+                const nombre = document.createElement('h4');
+                nombre.textContent= objeto.login;
+                const iden = document.createElement('p');
+                iden.textContent = 'Id usuario:' + objeto.id;
+                const foto = document.createElement ('img');
+                foto.setAttribute('src', objeto.avatar_url);
+                caja.append(nombre, iden, foto);
+                contenedor.append(caja);
+
+                
+            }
+            document.getElementById('btn_data').onclick = cargarDatos;
+
+                function (params) {
+
+                }
+
+        </script>
+
+    </div>
+</body>
+
+</html>
